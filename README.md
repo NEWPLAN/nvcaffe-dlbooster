@@ -1,0 +1,2 @@
+# nvcaffe
+special_designed_for_nvcaffe
