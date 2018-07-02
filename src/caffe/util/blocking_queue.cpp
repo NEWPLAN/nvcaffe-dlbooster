@@ -36,8 +36,9 @@ bool BlockingQueue<T>::try_pop(T* t) {
 template<typename T>
 T BlockingQueue<T>::pop(const char* log_on_wait) {
   boost::mutex::scoped_lock lock(mutex_);
-  while (queue_.empty()) {
-    LOG_EVERY_N(INFO, 100) << log_on_wait;
+  while (queue_.empty()) 
+  {
+    LOG_EVERY_N(INFO, 1000) << log_on_wait;
     condition_.wait(lock);
   }
   T t = queue_.front();

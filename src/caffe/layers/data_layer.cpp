@@ -204,7 +204,8 @@ DataLayer<Ftype, Btype>::DataLayerSetUp(const vector<Blob*>& bottom, const vecto
 }
 
 template<typename Ftype, typename Btype>
-void DataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t queue_id) {
+void DataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t queue_id) 
+{
   const bool sample_only = sample_only_.load();
   // Reshape according to the first datum of each batch
   // on single input batches allows for inputs of varying dimension.
@@ -278,7 +279,8 @@ void DataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t que
 
   size_t current_batch_id = 0UL;
   const size_t buf_len = batch->data_->offset(1);
-  for (size_t entry = 0; entry < batch_size; ++entry) {
+  for (size_t entry = 0; entry < batch_size; ++entry) 
+  {
     shared_ptr<Datum> datum = reader->full_pop(qid, "Waiting for datum");
     size_t item_id = datum->record_id() % batch_size;
     if (item_id == 0UL) {
@@ -289,7 +291,8 @@ void DataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t que
       top_label[item_id] = datum->label();
     }
 
-    if (use_gpu_transform) {
+    if (use_gpu_transform) 
+    {
       cudaStream_t stream = Caffe::thread_stream(Caffe::GPU_TRANSF_GROUP);
       if (datum->encoded()) {
         DecodeDatumToSignedBuf(*datum, color_mode, src_buf.data(), datum_size, false);
@@ -307,7 +310,8 @@ void DataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t que
       CUDA_CHECK(cudaStreamSynchronize(stream));
       this->bdt(thread_id)->Fill3Randoms(&random_vectors_[thread_id]->
           mutable_cpu_data()[item_id * 3]);
-    } else {
+    } else 
+    {
       // Get data offset for this datum to hand off to transform thread
       const size_t offset = batch->data_->offset(item_id);
       CHECK_EQ(0, offset % buf_len);
