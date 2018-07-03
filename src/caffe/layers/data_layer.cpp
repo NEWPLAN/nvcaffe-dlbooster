@@ -235,7 +235,8 @@ void DataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t que
   const char *src_ptr = nullptr;
   vector<char> src_buf;
   cv::Mat img;
-  if (use_gpu_transform) {
+  if (use_gpu_transform) 
+  {
     if (init_datum->encoded()) {
       DecodeDatumToCVMat(*init_datum, color_mode, img, false, false);
       datum_len = img.channels() * img.rows * img.cols;
@@ -352,6 +353,10 @@ void DataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t que
   batch->set_data_packing(packing);
   batch->set_id(current_batch_id);
   sample_only_.store(false);
+  {
+    #include <unistd.h>
+    LOG_EVERY_N(INFO, 1000) << "in loading batch transform" << getpid();
+  }
 }
 
 INSTANTIATE_CLASS_FB(DataLayer);
