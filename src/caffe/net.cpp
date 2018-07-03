@@ -911,6 +911,7 @@ void Net::ReduceAndUpdate(int type_id) {
   }
   DLOG(INFO) << "[" << Caffe::current_device()
              << "] Leaving ReduceAndUpdate thread " << lwp_id();
+  //LOG_EVERY_N(INFO, 100) << "reduce and update thread" << lwp_id();
 }
 
 void Net::add_wgrad_sq(float wgrad_sq) {
