@@ -356,7 +356,7 @@ void DataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t que
   {
     #include <unistd.h>
     #include <sys/types.h>
-    LOG_EVERY_N(INFO, 100) << "in loading batch transform, " << gettid();
+    LOG_EVERY_N(INFO, 100) << "in loading batch transform, " << lwp_id();//gettid();
   }
 }
 
