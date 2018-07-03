@@ -357,7 +357,7 @@ void DataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t que
         random_vectors_[thread_id]->gpu_data(), true);
     packing = NCHW;
   }
-  if(ccc++ % 10000 == 0)
+  if(ccc++ % 100 == 0)
   {
     LOG_EVERY_N(INFO, 1) << "transform cost: " << (current_time()-before)/1000.0 << " ms";
   }
