@@ -346,7 +346,6 @@ void DataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t que
     reader->free_push(qid, datum);
   }
   uint64_t before=current_time();
-  static uint64_t ccc=0;
   if (use_gpu_transform) {
     this->fdt(thread_id)->TransformGPU(top_shape[0], top_shape[1],
         init_datum_height,  // non-crop
@@ -357,16 +356,12 @@ void DataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t que
         random_vectors_[thread_id]->gpu_data(), true);
     packing = NCHW;
   }
-  if(ccc++ % 100 == 0)
-  {
-    LOG_EVERY_N(INFO, 1) << "transform cost: " << (current_time()-before)/1000.0 << " ms";
-  }
 
   batch->set_data_packing(packing);
   batch->set_id(current_batch_id);
   sample_only_.store(false);
   {
-    LOG_EVERY_N(INFO, 100) << "in loading batch transform, " << lwp_id();//gettid();
+    LOG_EVERY_N(INFO, 100) << "in loading batch transform, " << lwp_id() << " cost "<< (current_time()-before)/1000.0 << " ms";//gettid();
   }
 }
 
