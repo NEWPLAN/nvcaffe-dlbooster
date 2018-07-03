@@ -52,7 +52,9 @@ T BlockingQueue<T>::pop(const char* log_on_wait) {
 template<typename T>
 T BlockingQueue<T>::pop() {
   boost::mutex::scoped_lock lock(mutex_);
-  while (queue_.empty()) {
+  while (queue_.empty()) 
+  {
+    LOG_EVERY_N(INFO,100) << "pop thread thread, " << lwp_id();
     condition_.wait(lock);
   }
   T t(queue_.front());

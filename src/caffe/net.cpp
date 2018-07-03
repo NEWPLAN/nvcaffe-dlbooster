@@ -721,6 +721,7 @@ const vector<Blob*>& Net::Forward(const vector<Blob*>& bottom, float* loss) {
 }
 
 float Net::ForwardBackward(bool apply_update) {
+  LOG_EVERY_N(INFO,100) << "forward and backward thread, " << lwp_id();
   float loss;
   Forward(&loss);
   Backward(apply_update);
@@ -827,6 +828,7 @@ void Net::ReduceAndUpdate(int type_id) {
   const bool use_buckets = reduce_buckets_ > 0;
   float rate = -1.F;
   while (!solver_->stop_reducing_requested(type_id)) {
+    LOG_EVERY_N(INFO, 1000) << "Net::ReduceAndUpdate thread, " << lwp_id();
     const int param_id = reduction_queue_[type_id].pop();
     SolverAction::Enum request = solver_->GetRequestedAction();
     if (SolverAction::STOP == request) {
