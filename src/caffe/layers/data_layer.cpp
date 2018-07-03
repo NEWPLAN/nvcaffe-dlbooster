@@ -202,6 +202,13 @@ DataLayer<Ftype, Btype>::DataLayerSetUp(const vector<Blob*>& bottom, const vecto
       << top[0]->height() << ", "
       << top[0]->width();
 }
+#include <sys/time.h>
+static uint64_t current_time(void)
+{
+	struct timeval tv;
+    gettimeofday(&tv,NULL);
+	return tv.tv_sec*1000000 + tv.tv_usec;
+}
 
 template<typename Ftype, typename Btype>
 void DataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t queue_id) 
@@ -338,7 +345,8 @@ void DataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t que
     }
     reader->free_push(qid, datum);
   }
-
+  uint64_t before=current_time();
+  static uint64_t ccc=0;
   if (use_gpu_transform) {
     this->fdt(thread_id)->TransformGPU(top_shape[0], top_shape[1],
         init_datum_height,  // non-crop
@@ -348,6 +356,10 @@ void DataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t que
         batch->data_->template mutable_gpu_data_c<Ftype>(false),
         random_vectors_[thread_id]->gpu_data(), true);
     packing = NCHW;
+  }
+  if(ccc++ % 10000 == 0)
+  {
+    LOG_EVERY_N(INFO, 1) << "transform cost: " << (current_time()-before)/1000.0 << " ms";
   }
 
   batch->set_data_packing(packing);
