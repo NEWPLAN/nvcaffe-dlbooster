@@ -40,7 +40,7 @@ T BlockingQueue<T>::pop(const char* log_on_wait) {
   {
     //LOG_EVERY_N(INFO, 1000) << log_on_wait << ", in thread: "<<boost::this_thread::get_id();
     {
-    LOG_EVERY_N(INFO, 100) << log_on_wait <<" , " << lwp_id();//gettid();
+    //LOG_EVERY_N(INFO, 100) << log_on_wait <<" , " << lwp_id();//gettid();
     }
     condition_.wait(lock);
   }
