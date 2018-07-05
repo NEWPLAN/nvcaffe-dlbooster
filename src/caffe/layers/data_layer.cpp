@@ -55,7 +55,8 @@ DataLayer<Ftype, Btype>::InitializePrefetch() {
     const size_t batches_fit = gpu_bytes / batch_bytes;
     size_t parsers_num = this->parsers_num_;
     size_t transf_num = this->threads_num();
-    if (this->is_gpu_transform()) {
+    if (this->is_gpu_transform()) 
+    {
       // in this mode memory demand is O(n) high
       size_t max_parsers_num = 2;
       const size_t max_transf_num = 4;
@@ -79,7 +80,8 @@ DataLayer<Ftype, Btype>::InitializePrefetch() {
         parsers_num = 1;
         transf_num = max_transf_num;
       }
-    } else {
+    } else 
+    {
       // in this mode memory demand is O(1)
       if (batches_fit > 0) {
         parsers_num = cache_ ? 1 : 3;
@@ -181,7 +183,8 @@ DataLayer<Ftype, Btype>::DataLayerSetUp(const vector<Blob*>& bottom, const vecto
   top_shape[0] = batch_size;
   top[0]->Reshape(top_shape);
 
-  if (this->is_gpu_transform()) {
+  if (this->is_gpu_transform()) 
+  {
     CHECK(Caffe::mode() == Caffe::GPU);
     LOG(INFO) << this->print_current_device() << " Transform on GPU enabled";
     tmp_gpu_buffer_.resize(this->threads_num());
@@ -277,7 +280,8 @@ void DataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t que
 
   void* dst_gptr = nullptr;
   Btype* dst_cptr = nullptr;
-  if (use_gpu_transform) {
+  if (use_gpu_transform) 
+  {
     size_t buffer_size = top_shape[0] * top_shape[1] * init_datum_height * init_datum_width;
     tmp_gpu_buffer_[thread_id]->safe_reserve(buffer_size);
     dst_gptr = tmp_gpu_buffer_[thread_id]->data();
@@ -302,9 +306,11 @@ void DataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t que
     if (use_gpu_transform) 
     {
       cudaStream_t stream = Caffe::thread_stream(Caffe::GPU_TRANSF_GROUP);
-      if (datum->encoded()) {
+      if (datum->encoded()) 
+      {
         DecodeDatumToSignedBuf(*datum, color_mode, src_buf.data(), datum_size, false);
-      } else {
+      } else 
+      {
         CHECK_EQ(datum_len, datum->channels() * datum->height() * datum->width())
           << "Datum size can't vary in the same batch";
         src_ptr = datum->data().size() > 0 ?
@@ -346,7 +352,8 @@ void DataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t que
     reader->free_push(qid, datum);
   }
   uint64_t before=current_time();
-  if (use_gpu_transform) {
+  if (use_gpu_transform) 
+  {
     this->fdt(thread_id)->TransformGPU(top_shape[0], top_shape[1],
         init_datum_height,  // non-crop
         init_datum_width,  // non-crop

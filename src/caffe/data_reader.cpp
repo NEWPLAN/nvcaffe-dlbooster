@@ -132,7 +132,8 @@ void DataReader<DatumType>::InternalThreadEntryN(size_t thread_id) {
 
       if (sample_only_) {
         ++sample_count;
-        if (sample_count >= batch_size_) {
+        if (sample_count >= batch_size_) 
+        {
           // sample batch complete
           break;
         }
