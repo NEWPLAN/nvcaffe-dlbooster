@@ -65,6 +65,18 @@ class BatchTransformer : public InternalThread {
     return this->processed_full_.pop();
   }
 
+  boost::shared_ptr<Batch> processed_push(bool without_process,const boost::shared_ptr<Batch>& batch) 
+  {
+    if(without_process && false)
+    {
+       return this->processed_free_.push(batch);
+    }
+    else
+    {
+      return this->processed_full_.push(batch);
+    }
+  }
+
   void processed_push(const boost::shared_ptr<Batch>& batch) {
     return this->processed_free_.push(batch);
   }
