@@ -140,6 +140,7 @@ void DataReader<DatumType>::InternalThreadEntryN(size_t thread_id) {
       }
       datum = free_pop(queue_id);
       //newplan
+      if(0)
       {
         LOG_EVERY_N(INFO, 1000) << "in dating read thread, " << lwp_id();//gettid();
       }
