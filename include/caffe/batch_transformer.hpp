@@ -69,6 +69,7 @@ class BatchTransformer : public InternalThread {
   {
     if(without_process && false)
     {
+      LOG(INFO) << "error in processed free queue";
        return this->processed_free_.push(batch);
     }
     else
