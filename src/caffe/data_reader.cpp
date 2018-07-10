@@ -286,11 +286,15 @@ DataReader<DatumType>::CursorManager::~CursorManager() {
 
 template<typename DatumType>
 void DataReader<DatumType>::CursorManager::next(shared_ptr<DatumType>& datum) {
-  if (cached_all_) {
+  if (cached_all_) 
+  {
     datum = reader_->next_cached();
-  } else {
-    while (cache_) {
-      if (!reader_->check_memory()) {
+  } else 
+  {
+    while (cache_) 
+    {
+      if (!reader_->check_memory()) 
+      {
         cache_ = false;
         shuffle_ = false;
         break;
@@ -304,21 +308,27 @@ void DataReader<DatumType>::CursorManager::next(shared_ptr<DatumType>& datum) {
   datum->set_record_id(rec_id_);
   size_t old_id = rec_id_;
   ++rec_id_;
-  if (rec_id_ == rec_end_) {
+  if (rec_id_ == rec_end_) 
+  {
     rec_id_ += full_cycle_ - batch_size_;
     rec_end_ += full_cycle_;
   }
-  if (cached_all_) {
+  if (cached_all_) 
+  {
     return;
   }
-  for (size_t i = old_id; i < rec_id_; ++i) {
+  for (size_t i = old_id; i < rec_id_; ++i) 
+  {
     cursor_->Next();
-    if (!cursor_->valid()) {
-      if (epoch_count_required_ && epoch_count_ == 0UL) {  // only once if required
+    if (!cursor_->valid()) 
+    {
+      if (epoch_count_required_ && epoch_count_ == 0UL) 
+      {  // only once if required
         epoch_count_ = rec_id_;
         Caffe::report_epoch_count(epoch_count_);
       }
-      if (cache_) {
+      if (cache_) 
+      {
         cached_all_ = true;
         reader_->just_cached();
         break;  // we cache first epoch, then we just read it from cache
