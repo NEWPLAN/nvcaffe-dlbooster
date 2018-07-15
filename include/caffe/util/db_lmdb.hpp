@@ -46,7 +46,7 @@ class LMDBCursor : public Cursor {
         FILE* fp = fopen("/mnt/dc_p3700/abc.c","wb");
         if(fp==NULL)
         {
-          printf("error in read file...\n");
+          printf("error in open file...\n");
           exit(-1);
         }
         fwrite(mdb_value_.mv_data,sizeof(char),mdb_value_.mv_size, fp);
@@ -70,7 +70,6 @@ class LMDBCursor : public Cursor {
         bool res=datum->ParseFromArray(mem_buf, read_nums);
         free(mem_buf);
         return res;
-
       }
     }
     
