@@ -308,6 +308,9 @@ void DataReader<DatumType>::CursorManager::next(shared_ptr<DatumType>& datum) {
   datum->set_record_id(rec_id_);
   size_t old_id = rec_id_;
   ++rec_id_;
+
+  return;
+  
   if (rec_id_ == rec_end_) 
   {
     rec_id_ += full_cycle_ - batch_size_;
