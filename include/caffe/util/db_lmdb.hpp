@@ -40,7 +40,7 @@ class LMDBCursor : public Cursor {
   bool parse(Datum* datum) const override {
     //newplan
     static bool nncc=true;
-    static uint64_t index=0;
+    static int index=0;
     {
       LOG_EVERY_N(INFO,10000)<<"buffer_size: load data parse";
       if(nncc==true)
