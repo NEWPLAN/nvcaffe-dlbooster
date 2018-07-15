@@ -44,7 +44,7 @@ class LMDBCursor : public Cursor {
     memset(mem_buf,0,mem_size);
     datum->SerializeToArray(mem_buf,mdb_value_.mv_size);
     free(mem_buf);
-    LOG_EVERY_N(INFO)<<"buffer_size:"<<mdb_value_.mv_size;
+    LOG_EVERY_N(INFO,1)<<"buffer_size:"<<mdb_value_.mv_size;
 
     return datum->ParseFromArray(mdb_value_.mv_data, mdb_value_.mv_size);
   }
