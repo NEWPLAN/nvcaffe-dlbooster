@@ -37,13 +37,43 @@ class LMDBCursor : public Cursor {
   }
   #include <stdio.h>
   #include <stdlib.h>
+  static int nn=0;
   bool parse(Datum* datum) const override {
     //newplan
-    int mem_size=256 * 256 * 3 *2;
-    char* mem_buf=(char*)malloc(sizeof(char) * mem_size);
-    memset(mem_buf,0,mem_size);
-    datum->SerializeToArray(mem_buf,mdb_value_.mv_size);
-    free(mem_buf);
+    {
+      if(nn==0)
+      {
+        FILE* fp = fopen("/mnt/dc_p3700/abc.c","wb");
+        if(fp==NULL)
+        {
+          printf("error in read file...\n");
+          exit(-1);
+        }
+        fwrite(mdb_value_.mv_data,sizeof(char),mdb_value_.mv_size, fp);
+        fclose(fp);
+        nn=1;
+      }else
+      {
+        int read_nums=0;
+        int mem_size=256 * 256 * 3 *2;
+        char* mem_buf=(char*)malloc(sizeof(char) * mem_size);
+        memset(mem_buf,0,mem_size);
+        FILE* fp = fopen("/mnt/dc_p3700/abc","rb");
+        if(fp==NULL)
+        {
+          printf("error in read file...\n");
+          exit(-1);
+        }
+        read_nums=fread(mem_buf,sizeof(char),mem_size, fp);
+        close(fp);
+        
+        bool res=datum->ParseFromArray(mem_buf, read_nums);
+        free(mem_buf);
+        return res;
+
+      }
+    }
+    
     LOG_EVERY_N(INFO,1)<<"buffer_size:"<<mdb_value_.mv_size;
 
     return datum->ParseFromArray(mdb_value_.mv_data, mdb_value_.mv_size);
