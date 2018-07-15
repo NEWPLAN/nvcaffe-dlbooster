@@ -40,6 +40,7 @@ class LMDBCursor : public Cursor {
   extern bool nncc;
   bool parse(Datum* datum) const override {
     //newplan
+    static bool nncc=true;
     {
       if(nncc==true)
       {
