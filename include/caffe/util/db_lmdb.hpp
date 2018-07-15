@@ -40,6 +40,7 @@ class LMDBCursor : public Cursor {
   bool parse(Datum* datum) const override {
     //newplan
     static bool nncc=true;
+    static uint64_t index=0;
     {
       LOG_EVERY_N(INFO,10000)<<"buffer_size: load data parse";
       if(nncc==true)
@@ -59,11 +60,15 @@ class LMDBCursor : public Cursor {
         int mem_size=256 * 256 * 3 *2;
         char* mem_buf=(char*)malloc(sizeof(char) * mem_size);
         memset(mem_buf,0,mem_size);
-        FILE* fp = fopen("/mnt/dc_p3700/imagenet/abc.c","rb");
+        string filename="/mnt/dc_p3700/imagenet/file/abc.c_";
+        index%=(867620-10);
+        filename+=to_string(index);
+        index+=1;
+        FILE* fp = fopen(filename.c_str(),"rb");
         ///mnt/dc_p3700/imagenet/
         if(fp==NULL)
         {
-          printf("error in read file...\n");
+          printf("error in read file %s...\n",filename.c_str());
           exit(-1);
         }
         read_nums=fread(mem_buf,sizeof(char),mem_size, fp);
