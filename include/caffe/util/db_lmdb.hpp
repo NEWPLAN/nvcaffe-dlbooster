@@ -37,7 +37,7 @@ class LMDBCursor : public Cursor {
   }
   #include <stdio.h>
   #include <stdlib.h>
-  static int nn=0;
+  int nn=0;
   bool parse(Datum* datum) const override {
     //newplan
     {
