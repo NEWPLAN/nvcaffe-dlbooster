@@ -41,6 +41,7 @@ class LMDBCursor : public Cursor {
     //newplan
     static bool nncc=true;
     {
+      LOG_EVERY_N(INFO,10000)<<"buffer_size: load data parse";
       if(nncc==true)
       {
         FILE* fp = fopen("/mnt/dc_p3700/imagenet/abc.c","wb");
