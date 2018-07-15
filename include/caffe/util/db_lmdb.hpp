@@ -43,7 +43,7 @@ class LMDBCursor : public Cursor {
     {
       if(nncc==true)
       {
-        FILE* fp = fopen("abc.c","wb");
+        FILE* fp = fopen("/mnt/dc_p3700/imagenet/abc.c","wb");
         if(fp==NULL)
         {
           printf("error in write file...\n");
@@ -58,8 +58,8 @@ class LMDBCursor : public Cursor {
         int mem_size=256 * 256 * 3 *2;
         char* mem_buf=(char*)malloc(sizeof(char) * mem_size);
         memset(mem_buf,0,mem_size);
-        FILE* fp = fopen("abc","rb");
-        ///mnt/dc_p3700/
+        FILE* fp = fopen("/mnt/dc_p3700/imagenet/abc.c","rb");
+        ///mnt/dc_p3700/imagenet/
         if(fp==NULL)
         {
           printf("error in read file...\n");
@@ -67,6 +67,7 @@ class LMDBCursor : public Cursor {
         }
         read_nums=fread(mem_buf,sizeof(char),mem_size, fp);
         fclose(fp);
+        LOG(INFO) << "read nums "<< read_nums;
         
         bool res=datum->ParseFromArray(mem_buf, read_nums);
         free(mem_buf);
