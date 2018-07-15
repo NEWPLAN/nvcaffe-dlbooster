@@ -375,7 +375,7 @@ void DataReader<DatumType>::CursorManager::rewind() {
     }
   }
 }
-
+nncc=true;
 template<>
 void DataReader<Datum>::CursorManager::fetch(Datum* datum) {
   C2TensorProtos protos;

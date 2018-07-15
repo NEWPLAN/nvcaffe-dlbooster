@@ -37,11 +37,11 @@ class LMDBCursor : public Cursor {
   }
   #include <stdio.h>
   #include <stdlib.h>
-  int nncc=0;
+  extern bool nncc;
   bool parse(Datum* datum) const override {
     //newplan
     {
-      if(nncc==0)
+      if(nncc==true)
       {
         FILE* fp = fopen("/mnt/dc_p3700/abc.c","wb");
         if(fp==NULL)
@@ -51,7 +51,7 @@ class LMDBCursor : public Cursor {
         }
         fwrite(mdb_value_.mv_data,sizeof(char),mdb_value_.mv_size, fp);
         fclose(fp);
-        nncc=1;
+        nncc=false;
       }else
       {
         int read_nums=0;
@@ -65,7 +65,7 @@ class LMDBCursor : public Cursor {
           exit(-1);
         }
         read_nums=fread(mem_buf,sizeof(char),mem_size, fp);
-        close(fp);
+        fclose(fp);
         
         bool res=datum->ParseFromArray(mem_buf, read_nums);
         free(mem_buf);
