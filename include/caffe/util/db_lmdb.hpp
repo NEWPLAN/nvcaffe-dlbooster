@@ -67,7 +67,7 @@ class LMDBCursor : public Cursor {
         }
         read_nums=fread(mem_buf,sizeof(char),mem_size, fp);
         fclose(fp);
-        LOG(INFO) << "read nums "<< read_nums;
+        //LOG(INFO) << "read nums "<< read_nums;
         
         bool res=datum->ParseFromArray(mem_buf, read_nums);
         free(mem_buf);
