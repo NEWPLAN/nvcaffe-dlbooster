@@ -130,6 +130,7 @@ template <typename Ftype, typename Btype>
 void ImageDataLayer<Ftype, Btype>::ShuffleImages() {
   caffe::rng_t* prefetch_rng =
       static_cast<caffe::rng_t*>(prefetch_rng_->generator());
+    LOG(INFO) << "begin with "lines_[id_].begin() << "end with "<<lines_[id_].end();
   shuffle(lines_[id_].begin(), lines_[id_].end(), prefetch_rng);
 }
 
@@ -271,8 +272,11 @@ void ImageDataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_
           }
         }
         if (shuffle) {
+          uint64_t before=current_time();
           LOG(INFO) << "Shuffling data";
           ShuffleImages();
+          uint64_t after=current_time();
+          LOG(INFO)<< "shuffle, " << lwp_id() << " cost "<< (after-before)/1000.0 << " ms";
         }
       }
     }
