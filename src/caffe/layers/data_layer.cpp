@@ -367,7 +367,7 @@ void DataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t que
   batch->set_data_packing(packing);
   batch->set_id(current_batch_id);
   sample_only_.store(false);
-  if(0)
+  if(1)
   {
     LOG_EVERY_N(INFO, 10) << "in loading batch transform, " << lwp_id() << " cost "<< (current_time()-before)/1000.0 << " ms";//gettid();
   }
