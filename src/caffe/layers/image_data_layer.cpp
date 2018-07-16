@@ -221,7 +221,7 @@ void ImageDataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_
 #if defined(USE_CUDNN)
       this->bdt(thread_id)->Transform(cv_img, prefetch_data + offset, buf_len, false);
       uint64_t after=current_time();
-      LOG_EVERY_N(INFO, 10000) << "in loading "<<batch_size<<", " << lwp_id() << " cost "<< (middle-before)/1000.0 << " ms and " <<(after-middle)/1000.0 ;
+      LOG_EVERY_N(INFO, 100000) << "in loading "<<batch_size<<", " << lwp_id() << " cost "<< (middle-before)/1000.0 << " ms and " <<(after-middle)/1000.0 ;
 #else
       CHECK_EQ(buf_len, tmp.size());
       this->bdt(thread_id)->Transform(cv_img, prefetch_data + offset, buf_len, false);
