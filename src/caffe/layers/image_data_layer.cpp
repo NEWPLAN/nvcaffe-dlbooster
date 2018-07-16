@@ -130,7 +130,7 @@ template <typename Ftype, typename Btype>
 void ImageDataLayer<Ftype, Btype>::ShuffleImages() {
   caffe::rng_t* prefetch_rng =
       static_cast<caffe::rng_t*>(prefetch_rng_->generator());
-    LOG(INFO) << "begin with "<<lines_[id_].begin() << "end with "<<lines_[id_].end();
+    LOG(INFO) << "begin with "<<*(lines_[id_].begin()) << "end with "<<*(lines_[id_].end());
   shuffle(lines_[id_].begin(), lines_[id_].end(), prefetch_rng);
 }
 
