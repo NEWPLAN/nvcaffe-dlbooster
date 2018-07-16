@@ -152,6 +152,14 @@ cv::Mat ImageDataLayer<Ftype, Btype>::next_mat(const string& root_folder, const 
   return ReadImageToCVMat(root_folder + file_name, height, width, is_color, short_side);
 }
 
+#include <sys/time.h>
+static uint64_t current_time(void)
+{
+	struct timeval tv;
+    gettimeofday(&tv,NULL);
+	return tv.tv_sec*1000000 + tv.tv_usec;
+}
+
 template <typename Ftype, typename Btype>
 void ImageDataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t) {
   CHECK(batch->data_->count());
@@ -202,13 +210,18 @@ void ImageDataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_
   for (int item_id = 0; item_id < batch_size; ++item_id) {
     CHECK_GT(lines_size, line_id);
     file_name = lines[line_id].first;
+    uint64_t before=current_time();
     cv::Mat cv_img = next_mat(root_folder, file_name, new_height, new_width, is_color, short_side);
-
+    uint64_t middle=current_time();
     if (cv_img.data) {
+      /*
       LOG_EVERY_N(INFO, 1000) << "load image data";
+      */
       int offset = batch->data_->offset(item_id);
 #if defined(USE_CUDNN)
       this->bdt(thread_id)->Transform(cv_img, prefetch_data + offset, buf_len, false);
+      uint64_t after=current_time();
+      LOG_EVERY_N(INFO, 100) << "in loading "<<batch_size<<", " << lwp_id() << " cost "<< (middle-before)/1000.0 << " ms and " <<(after-middle)/1000.0 ;
 #else
       CHECK_EQ(buf_len, tmp.size());
       this->bdt(thread_id)->Transform(cv_img, prefetch_data + offset, buf_len, false);

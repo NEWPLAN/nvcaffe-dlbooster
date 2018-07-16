@@ -77,7 +77,9 @@ void BatchTransformer<Ftype, Btype>::InternalThreadEntry() {
       batch->set_id((size_t) -1L);
       prefetches_free_[next_batch_queue_]->push(batch);
       next_batch_queue();
-      LOG_EVERY_N(INFO, 10) << "batch transform";
+      /*
+      LOG_EVERY_N(INFO, 10) << "forward from cpu to gpu";
+      */
     }
   }catch (boost::thread_interrupted&) {
   }
