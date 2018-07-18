@@ -168,7 +168,6 @@ std::vector<uint64_t> ttt;
 
 uint64_t r_avg=0;
 uint64_t t_avg=0;
-static int ccc=0;
 
 template <typename Ftype, typename Btype>
 void ImageDataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t) {
@@ -232,20 +231,21 @@ void ImageDataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_
       this->bdt(thread_id)->Transform(cv_img, prefetch_data + offset, buf_len, false);
       uint64_t after=current_time();
       LOG_EVERY_N(INFO, 100000) << "in loading "<<batch_size<<", " << lwp_id() << " cost "<< (middle-before)/1000.0 << " ms and " <<(after-middle)/1000.0 ;
-      if(thread_id==0)
+      if(thread_id==0 && im_solver ==0)
       {
         rrr.push_back((middle-before));
         ttt.push_back((after-middle));
-        ccc++;
+        
         int r_size=rrr.size();
         int t_size=ttt.size();
         r_avg += rrr[r_size-1];
         t_avg += ttt[t_size-1];
-        LOG_EVERY_N(INFO, 10000) <<"read avg "<< r_avg/1000.0/r_size << " in " << r_size << " transform avg " << t_avg/1000.0/t_size << " in "<< t_size << "solver rank " << im_solver;
+        
         
         if(r_size>=10000)
         {
-          ccc=0;
+          LOG(INFO) <<"read avg "<< r_avg/1000.0/r_size << " in " << r_size << " transform avg " << t_avg/1000.0/t_size << " in "<< t_size << " @ solver rank " << im_solver;
+
           r_avg=0;
           t_avg=0;
           rrr.clear();
