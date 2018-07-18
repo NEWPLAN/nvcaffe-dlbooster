@@ -160,11 +160,11 @@ static uint64_t current_time(void)
 	return tv.tv_sec*1000000 + tv.tv_usec;
 }
 
-std::vector<float> rrr;
-std::vector<float> ttt;
+std::vector<uint_64_t> rrr;
+std::vector<uint_64_t> ttt;
 
-float r_avg=0;
-float t_avg=0;
+uint_64_t r_avg=0;
+uint_64_t t_avg=0;
 
 template <typename Ftype, typename Btype>
 void ImageDataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t) {
@@ -228,11 +228,13 @@ void ImageDataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_
       this->bdt(thread_id)->Transform(cv_img, prefetch_data + offset, buf_len, false);
       uint64_t after=current_time();
       LOG_EVERY_N(INFO, 100000) << "in loading "<<batch_size<<", " << lwp_id() << " cost "<< (middle-before)/1000.0 << " ms and " <<(after-middle)/1000.0 ;
-      rrr.push_back((middle-before)/1000.0);
-      ttt.push_back((after-middle)/1000.0);
-      r_avg=(r_avg*(rrr.size()-1)+rrr[rrr.size()-1])/rrr.size();
-      t_avg=(t_avg*(ttt.size()-1)+ttt[ttt.size()-1])/ttt.size(); 
-      LOG_EVERY_N(INFO, 2000) <<"read avg "<< r_avg << " transform avg " << t_avg;
+      rrr.push_back((middle-before));
+      ttt.push_back((after-middle));
+      int r_size=rrr.size();
+      int t_size=ttt.size();
+      r_avg += rrr[r_size-1];
+      t_avg += ttt[r_size-1];
+      LOG_EVERY_N(INFO, 2000) <<"read avg "<< r_avg/1000.0/r_size << " in " << r_size << " transform avg " << t_avg/1000.0/t_size << " in "<< t_size;
 #else
       CHECK_EQ(buf_len, tmp.size());
       this->bdt(thread_id)->Transform(cv_img, prefetch_data + offset, buf_len, false);
