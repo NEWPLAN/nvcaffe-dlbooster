@@ -103,10 +103,6 @@ template<typename Ftype, typename Btype>
 void BasePrefetchingDataLayer<Ftype, Btype>::InternalThreadEntry() {
   InternalThreadEntryN(0U);
 }
-#include <atomic>
-#include <thread>
-#include <chrono>
-std::atomic<int> abc(0);
 
 template<typename Ftype, typename Btype>
 void BasePrefetchingDataLayer<Ftype, Btype>::InternalThreadEntryN(size_t thread_id) {
@@ -122,16 +118,13 @@ void BasePrefetchingDataLayer<Ftype, Btype>::InternalThreadEntryN(size_t thread_
   InitializePrefetch();
   start_reading();
 
-  bool not_run = abc>4;
-  abc ++;
   
   try {
     while (!must_stop(thread_id)) 
     {
-      if(not_run && 0)
+      if(thread_id>0)
       {
-        std::this_thread::sleep_for(std::chrono::seconds(1));
-        LOG(INFO) << "read thread will not load batch";
+        if (must_stop(thread_id)) break;
         continue;
       }
       
@@ -148,6 +141,7 @@ void BasePrefetchingDataLayer<Ftype, Btype>::InternalThreadEntryN(size_t thread_
         iter0_.set();
         break;
       }
+      
       //newplan
       if(1)
       {
