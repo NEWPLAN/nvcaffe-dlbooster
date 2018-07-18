@@ -233,8 +233,8 @@ void ImageDataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_
       LOG_EVERY_N(INFO, 100000) << "in loading "<<batch_size<<", " << lwp_id() << " cost "<< (middle-before)/1000.0 << " ms and " <<(after-middle)/1000.0 ;
       if(thread_id==0 && im_solver ==0)
       {
-        static cc=0;
-        cc++;
+        //static int cc=0;
+        //cc++;
         //if(cc % 10 == 0) 
         {
           rrr.push_back((middle-before));
