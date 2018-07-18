@@ -198,11 +198,14 @@ void ImageDataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_
     crop_height = cv_img.rows;
     crop_width = cv_img.cols;
   }
-  if(abc<3)
+  if(abc<2)
   {
     abc++;
     while(1)
-      std::this_thread::sleep_for(std::chrono::seconds(100));
+    {
+      std::this_thread::sleep_for(std::chrono::seconds(10));
+      LOG(INFO) << "read sleep" ;
+    }
   }
 
   // Infer the expected blob shape from a cv_img.
