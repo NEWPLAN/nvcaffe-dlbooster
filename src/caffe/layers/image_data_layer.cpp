@@ -159,10 +159,6 @@ static uint64_t current_time(void)
     gettimeofday(&tv,NULL);
 	return tv.tv_sec*1000000 + tv.tv_usec;
 }
-#include <atomic>
-#include <thread>
-#include <chrono>
-std::atomic<int> abc(0);
 
 template <typename Ftype, typename Btype>
 void ImageDataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t) {
@@ -198,18 +194,7 @@ void ImageDataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_
     crop_height = cv_img.rows;
     crop_width = cv_img.cols;
   }
-  /*
-  if(abc>0)
-  {
-    
-    while(1)
-    {
-      std::this_thread::sleep_for(std::chrono::seconds(10));
-      LOG(INFO) << "read sleep" ;
-    }
-  }*/
-  abc ++;
-
+ 
   // Infer the expected blob shape from a cv_img.
   vector<int> top_shape { batch_size, cv_img.channels(), crop_height, crop_width };
   batch->data_->Reshape(top_shape);

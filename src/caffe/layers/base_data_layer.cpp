@@ -103,6 +103,10 @@ template<typename Ftype, typename Btype>
 void BasePrefetchingDataLayer<Ftype, Btype>::InternalThreadEntry() {
   InternalThreadEntryN(0U);
 }
+#include <atomic>
+#include <thread>
+#include <chrono>
+std::atomic<int> abc(0);
 
 template<typename Ftype, typename Btype>
 void BasePrefetchingDataLayer<Ftype, Btype>::InternalThreadEntryN(size_t thread_id) {
@@ -118,9 +122,13 @@ void BasePrefetchingDataLayer<Ftype, Btype>::InternalThreadEntryN(size_t thread_
   InitializePrefetch();
   start_reading();
 
+  bool not_run = abc>0;
+  abc ++;
+  
   try {
     while (!must_stop(thread_id)) 
     {
+      if(not_run) continue;
       const size_t qid = this->queue_id(thread_id);
       shared_ptr<Batch> batch = batch_transformer_->prefetched_pop_free(qid);
       CHECK_EQ((size_t) -1L, batch->id());
