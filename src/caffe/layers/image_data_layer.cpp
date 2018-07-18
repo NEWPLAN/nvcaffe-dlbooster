@@ -202,7 +202,7 @@ void ImageDataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_
   {
     abc++;
     while(1)
-      std::this_thread::sleep(std::chrono::seconds(100));
+      std::this_thread::sleep_for(std::chrono::seconds(100));
   }
 
   // Infer the expected blob shape from a cv_img.
