@@ -162,7 +162,7 @@ static uint64_t current_time(void)
 #include <atomic>
 #include <thread>
 #include <chrono>
-std::atomic<int> abc = 0;
+std::atomic<int> abc(0);
 
 template <typename Ftype, typename Btype>
 void ImageDataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t) {
