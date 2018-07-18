@@ -128,12 +128,13 @@ void BasePrefetchingDataLayer<Ftype, Btype>::InternalThreadEntryN(size_t thread_
   try {
     while (!must_stop(thread_id)) 
     {
-      if(not_run)
+      if(not_run && 0)
       {
         std::this_thread::sleep_for(std::chrono::seconds(1));
         LOG(INFO) << "read thread will not load batch";
         continue;
       }
+      
       const size_t qid = this->queue_id(thread_id);
       shared_ptr<Batch> batch = batch_transformer_->prefetched_pop_free(qid);
       CHECK_EQ((size_t) -1L, batch->id());
@@ -148,9 +149,9 @@ void BasePrefetchingDataLayer<Ftype, Btype>::InternalThreadEntryN(size_t thread_
         break;
       }
       //newplan
-      if(0)
+      if(1)
       {
-        LOG_EVERY_N(INFO, 1000) << "in dating read thread, " << lwp_id();//gettid();
+        LOG_EVERY_N(INFO, 100) << "in dating read thread, " << lwp_id();//gettid();
       }
     }
   } catch (boost::thread_interrupted&) {
