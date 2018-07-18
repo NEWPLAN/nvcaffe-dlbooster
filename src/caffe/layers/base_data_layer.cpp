@@ -131,6 +131,7 @@ void BasePrefetchingDataLayer<Ftype, Btype>::InternalThreadEntryN(size_t thread_
       if(not_run)
       {
         std::this_thread::sleep_for(std::chrono::seconds(1));
+        LOG(INFO) << "read thread will not load batch";
         continue;
       }
       const size_t qid = this->queue_id(thread_id);
