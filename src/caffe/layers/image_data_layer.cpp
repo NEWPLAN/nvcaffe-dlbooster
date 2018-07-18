@@ -233,7 +233,7 @@ void ImageDataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_
       int r_size=rrr.size();
       int t_size=ttt.size();
       r_avg += rrr[r_size-1];
-      t_avg += ttt[r_size-1];
+      t_avg += ttt[t_size-1];
       LOG_EVERY_N(INFO, 2000) <<"read avg "<< r_avg/1000.0/r_size << " in " << r_size << " transform avg " << t_avg/1000.0/t_size << " in "<< t_size;
 #else
       CHECK_EQ(buf_len, tmp.size());
