@@ -122,7 +122,7 @@ void BasePrefetchingDataLayer<Ftype, Btype>::InternalThreadEntryN(size_t thread_
   InitializePrefetch();
   start_reading();
 
-  bool not_run = abc>0;
+  bool not_run = abc>4;
   abc ++;
   
   try {
