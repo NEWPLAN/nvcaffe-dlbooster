@@ -160,11 +160,11 @@ static uint64_t current_time(void)
 	return tv.tv_sec*1000000 + tv.tv_usec;
 }
 
-std::vector<uint_64_t> rrr;
-std::vector<uint_64_t> ttt;
+std::vector<uint64_t> rrr;
+std::vector<uint64_t> ttt;
 
-uint_64_t r_avg=0;
-uint_64_t t_avg=0;
+uint64_t r_avg=0;
+uint64_t t_avg=0;
 
 template <typename Ftype, typename Btype>
 void ImageDataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t) {
