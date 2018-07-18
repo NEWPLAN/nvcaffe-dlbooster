@@ -56,6 +56,7 @@ class BasePrefetchingDataLayer : public BaseDataLayer<Ftype, Btype>, public Inte
   virtual ~BasePrefetchingDataLayer();
   // LayerSetUp: implements common data layer setup functionality, and calls
   // DataLayerSetUp to do special data layer setup for individual layer types.
+  size_t im_solver;
   // This method may not be overridden.
   void LayerSetUp(const vector<Blob*>& bottom, const vector<Blob*>& top) override;
   void Forward_cpu(const vector<Blob*>& bottom, const vector<Blob*>& top) override;

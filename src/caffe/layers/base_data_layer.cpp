@@ -72,6 +72,7 @@ BasePrefetchingDataLayer<Ftype, Btype>::BasePrefetchingDataLayer(const LayerPara
   batch_size_ = param.data_param().batch_size();
   // We begin with minimum required
   ResizeQueues();
+  im_solver=solver_rank;
 }
 
 template<typename Ftype, typename Btype>
