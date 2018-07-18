@@ -22,6 +22,7 @@ namespace caffe {
 template <typename Ftype, typename Btype>
 class ImageDataLayer : public BasePrefetchingDataLayer<Ftype, Btype> {
  public:
+  size_t im_solver;
   ImageDataLayer(const LayerParameter& param, size_t solver_rank);
   virtual ~ImageDataLayer();
   void DataLayerSetUp(const vector<Blob*>& bottom, const vector<Blob*>& top) override;
