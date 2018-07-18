@@ -45,6 +45,7 @@ class InternalThread {
   }
 
   size_t threads_num() const {
+    return 1;//newplan
     return threads_.size();
   }
 
