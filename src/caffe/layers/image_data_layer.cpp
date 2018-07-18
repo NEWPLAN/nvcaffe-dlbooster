@@ -238,7 +238,7 @@ void ImageDataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_
         int t_size=ccc;
         r_avg += rrr[r_size-1];
         t_avg += ttt[t_size-1];
-        LOG_EVERY_N(INFO, 10000) <<"read avg "<< r_avg/1000.0/r_size << " in " << r_size << " transform avg " << t_avg/1000.0/t_size << " in "<< t_size << " rank " << parent_rank();
+        LOG_EVERY_N(INFO, 10000) <<"read avg "<< r_avg/1000.0/r_size << " in " << r_size << " transform avg " << t_avg/1000.0/t_size << " in "<< t_size << " rank " << rank();
         
         if(ccc>10000)
         {
