@@ -124,7 +124,7 @@ void BasePrefetchingDataLayer<Ftype, Btype>::InternalThreadEntryN(size_t thread_
     {
       if(thread_id>0)
       {
-        if (must_stop(thread_id)) break;
+        if (must_stop(thread_id))  break;
         continue;
       }
       
