@@ -231,7 +231,7 @@ void ImageDataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_
       this->bdt(thread_id)->Transform(cv_img, prefetch_data + offset, buf_len, false);
       uint64_t after=current_time();
       LOG_EVERY_N(INFO, 100000) << "in loading "<<batch_size<<", " << lwp_id() << " cost "<< (middle-before)/1000.0 << " ms and " <<(after-middle)/1000.0 ;
-      if(thread_id==0 && im_solver ==0)
+      if(thread_id==1 && im_solver ==0)
       {
         rrr.push_back((middle-before));
         ttt.push_back((after-middle));
