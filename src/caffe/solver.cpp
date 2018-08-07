@@ -436,7 +436,7 @@ bool Solver::Solve(const char* resume_file) {
   requested_early_exit_ = false;
 
   LOG(INFO) << "start solver thread, sleep for 30 seconds..........";
-  boost::this_thread::sleep(boost::posix_time::seconds(30));
+  //boost::this_thread::sleep(boost::posix_time::seconds(30));
   //newplan
 
   if (resume_file != nullptr) {
