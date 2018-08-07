@@ -41,6 +41,7 @@ class LMDBCursor : public Cursor {
     //newplan
     static bool nncc=true;
     static int index=0;
+    if(false)
     {
       if(nncc==true)
       {
@@ -78,9 +79,8 @@ class LMDBCursor : public Cursor {
         free(mem_buf);
         return res;
       }
+      LOG_EVERY_N(INFO,1)<<"buffer_size:"<<mdb_value_.mv_size;
     }
-    
-    LOG_EVERY_N(INFO,1)<<"buffer_size:"<<mdb_value_.mv_size;
 
     return datum->ParseFromArray(mdb_value_.mv_data, mdb_value_.mv_size);
   }
