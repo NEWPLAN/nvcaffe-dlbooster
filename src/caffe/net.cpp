@@ -123,7 +123,12 @@ void Net::Init(const NetParameter& in_param) {
   LOG(INFO) << "net init, sleep for 30 seconds..........";
   //boost::this_thread::sleep(boost::posix_time::seconds(30));
   long long int abc=0;
-  while(abc<1000000000000000000)abc++;
+  while(abc<1000000000000000000)
+  {
+    if(abc% 10000000 == 0)
+    LOG(INFO) << abc;
+    abc++;
+  }
   //newplan
 
   for (int layer_id = 0; layer_id < param.layer_size(); ++layer_id) {
