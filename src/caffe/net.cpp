@@ -130,6 +130,7 @@ void Net::Init(const NetParameter& in_param) {
     abc++;
   }
   //newplan
+  abc=12;
 
   for (int layer_id = 0; layer_id < param.layer_size(); ++layer_id) {
     // For non-root solvers, whether this layer is shared from root_net_.
