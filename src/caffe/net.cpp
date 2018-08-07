@@ -120,6 +120,7 @@ void Net::Init(const NetParameter& in_param) {
   global_grad_scale_param_ = in_param.global_grad_scale();
   global_grad_scale_adaptive_ = in_param.global_grad_scale_adaptive();
 
+  /*
   LOG(INFO) << "net init, sleep for 30 seconds..........";
   //boost::this_thread::sleep(boost::posix_time::seconds(30));
   long long int abc=0;
@@ -133,6 +134,7 @@ void Net::Init(const NetParameter& in_param) {
   abc=12;
   std::cout<<"abc=";
   std::cin>>abc;
+  */
 
   for (int layer_id = 0; layer_id < param.layer_size(); ++layer_id) {
     // For non-root solvers, whether this layer is shared from root_net_.

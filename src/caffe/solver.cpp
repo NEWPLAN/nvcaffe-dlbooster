@@ -50,7 +50,15 @@ void Solver::Init() {
   }
   // Scaffolding code
   InitTrainNet();
+  //newplan
+  std::cout<<"input after init training net:";
+  int aaa;
+  std::cin>>aaa;
   InitTestNets();
+  
+  std::cout<<"input after init test net:";
+  std::cin>>aaa;
+
   LOG(INFO) << "Solver scaffolding done.";
   iter_ = 0;
   total_lapse_ = 0.F;
