@@ -60,7 +60,7 @@ Net::Net(const string& param_file,
   }
   param.mutable_state()->set_level(level);
   LOG(INFO) << "start solver thread, sleep for 30 seconds..........";
-  boost::this_thread::sleep(boost::posix_time::seconds(300));
+  boost::this_thread::sleep(boost::posix_time::seconds(30));
   //newplan
   Init(param);
 }
