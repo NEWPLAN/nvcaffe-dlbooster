@@ -58,10 +58,6 @@ Net::Net(const string& param_file,
       param.mutable_state()->add_stage(stages->at(i));
     }
   }
-  param.mutable_state()->set_level(level);
-  LOG(INFO) << "start solver thread, sleep for 30 seconds..........";
-  boost::this_thread::sleep(boost::posix_time::seconds(30));
-  //newplan
   Init(param);
 }
 
@@ -125,7 +121,9 @@ void Net::Init(const NetParameter& in_param) {
   global_grad_scale_adaptive_ = in_param.global_grad_scale_adaptive();
 
   LOG(INFO) << "net init, sleep for 30 seconds..........";
-  boost::this_thread::sleep(boost::posix_time::seconds(30));
+  //boost::this_thread::sleep(boost::posix_time::seconds(30));
+  long long int abc=0;
+  while(abc<1000000000000000000)abc++;
   //newplan
 
   for (int layer_id = 0; layer_id < param.layer_size(); ++layer_id) {
