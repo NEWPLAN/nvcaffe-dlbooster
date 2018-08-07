@@ -435,6 +435,10 @@ bool Solver::Solve(const char* resume_file) {
   // Initialize to false every time we start solving.
   requested_early_exit_ = false;
 
+  LOG(INFO) << "start solver thread, sleep for 30 seconds..........";
+  boost::this_thread::sleep(boost::posix_time::seconds(30));
+  //newplan
+
   if (resume_file != nullptr) {
     LOG(INFO) << "Restoring previous solver status from " << resume_file;
     Restore(resume_file);
