@@ -123,9 +123,9 @@ void Net::Init(const NetParameter& in_param) {
   LOG(INFO) << "net init, sleep for 30 seconds..........";
   //boost::this_thread::sleep(boost::posix_time::seconds(30));
   long long int abc=0;
-  while(abc<1000000000000000000)
+  while(abc<100000000000)
   {
-    if(abc% 10000000 == 0)
+    if(abc% 1000000000 == 0)
     LOG(INFO) << abc;
     abc++;
   }
