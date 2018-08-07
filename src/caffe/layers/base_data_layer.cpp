@@ -138,7 +138,7 @@ void BasePrefetchingDataLayer<Ftype, Btype>::InternalThreadEntryN(size_t thread_
       }
       
       //newplan
-      if(1)
+      if(0)
       {
         LOG_EVERY_N(INFO, 10) << "in dating read thread " << thread_id << " and QID " << qid << " @ rank " << base_solver;//gettid();
       }
