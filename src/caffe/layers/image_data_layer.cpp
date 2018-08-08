@@ -39,7 +39,8 @@ ImageDataLayer<Ftype, Btype>::ImageDataLayer(const LayerParameter& param, size_t
              << " threads: " << this->threads_num();
   {
     im_solver=solver_rank;
-    LOG(INFO) << "-----------------------------------------in rank : " << this->rank_;
+    LOG(INFO) << "-----------------------------------------in rank : " << this->rank_ << " phase: " << this->phase;
+    
   }
 }
 
