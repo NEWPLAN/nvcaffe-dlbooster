@@ -51,11 +51,13 @@ void Solver::Init() {
   // Scaffolding code
   InitTrainNet();
   //newplan
+  /*
   std::cout<<"input after init training net:";
   int aaa;
   std::cin>>aaa;
+  */
   InitTestNets();
-  
+
   std::cout<<"input after init test net:";
   std::cin>>aaa;
 
