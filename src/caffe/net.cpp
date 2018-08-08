@@ -207,8 +207,11 @@ void Net::Init(const NetParameter& in_param) {
       LOG(INFO) << "Sharing layer " << layer_param.name() << " from root net";
       layers_.push_back(root_net_->layers_[layer_id]);
       layers_[layer_id]->SetShared(true);
-    } else {
+    } else 
+    {
+      LOG_IF(INFO, Caffe::root_solver())<< "before push layers " << layer_param.name();
       layers_.push_back(LayerRegistry::CreateLayer(layer_param, solver_rank_));
+      LOG_IF(INFO, Caffe::root_solver())<< "after push layers " << layer_param.name();
     }
     layer_names_.push_back(layer_param.name());
     LOG_IF(INFO, Caffe::root_solver())
