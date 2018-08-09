@@ -40,10 +40,7 @@ class BaseDataLayer : public Layer<Ftype, Btype> {
   void Backward_cpu(const vector<Blob*>& top, const vector<bool>& propagate_down,
       const vector<Blob*>& bottom) override {}
   void Backward_gpu(const vector<Blob*>& top, const vector<bool>& propagate_down,
-      const vector<Blob*>& bottom) override 
-      {
-        LOG_EVERY_N(INFO, 10) << "in base data layer forward gpu..." ;
-      }
+      const vector<Blob*>& bottom) override { }
 
   virtual bool is_gpu_transform() const { return false; }
 
