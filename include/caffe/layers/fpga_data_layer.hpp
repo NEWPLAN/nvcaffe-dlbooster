@@ -94,9 +94,9 @@ template <typename Ftype, typename Btype>
 vector<float> FPGADataLayer<Ftype, Btype>::cache_progress_(MAX_IDL_CACHEABLE);
 
 template <typename Ftype, typename Btype>
-boost::lockfree::queue<char*, boost::lockfree::capacity<1024>> FPGADataLayer<Ftype, Btype>::pixel_queue;
+lockfree::queue<char*, lockfree::capacity<1024>> FPGADataLayer<Ftype, Btype>::pixel_queue;
 template <typename Ftype, typename Btype>
-boost::lockfree::queue<char*, boost::lockfree::capacity<1024>> FPGADataLayer<Ftype, Btype>::cycle_queue;
+lockfree::queue<char*, lockfree::capacity<1024>> FPGADataLayer<Ftype, Btype>::cycle_queue;
 template <typename Ftype, typename Btype>
 static vector<std::pair<std::string, int>> train_index;
 template <typename Ftype, typename Btype>
