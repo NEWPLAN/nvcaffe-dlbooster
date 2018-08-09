@@ -99,9 +99,9 @@ boost::lockfree::queue<char*, boost::lockfree::capacity<1024>> FPGADataLayer<Fty
 template <typename Ftype, typename Btype>
 boost::lockfree::queue<char*, boost::lockfree::capacity<1024>> FPGADataLayer<Ftype, Btype>::cycle_queue;
 template <typename Ftype, typename Btype>
-static vector<std::pair<std::string, int>> train_index;
+vector<std::pair<std::string, int>> train_index;
 template <typename Ftype, typename Btype>
-static vector<std::pair<std::string, int>> val_index;
+vector<std::pair<std::string, int>> val_index;
 
 }  // namespace caffe
 
