@@ -98,6 +98,7 @@ void FPGADataLayer<Ftype, Btype>::DataLayerSetUp(const vector<Blob*>& bottom,
     }
   }
   LOG(INFO) << this->print_current_device() << " A total of " << lines.size() << " images.";
+  LOG(INFO) << "channel = " << channel;
 
   size_t skip = 0UL;
   // Check if we would need to randomly skip a few data points
@@ -187,8 +188,8 @@ static uint64_t current_time(void)
   return tv.tv_sec * 1000000 + tv.tv_usec;
 }
 
-std::vector<uint64_t> rrr;
-std::vector<uint64_t> ttt;
+static std::vector<uint64_t> rrr;
+static std::vector<uint64_t> ttt;
 
 uint64_t r_avg = 0;
 uint64_t t_avg = 0;
