@@ -85,7 +85,7 @@ protected:
 
     for(auto index =0 ;index < 1000; index++)
     {
-      char [] tmp_buf = new char[batch_size * new_height * new_width * channel];
+      char* tmp_buf = new char[batch_size * new_height * new_width * channel];
       sprintf(tmp_buf, "producer id : %u, index = %d", lwp_id(),index);
       FPGADataLayer::pixel_queue.push(tmp_buf);
     }
@@ -98,12 +98,11 @@ protected:
         {
             int cycles_index = 0;
             string a(abc);
+
             LOG(INFO) <<"From consumer: "<< a;
-            {
-              sprintf(abc, "producer id : %u", lwp_id(), index++);
-              index % = 50000;
-              
-            }
+            sprintf(abc, "producer id : %u", lwp_id(), index++);
+            index % = 50000;
+            
             while(!FPGADataLayer::pixel_queue.push(abc))
             {
                 if(cycles_index % 100 == 0)
