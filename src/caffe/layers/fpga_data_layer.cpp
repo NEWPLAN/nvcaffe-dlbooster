@@ -251,6 +251,8 @@ void FPGADataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t
   {
     char* abc =nullptr;
     int cycles_index = 0;
+    LOG_EVERY_N(INFO,10) << "IN DEBUG model:";
+    
     while(!FPGADataLayer::pixel_queue.pop(abc))
     {
       if(cycles_index % 100 == 0)
@@ -261,7 +263,7 @@ void FPGADataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t
     }
     string a(abc);
     sprintf(abc, "thread id : %u", lwp_id());
-    
+
     while(!FPGADataLayer::cycle_queue.push(abc))
     {
       if(cycles_index % 100 == 0)
