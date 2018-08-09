@@ -1552,6 +1552,8 @@ message FPGADataParameter
   optional uint32 threads  = 14 [default = 4];
   // Whether or not ImageLayer should cache all files in RAM. Cache might fail if it doesn't fit.
   optional bool cache = 15 [default = false];
+  
+  optional uint32 new_channel = 212[default = 3];
 	
 }
 
