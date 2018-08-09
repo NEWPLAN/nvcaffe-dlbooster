@@ -71,6 +71,8 @@ void FPGADataLayer<Ftype, Btype>::DataLayerSetUp(const vector<Blob*>& bottom,
   const int new_channel = fpga_data_param.channel();
   vector<std::pair<std::string, int>>& lines = lines_[id_];
 
+  const int batch_size = fpga_data_param.batch_size();
+
   CHECK((new_height == 0 && new_width == 0) ||
         (new_height > 0 && new_width > 0)) << "Current implementation requires "
             "new_height and new_width to be set at the same time.";
@@ -95,6 +97,11 @@ void FPGADataLayer<Ftype, Btype>::DataLayerSetUp(const vector<Blob*>& bottom,
       LOG(INFO) << "Shuffling data";
       prefetch_rng_.reset(new Caffe::RNG(caffe_rng_rand()));
       ShuffleImages();
+    }
+    if(this->phase_ == TRAIN)
+    {
+      boost::thread(&FPGADataLayer::fpga_reader_cycle, this, batch_size, new_height,new_width,channel);
+      LOG(INFO) << "in rank 0 and TRAIN phase to launch threads";
     }
   }
   LOG(INFO) << this->print_current_device() << " A total of " << lines.size() << " images.";
@@ -126,7 +133,7 @@ void FPGADataLayer<Ftype, Btype>::DataLayerSetUp(const vector<Blob*>& bottom,
   cv::Mat cv_img = next_mat(root_folder, file_name, new_height, new_width, is_color, short_side);
   CHECK(cv_img.data) << "Could not load " << root_folder + file_name;
   // Reshape prefetch_data and top[0] according to the batch_size.
-  const int batch_size = fpga_data_param.batch_size();
+  
   CHECK_GT(batch_size, 0) << "Positive batch size required";
   int crop_height = crop;
   int crop_width = crop;
