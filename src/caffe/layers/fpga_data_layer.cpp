@@ -248,37 +248,38 @@ void FPGADataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t
   Btype* prefetch_label = batch->label_->mutable_cpu_data<Btype>();
   Packing packing = NHWC;
 
-  {
-    char* abc =nullptr;
-    int cycles_index = 0;
-    LOG_EVERY_N(INFO,10) << "IN DEBUG model:";
-    
-    while(!FPGADataLayer::pixel_queue.pop(abc))
-    {
-      if(cycles_index % 100 == 0)
-      {
-        LOG(WARNING) << "Something wrong in pop queue.";
-      }
-      std::this_thread::sleep_for(std::chrono::milliseconds(1));
-    }
-    string a(abc);
-    sprintf(abc, "thread id : %u", lwp_id());
-
-    while(!FPGADataLayer::cycle_queue.push(abc))
-    {
-      if(cycles_index % 100 == 0)
-      {
-        LOG(WARNING) << "Something wrong in push queue.";
-      }
-      std::this_thread::sleep_for(std::chrono::milliseconds(1));
-    }
-    LOG(INFO) << "loading from pixel queue:" << a;
-  }
+  
 
   // datum scales
   const size_t buf_len = batch->data_->offset(1);
   for (int item_id = 0; item_id < batch_size; ++item_id)
   {
+    {
+      char* abc =nullptr;
+      int cycles_index = 0;
+      LOG_EVERY_N(INFO,10) << "IN DEBUG model:";
+      
+      while(!FPGADataLayer::pixel_queue.pop(abc))
+      {
+        if(cycles_index % 100 == 0)
+        {
+          LOG(WARNING) << "Something wrong in pop queue.";
+        }
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
+      }
+      string a(abc);
+      sprintf(abc, "thread id : %u", lwp_id());
+
+      while(!FPGADataLayer::cycle_queue.push(abc))
+      {
+        if(cycles_index % 100 == 0)
+        {
+          LOG(WARNING) << "Something wrong in push queue.";
+        }
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
+      }
+      LOG(INFO) << "loading from pixel queue:" << a;
+    }
     CHECK_GT(lines_size, line_id);
     file_name = lines[line_id].first;
     uint64_t before = current_time();
