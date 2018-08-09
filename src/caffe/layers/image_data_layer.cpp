@@ -20,6 +20,13 @@ size_t ImageDataLayer<Ftype, Btype>::id(const string& ph, const string& name) {
   static map<string, size_t> ph_names;
   string ph_name = ph + name;
   auto it = ph_names.find(ph_name);
+  {
+    LOG(INFO) << "\n\n\n\n\neeeee\n\n\n\n"
+        for(auto iter=ph_names.begin();iter!=ph_names.end();iter++)
+        {
+            std::cout<< iter->first << ", " << iter->second<<std::endl;
+        }
+    }
   if (it != ph_names.end()) {
     return it->second;
   }

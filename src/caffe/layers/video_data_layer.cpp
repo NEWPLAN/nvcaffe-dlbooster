@@ -87,6 +87,7 @@ void VideoDataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_
   CHECK(batch->data_->count());
   TBlob<Btype> transformed_datum;
 
+
   // Reshape according to the first anno_datum of each batch
   // on single input batches allows for inputs of varying dimension.
   const int batch_size = this->layer_param_.data_param().batch_size();
