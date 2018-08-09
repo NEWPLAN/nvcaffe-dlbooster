@@ -98,7 +98,7 @@ void FPGADataLayer<Ftype, Btype>::DataLayerSetUp(const vector<Blob*>& bottom,
     }
   }
   LOG(INFO) << this->print_current_device() << " A total of " << lines.size() << " images.";
-  LOG(INFO) << "channel = " << channel;
+  LOG(INFO) << "channel = " << new_channel;
 
   size_t skip = 0UL;
   // Check if we would need to randomly skip a few data points
