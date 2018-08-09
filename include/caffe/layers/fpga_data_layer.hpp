@@ -85,29 +85,37 @@ protected:
 
     for(auto index =0 ;index < 1000; index++)
     {
-        FPGADataLayer::pixel_queue.push(new char[batch_size * new_height * new_width * channel]);
+      char [] tmp_buf = new char[batch_size * new_height * new_width * channel];
+      sprintf(tmp_buf, "producer id : %u, index = %d", lwp_id(),index);
+      FPGADataLayer::pixel_queue.push(tmp_buf);
     }
-
+    
+    int index =1000;
     while(true)
     {
-      LOG_EVERY_N(INFO, 100) << "in read threads...-----";
         char* abc = nullptr;
         if (FPGADataLayer::cycle_queue.pop(abc))
         {
             int cycles_index = 0;
+            string a(abc);
+            LOG(INFO) <<"From consumer: "<< a;
+            {
+              sprintf(abc, "producer id : %u", lwp_id(), index++);
+              index % = 50000;
+              
+            }
             while(!FPGADataLayer::pixel_queue.push(abc))
             {
                 if(cycles_index % 100 == 0)
                 {
                     LOG(WARNING) << "Something wrong in push queue.";
                 }
-                std::this_thread::sleep_for(std::chrono::milliseconds(1)); 
+                std::this_thread::sleep_for(std::chrono::milliseconds(50)); 
             }
         }
         else
         {
-          LOG_EVERY_N(INFO, 100) << "in read threads...-----" ;
-          std::this_thread::sleep_for(std::chrono::milliseconds(1)); 
+          std::this_thread::sleep_for(std::chrono::milliseconds(10)); 
         }
     }
   }
