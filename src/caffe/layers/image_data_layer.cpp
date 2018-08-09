@@ -21,7 +21,7 @@ size_t ImageDataLayer<Ftype, Btype>::id(const string& ph, const string& name) {
   string ph_name = ph + name;
   auto it = ph_names.find(ph_name);
   {
-    LOG(INFO) << "\n\n\n\n\neeeee\n\n\n\n"
+    LOG(INFO) << "\n\n\n\n\neeeee\n\n\n\n";
         for(auto iter=ph_names.begin();iter!=ph_names.end();iter++)
         {
             std::cout<< iter->first << ", " << iter->second<<std::endl;
