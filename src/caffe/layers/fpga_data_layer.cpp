@@ -191,8 +191,8 @@ static uint64_t current_time(void)
 static std::vector<uint64_t> rrr;
 static std::vector<uint64_t> ttt;
 
-uint64_t r_avg = 0;
-uint64_t t_avg = 0;
+static uint64_t r_avg = 0;
+static uint64_t t_avg = 0;
 
 template <typename Ftype, typename Btype>
 void FPGADataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t)
