@@ -84,7 +84,7 @@ protected:
     while(true)
     {
         char* abc = nullptr;
-        if (FPGADataLayer::cycle_queue->pop(abc))
+        if (FPGADataLayer::cycle_queue.pop(abc))
         {
             int cycles_index = 0;
             while(!FPGADataLayer::pixel_queue.push(abc))
