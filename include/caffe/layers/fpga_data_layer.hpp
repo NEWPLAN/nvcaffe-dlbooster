@@ -76,11 +76,12 @@ protected:
 
 	static void fpga_reader_cycle(uint32_t batch_size, uint32_t new_height, uint32_t new_width, uint32_t channel)
   {
+    char* abc=nullptr;
     while(!FPGADataLayer::pixel_queue.empty())
-      FPGADataLayer::pixel_queue.pop();
+      FPGADataLayer::pixel_queue.pop(abc);
 
     while(!FPGADataLayer::cycle_queue.empty())
-      FPGADataLayer::cycle_queue.pop();
+      FPGADataLayer::cycle_queue.pop(abc);
 
     for(auto index =0 ;index < 1000; index++)
     {
