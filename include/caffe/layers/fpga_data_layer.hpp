@@ -90,7 +90,7 @@ protected:
 
     while(true)
     {
-      LOG_EVERY_N(INFO, 100) << "in read threads...-----"  << FPGADataLayer::pixel_queue.size();
+      LOG_EVERY_N(INFO, 100) << "in read threads...-----";
         char* abc = nullptr;
         if (FPGADataLayer::cycle_queue.pop(abc))
         {
