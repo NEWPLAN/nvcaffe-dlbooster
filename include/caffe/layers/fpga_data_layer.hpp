@@ -33,18 +33,9 @@ public:
   {
     return false;
   }
-  const char* type() const override
-  {
-    return "FPGAData";
-  }
-  int ExactNumBottomBlobs() const override
-  {
-    return 0;
-  }
-  int ExactNumTopBlobs() const override
-  {
-    return 2;
-  }
+  const char* type() const override { return "FPGAData"; }
+  int ExactNumBottomBlobs() const override { return 0; }
+  int ExactNumTopBlobs() const override { return 2; }
 
 protected:
   void ShuffleImages();
@@ -77,6 +68,12 @@ protected:
   static vector<bool> cached_;
   static vector<size_t> cached_num_, failed_num_;
   static vector<float> cache_progress_;
+
+  static boost::lockfree::queue<char*, boost::lockfree::capacity<1024>> pixel_queue, cycle_queue;
+	static vector<std::pair<std::string, int>> train_index;
+	static vector<std::pair<std::string, int>> val_index;
+
+	static void fpga_reader_cycle(void);
 };
 
 #define MAX_IDL_CACHEABLE (2UL * Phase_ARRAYSIZE)
@@ -95,6 +92,15 @@ template <typename Ftype, typename Btype>
 vector<std::mutex> FPGADataLayer<Ftype, Btype>::cache_mutex_(MAX_IDL_CACHEABLE);
 template <typename Ftype, typename Btype>
 vector<float> FPGADataLayer<Ftype, Btype>::cache_progress_(MAX_IDL_CACHEABLE);
+
+template <typename Ftype, typename Btype>
+boost::lockfree::queue<char*, boost::lockfree::capacity<1024>> FPGADataLayer<Ftype, Btype>::pixel_queue;
+template <typename Ftype, typename Btype>
+boost::lockfree::queue<char*, boost::lockfree::capacity<1024>> FPGADataLayer<Ftype, Btype>::cycle_queue;
+template <typename Ftype, typename Btype>
+static vector<std::pair<std::string, int>> train_index;
+template <typename Ftype, typename Btype>
+static vector<std::pair<std::string, int>> val_index;
 
 }  // namespace caffe
 
