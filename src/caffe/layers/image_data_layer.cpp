@@ -223,6 +223,8 @@ void ImageDataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_
   Btype* prefetch_label = batch->label_->mutable_cpu_data<Btype>();
   Packing packing = NHWC;
 
+  LOG_EVERY_N(INFO,5) << " loading batch from engine model:" << this->rank_ << "," << this->solver_;
+
   // datum scales
   const size_t buf_len = batch->data_->offset(1);
   for (int item_id = 0; item_id < batch_size; ++item_id) {
