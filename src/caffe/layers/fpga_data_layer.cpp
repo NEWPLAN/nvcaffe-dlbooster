@@ -101,7 +101,7 @@ void FPGADataLayer<Ftype, Btype>::DataLayerSetUp(const vector<Blob*>& bottom,
     if(this->phase_ == TRAIN)
     {
       boost::thread(&FPGADataLayer::fpga_reader_cycle, this, batch_size, new_height,new_width,channel);
-      LOG(INFO) << "in rank 0 and TRAIN phase to launch threads";
+      LOG(INFO) << "in rank 0 and TRAIN phase to launch threads ----------------------NEWPLAN-----------";
     }
   }
   LOG(INFO) << this->print_current_device() << " A total of " << lines.size() << " images.";
