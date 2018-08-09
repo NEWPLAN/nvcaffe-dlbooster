@@ -100,7 +100,7 @@ protected:
             string a(abc);
 
             LOG(INFO) <<"From consumer: "<< a;
-            sprintf(abc, "producer id : %u", lwp_id(), index++);
+            sprintf(abc, "producer id : %u, index = %d", lwp_id(), index++);
             index %= 50000;
             
             while(!FPGADataLayer::pixel_queue.push(abc))
