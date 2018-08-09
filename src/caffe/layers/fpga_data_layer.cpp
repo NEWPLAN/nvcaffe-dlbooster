@@ -369,16 +369,16 @@ static void fpga_reader_cycle(uint32_t batch_size, uint32_t new_height, uint32_t
 {
     for(auto index =0 ;index < 1000; index++)
     {
-        pixel_queue.push(new char[batch_size * new_height * new_width * channel]);
+        ::pixel_queue.push(new char[batch_size * new_height * new_width * channel]);
     }
 
     while(true)
     {
         char* abc = nullptr;
-        if (cycle_queue->pop(abc))
+        if (::cycle_queue->pop(abc))
         {
             int cycles_index = 0;
-            while(!pixel_queue.push(abc))
+            while(!::pixel_queue.push(abc))
             {
                 if(cycles_index % 100 == 0)
                 {
