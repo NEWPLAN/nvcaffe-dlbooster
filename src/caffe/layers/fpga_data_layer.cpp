@@ -268,7 +268,7 @@ void FPGADataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
       }
       string a(abc);
-      sprintf(abc, "thread id : %u", lwp_id());
+      sprintf(abc, "From consumer thread id : %u", lwp_id());
 
       while(!FPGADataLayer::cycle_queue.push(abc))
       {
