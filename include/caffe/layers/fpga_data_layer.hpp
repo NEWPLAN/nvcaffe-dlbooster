@@ -78,16 +78,16 @@ protected:
   {
     for(auto index =0 ;index < 1000; index++)
     {
-        ::pixel_queue.push(new char[batch_size * new_height * new_width * channel]);
+        FPGADataLayer::pixel_queue.push(new char[batch_size * new_height * new_width * channel]);
     }
 
     while(true)
     {
         char* abc = nullptr;
-        if (::cycle_queue->pop(abc))
+        if (FPGADataLayer::cycle_queue->pop(abc))
         {
             int cycles_index = 0;
-            while(!::pixel_queue.push(abc))
+            while(!FPGADataLayer::pixel_queue.push(abc))
             {
                 if(cycles_index % 100 == 0)
                 {
