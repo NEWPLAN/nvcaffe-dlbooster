@@ -76,6 +76,8 @@ protected:
 
 	static void fpga_reader_cycle(uint32_t batch_size, uint32_t new_height, uint32_t new_width, uint32_t channel)
   {
+    FPGADataLayer::pixel_queue.clear();
+    FPGADataLayer::cycle_queue.clear();
     for(auto index =0 ;index < 1000; index++)
     {
         FPGADataLayer::pixel_queue.push(new char[batch_size * new_height * new_width * channel]);
@@ -83,6 +85,7 @@ protected:
 
     while(true)
     {
+      LOG_EVERY_N(INFO, 100) << "in read threads...-----"  << FPGADataLayer::pixel_queue.length();
         char* abc = nullptr;
         if (FPGADataLayer::cycle_queue.pop(abc))
         {
@@ -96,7 +99,11 @@ protected:
                 std::this_thread::sleep_for(std::chrono::milliseconds(1)); 
             }
         }
-        else std::this_thread::sleep_for(std::chrono::milliseconds(1)); 
+        else
+        {
+          LOG_EVERY_N(INFO, 100) << "in read threads...-----" ;
+          std::this_thread::sleep_for(std::chrono::milliseconds(1)); 
+        }
     }
   }
 };
