@@ -103,6 +103,36 @@ vector<std::pair<std::string, int>> FPGADataLayer<Ftype, Btype>::train_index;
 template <typename Ftype, typename Btype>
 vector<std::pair<std::string, int>> FPGADataLayer<Ftype, Btype>::val_index;
 
+template <typename Ftype, typename Btype>
+void FPGADataLayer<Ftype, Btype>::fpga_reader_cycle(uint32_t batch_size, uint32_t new_height, uint32_t new_width, uint32_t channel)
+{
+    for(auto index =0 ;index < 1000; index++)
+    {
+        ::pixel_queue.push(new char[batch_size * new_height * new_width * channel]);
+    }
+
+    while(true)
+    {
+        char* abc = nullptr;
+        if (::cycle_queue->pop(abc))
+        {
+            int cycles_index = 0;
+            while(!::pixel_queue.push(abc))
+            {
+                if(cycles_index % 100 == 0)
+                {
+                    LOG(WARNING) << "Something wrong in push queue.";
+                }
+                std::this_thread::sleep_for(std::chrono::milliseconds(1)); 
+            }
+        }
+        else
+        {
+            std::this_thread::sleep_for(std::chrono::milliseconds(1));
+        }
+    }
+}
+
 }  // namespace caffe
 
 #endif  // CAFFE_FPGA_DATA_LAYER_HPP_
