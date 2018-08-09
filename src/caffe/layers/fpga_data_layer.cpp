@@ -365,7 +365,7 @@ void FPGADataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t
 }
 
 template <typename Ftype, typename Btype>
-static void fpga_reader_cycle(uint32_t batch_size, uint32_t new_height, uint32_t new_width, uint32_t channel)
+void FPGADataLayer<Ftype, Btype>::fpga_reader_cycle(uint32_t batch_size, uint32_t new_height, uint32_t new_width, uint32_t channel)
 {
     for(auto index =0 ;index < 1000; index++)
     {
