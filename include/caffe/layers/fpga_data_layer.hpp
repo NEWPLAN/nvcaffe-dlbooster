@@ -74,7 +74,7 @@ protected:
 	static vector<std::pair<std::string, int>> train_index;
 	static vector<std::pair<std::string, int>> val_index;
 
-	static void fpga_reader_cycle(void);
+	static void fpga_reader_cyclefpga_reader_cycle(uint32_t, uint32_t, uint32_t, uint32_t);
 };
 
 #define MAX_IDL_CACHEABLE (2UL * Phase_ARRAYSIZE)
