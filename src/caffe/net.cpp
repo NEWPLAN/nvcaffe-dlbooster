@@ -76,9 +76,11 @@ void Net::Init(const NetParameter& in_param) {
   FilterNet(in_param, &filtered_param);
   net_param_ = filtered_param;
   batch_per_solver_ = caffe::P2PSync::divide_batch_size(&filtered_param);
+  /* newplan added
   LOG_IF(INFO, Caffe::root_solver())
       << "Initializing net from parameters: " << std::endl
       << filtered_param.DebugString();
+      */
   infer_count_ = 0UL;
   // Create a copy of filtered_param with splits added where necessary.
   NetParameter param;
