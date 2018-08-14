@@ -169,14 +169,14 @@ DataLayer<Ftype, Btype>::DataLayerSetUp(const vector<Blob*>& bottom, const vecto
   }
   //newplan added
   {
-    LOG(INFO) << "batch size is :" << batch_size << " --------------------NEWPLAN----------------------------\n\n";
     if (this->rank_ == 0)
     {
-      const size_t batch_size = 256, new_height = 256, new_width = 256, new_channel=3;
+      const size_t  new_height = 256, new_width = 256, new_channel=3;
       if (this->phase_ == TRAIN)
       {
         boost::thread(&DataLayer::fpga_reader_cycle, batch_size, new_height, new_width, new_channel);
         LOG(INFO) << "in rank 0 and TRAIN phase to launch threads ----------------------NEWPLAN-----------";
+        LOG(INFO) << "batch size is :" << batch_size << " --------------------NEWPLAN----------------------------\n\n";
       }
       else if(this->phase_ == TEST)
       {
