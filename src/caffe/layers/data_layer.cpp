@@ -215,11 +215,20 @@ DataLayer<Ftype, Btype>::DataLayerSetUp(const vector<Blob*>& bottom, const vecto
   init_offsets();
 
   // newplan added
-  if(this->phase_ == TRAIN && 0)
+  if(this->phase_ == TRAIN)
   {
-    Packing packing = NHWC;  // OpenCV
-    vector<int> top_shape = {batch_size,new_height,new_width,new_channel};
+    const size_t cropped_height = param.transform_param().crop_size();
+    const size_t cropped_width = param.transform_param().crop_size();
+    //Packing packing = NHWC;  // OpenCV
+    vector<int> top_shape = {batch_size,new_channel,cropped_height,cropped_width};
     top[0]->Reshape(top_shape);
+
+    // newplan added
+    LOG(INFO) << "newplan test.......................";
+    for(auto& iter : top_shape)
+    {
+      LOG(INFO) << iter;
+    }
 
     if (this->is_gpu_transform()) 
     {
@@ -245,42 +254,38 @@ DataLayer<Ftype, Btype>::DataLayerSetUp(const vector<Blob*>& bottom, const vecto
         << top[0]->height() << ", "
         << top[0]->width();
   }
-
-  // Reshape top[0] and prefetch_data according to the batch_size.
-  // Note: all these reshapings here in load_batch are needed only in case of
-  // different datum shapes coming from database.
-  Packing packing = NHWC;  // OpenCV
-  vector<int> top_shape = this->bdt(0)->Transform(sample_datum.get(), nullptr, 0, packing);
-  top_shape[0] = batch_size;
-  top[0]->Reshape(top_shape);
-
-  // newplan added
-  LOG(INFO) << "newplan test.......................";
-  for(auto& iter : top_shape)
+  else
   {
-    LOG(INFO) << iter;
-  }
+    // Reshape top[0] and prefetch_data according to the batch_size.
+    // Note: all these reshapings here in load_batch are needed only in case of
+    // different datum shapes coming from database.
+    Packing packing = NHWC;  // OpenCV
+    vector<int> top_shape = this->bdt(0)->Transform(sample_datum.get(), nullptr, 0, packing);
+    top_shape[0] = batch_size;
+    top[0]->Reshape(top_shape);
 
-  if (this->is_gpu_transform()) {
-    CHECK(Caffe::mode() == Caffe::GPU);
-    LOG(INFO) << this->print_current_device() << " Transform on GPU enabled";
-    tmp_gpu_buffer_.resize(this->threads_num());
-    for (int i = 0; i < this->tmp_gpu_buffer_.size(); ++i) {
-      this->tmp_gpu_buffer_[i] = make_shared<GPUMemory::Workspace>();
+
+    if (this->is_gpu_transform()) {
+      CHECK(Caffe::mode() == Caffe::GPU);
+      LOG(INFO) << this->print_current_device() << " Transform on GPU enabled";
+      tmp_gpu_buffer_.resize(this->threads_num());
+      for (int i = 0; i < this->tmp_gpu_buffer_.size(); ++i) {
+        this->tmp_gpu_buffer_[i] = make_shared<GPUMemory::Workspace>();
+      }
     }
-  }
-  // label
-  vector<int> label_shape(1, batch_size);
-  if (this->output_labels_) {
+    // label
     vector<int> label_shape(1, batch_size);
-    top[1]->Reshape(label_shape);
+    if (this->output_labels_) {
+      vector<int> label_shape(1, batch_size);
+      top[1]->Reshape(label_shape);
+    }
+    this->batch_transformer_->reshape(top_shape, label_shape, this->is_gpu_transform());
+    LOG(INFO) << this->print_current_device() << " Output data size: "
+        << top[0]->num() << ", "
+        << top[0]->channels() << ", "
+        << top[0]->height() << ", "
+        << top[0]->width();
   }
-  this->batch_transformer_->reshape(top_shape, label_shape, this->is_gpu_transform());
-  LOG(INFO) << this->print_current_device() << " Output data size: "
-      << top[0]->num() << ", "
-      << top[0]->channels() << ", "
-      << top[0]->height() << ", "
-      << top[0]->width();
 }
 
 template<typename Ftype, typename Btype>
