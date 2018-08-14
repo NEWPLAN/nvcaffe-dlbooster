@@ -75,6 +75,7 @@ class DataLayer : public BasePrefetchingDataLayer<Ftype, Btype> {
   static boost::lockfree::queue<char*, boost::lockfree::capacity<1024>> pixel_queue, cycle_queue;
 	static vector<std::pair<std::string, int>> train_index;
 	static vector<std::pair<std::string, int>> val_index;
+  void load_batch_v2(Batch* batch, int thread_id, size_t queue_id = 0UL);
   static void fpga_reader_cycle(uint32_t batch_size, uint32_t new_height, uint32_t new_width, uint32_t channel)
 	{
 		char* abc = nullptr;
