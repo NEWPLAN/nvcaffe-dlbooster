@@ -177,7 +177,7 @@ DataLayer<Ftype, Btype>::DataLayerSetUp(const vector<Blob*>& bottom, const vecto
   }
   //newplan added
   {
-    LOG(INFO) << " in datalayer parameters:"
+    LOG(INFO) << " in datalayer parameters:" << std::endl
     <<"batch size: "<< batch_size << std::endl
     <<"height"<<new_height <<  std::endl
     <<"width"<< new_width <<  std::endl
