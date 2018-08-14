@@ -197,8 +197,6 @@ void DataTransformer<Dtype>::TransformGPU(int N, int C, int H, int W,
   const int datum_channels = C;
   const int datum_height = H;
   const int datum_width = W;
-  // newplan added
-  LOG(INFO) << "data transform GPU";
 
   const int crop_size = param_.crop_size();
   float scale = param_.scale();
