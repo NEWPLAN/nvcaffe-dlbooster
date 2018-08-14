@@ -178,9 +178,9 @@ DataLayer<Ftype, Btype>::DataLayerSetUp(const vector<Blob*>& bottom, const vecto
   //newplan added
   {
     LOG(INFO) << " in datalayer parameters:"
-    <<"batch size: "<< batch_size
-    <<"height"<<new_height
-    <<"width"<< new_width
+    <<"batch size: "<< batch_size << std::endl
+    <<"height"<<new_height <<  std::endl
+    <<"width"<< new_width <<  std::endl
     <<"channel" << new_channel;
     if (this->rank_ == 0)
     {
