@@ -5,14 +5,8 @@
 #include "caffe/parallel.hpp"
 #include "caffe/fpga_reader.hpp"
 
-namespace caffe {
-
-template<typename DatumType>
-std::mutex FPGAReader<DatumType>::db_mutex_;
-// https://stackoverflow.com/questions/26935824/gcc-gives-an-undefined-reference-error-to-static-data-members-in-templated-cla
-
-template<typename DatumType>
-std::mutex FPGAReader<DatumType>::DataCache::cache_mutex_{};
+namespace caffe 
+{
 
 template<typename DatumType>
 FPGAReader<DatumType>::FPGAReader(const LayerParameter& param,
@@ -27,7 +21,7 @@ FPGAReader<DatumType>::FPGAReader(const LayerParameter& param,
     bool shuffle,
     bool epoch_count_required)
     : InternalThread(Caffe::current_device(),
-          solver_rank, sample_only ? 1U : parser_threads_num, false),
+          solver_rank, 1U, false),
       parser_threads_num_(threads_num()),
       transf_threads_num_(sample_only ? 1U : transf_threads_num),
       queues_num_(parser_threads_num_ * transf_threads_num_),
