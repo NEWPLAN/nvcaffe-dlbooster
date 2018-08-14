@@ -58,6 +58,7 @@ Net::Net(const string& param_file,
       param.mutable_state()->add_stage(stages->at(i));
     }
   }
+  param.mutable_state()->set_level(level);
   Init(param);
 }
 
@@ -76,8 +77,8 @@ void Net::Init(const NetParameter& in_param) {
   net_param_ = filtered_param;
   batch_per_solver_ = caffe::P2PSync::divide_batch_size(&filtered_param);
   LOG_IF(INFO, Caffe::root_solver())
-      << "Initializing net from parameters: " << std::endl;
-  //    << filtered_param.DebugString();
+      << "Initializing net from parameters: " << std::endl
+      << filtered_param.DebugString();
   infer_count_ = 0UL;
   // Create a copy of filtered_param with splits added where necessary.
   NetParameter param;
@@ -119,22 +120,6 @@ void Net::Init(const NetParameter& in_param) {
   has_global_grad_scale_param_ = in_param.has_global_grad_scale();
   global_grad_scale_param_ = in_param.global_grad_scale();
   global_grad_scale_adaptive_ = in_param.global_grad_scale_adaptive();
-
-  /*
-  LOG(INFO) << "net init, sleep for 30 seconds..........";
-  //boost::this_thread::sleep(boost::posix_time::seconds(30));
-  long long int abc=0;
-  while(abc<10000000000)
-  {
-    if(abc% 1000000000 == 0)
-    LOG(INFO) << abc;
-    abc++;
-  }
-  //newplan
-  abc=12;
-  std::cout<<"abc=";
-  std::cin>>abc;
-  */
 
   for (int layer_id = 0; layer_id < param.layer_size(); ++layer_id) {
     // For non-root solvers, whether this layer is shared from root_net_.
@@ -207,11 +192,8 @@ void Net::Init(const NetParameter& in_param) {
       LOG(INFO) << "Sharing layer " << layer_param.name() << " from root net";
       layers_.push_back(root_net_->layers_[layer_id]);
       layers_[layer_id]->SetShared(true);
-    } else 
-    {
-      LOG_IF(INFO, Caffe::root_solver())<< "before push layers " << layer_param.name();
+    } else {
       layers_.push_back(LayerRegistry::CreateLayer(layer_param, solver_rank_));
-      LOG_IF(INFO, Caffe::root_solver())<< "after push layers " << layer_param.name();
     }
     layer_names_.push_back(layer_param.name());
     LOG_IF(INFO, Caffe::root_solver())
@@ -729,7 +711,7 @@ const vector<Blob*>& Net::Forward(float* loss) {
 }
 
 const vector<Blob*>& Net::Forward(const vector<Blob*>& bottom, float* loss) {
-  LOG_EVERY_N(WARNING, 100) << "DEPRECATED: Forward(bottom, loss) "
+  LOG_EVERY_N(WARNING, 1000) << "DEPRECATED: Forward(bottom, loss) "
       << "will be removed in a future version. Use Forward(loss).";
   // Copy bottom to net bottoms
   for (int i = 0; i < bottom.size(); ++i) {
@@ -739,10 +721,6 @@ const vector<Blob*>& Net::Forward(const vector<Blob*>& bottom, float* loss) {
 }
 
 float Net::ForwardBackward(bool apply_update) {
-  if(0)
-  {
-    LOG_EVERY_N(INFO,10) << "forward and backward thread, " << lwp_id();
-  }
   float loss;
   Forward(&loss);
   Backward(apply_update);
@@ -849,10 +827,6 @@ void Net::ReduceAndUpdate(int type_id) {
   const bool use_buckets = reduce_buckets_ > 0;
   float rate = -1.F;
   while (!solver_->stop_reducing_requested(type_id)) {
-    if(0)
-    {
-      LOG_EVERY_N(INFO, 100) << "Net::ReduceAndUpdate thread, " << lwp_id();
-    }
     const int param_id = reduction_queue_[type_id].pop();
     SolverAction::Enum request = solver_->GetRequestedAction();
     if (SolverAction::STOP == request) {
@@ -937,7 +911,6 @@ void Net::ReduceAndUpdate(int type_id) {
   }
   DLOG(INFO) << "[" << Caffe::current_device()
              << "] Leaving ReduceAndUpdate thread " << lwp_id();
-  //LOG_EVERY_N(INFO, 100) << "reduce and update thread" << lwp_id();
 }
 
 void Net::add_wgrad_sq(float wgrad_sq) {

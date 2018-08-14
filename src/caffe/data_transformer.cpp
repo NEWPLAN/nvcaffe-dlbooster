@@ -358,7 +358,7 @@ void DataTransformer<Dtype>::Transform(const cv::Mat& src, Dtype* buf, size_t bu
   cv::Mat tmp, dst;
 
   image_random_resize(src, tmp);
-  
+
   const int crop_w = param_.crop_w() > 0 ? param_.crop_w() : param_.crop_size();
   const int crop_h = param_.crop_h() > 0 ? param_.crop_h() : param_.crop_size();
   if (image_random_crop_enabled()) {

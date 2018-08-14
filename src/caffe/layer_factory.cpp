@@ -22,8 +22,6 @@
 #include "caffe/layers/memory_data_layer.hpp"
 #include "caffe/layers/image_data_layer.hpp"
 #include "caffe/layers/window_data_layer.hpp"
-//newplan added.
-#include "caffe/layers/fpga_data_layer.hpp"
 
 #ifdef USE_CUDNN
 #include "caffe/layers/cudnn_batch_norm_layer.hpp"

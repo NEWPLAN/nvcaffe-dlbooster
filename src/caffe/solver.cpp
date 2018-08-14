@@ -51,6 +51,7 @@ void Solver::Init() {
   // Scaffolding code
   InitTrainNet();
   InitTestNets();
+  LOG(INFO) << "Solver scaffolding done.";
   iter_ = 0;
   total_lapse_ = 0.F;
   current_step_ = 0;
@@ -247,7 +248,6 @@ void Solver::Step(int iters) {
   const bool test_and_snapshot_enabled = ts_epochs_remaining > 0;
   --ts_epochs_remaining;
 
-
   while (iter_ < stop_iter) {
     if (param_.snapshot_diff() || param_.clip_gradients() >= 0.F) {
       net_->ClearParamDiffs();
@@ -434,10 +434,6 @@ bool Solver::Solve(const char* resume_file) {
   LOG(INFO) << "Learning Rate Policy: " << param_.lr_policy();
   // Initialize to false every time we start solving.
   requested_early_exit_ = false;
-
-  LOG(INFO) << "start solver thread, sleep for 30 seconds..........";
-  //boost::this_thread::sleep(boost::posix_time::seconds(30));
-  //newplan
 
   if (resume_file != nullptr) {
     LOG(INFO) << "Restoring previous solver status from " << resume_file;

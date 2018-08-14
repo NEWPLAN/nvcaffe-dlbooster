@@ -20,13 +20,6 @@ size_t ImageDataLayer<Ftype, Btype>::id(const string& ph, const string& name) {
   static map<string, size_t> ph_names;
   string ph_name = ph + name;
   auto it = ph_names.find(ph_name);
-  {
-    LOG(INFO) << "\n\n\n\n\neeeee\n\n\n\n";
-        for(auto iter=ph_names.begin();iter!=ph_names.end();iter++)
-        {
-            std::cout<< iter->first << ", " << iter->second<<std::endl;
-        }
-    }
   if (it != ph_names.end()) {
     return it->second;
   }
@@ -44,11 +37,6 @@ ImageDataLayer<Ftype, Btype>::ImageDataLayer(const LayerParameter& param, size_t
              << " name: " << this->name()
              << " id: " << id_
              << " threads: " << this->threads_num();
-  {
-    im_solver=solver_rank;
-    LOG(INFO) << "-----------------------------------------in rank : " << this->rank_ << " phase: " << this->phase_;
-    
-  }
 }
 
 template <typename Ftype, typename Btype>
@@ -164,20 +152,6 @@ cv::Mat ImageDataLayer<Ftype, Btype>::next_mat(const string& root_folder, const 
   return ReadImageToCVMat(root_folder + file_name, height, width, is_color, short_side);
 }
 
-#include <sys/time.h>
-static uint64_t current_time(void)
-{
-	struct timeval tv;
-    gettimeofday(&tv,NULL);
-	return tv.tv_sec*1000000 + tv.tv_usec;
-}
-
-std::vector<uint64_t> rrr;
-std::vector<uint64_t> ttt;
-
-uint64_t r_avg=0;
-uint64_t t_avg=0;
-
 template <typename Ftype, typename Btype>
 void ImageDataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t) {
   CHECK(batch->data_->count());
@@ -212,7 +186,7 @@ void ImageDataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_
     crop_height = cv_img.rows;
     crop_width = cv_img.cols;
   }
- 
+
   // Infer the expected blob shape from a cv_img.
   vector<int> top_shape { batch_size, cv_img.channels(), crop_height, crop_width };
   batch->data_->Reshape(top_shape);
@@ -223,52 +197,17 @@ void ImageDataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_
   Btype* prefetch_label = batch->label_->mutable_cpu_data<Btype>();
   Packing packing = NHWC;
 
-  LOG_EVERY_N(INFO,5) << " loading batch from engine model:" << this->rank_ << "," << thread_id;
-
   // datum scales
   const size_t buf_len = batch->data_->offset(1);
   for (int item_id = 0; item_id < batch_size; ++item_id) {
     CHECK_GT(lines_size, line_id);
     file_name = lines[line_id].first;
-    uint64_t before=current_time();
     cv::Mat cv_img = next_mat(root_folder, file_name, new_height, new_width, is_color, short_side);
-    uint64_t middle=current_time();
+
     if (cv_img.data) {
-      /*
-      LOG_EVERY_N(INFO, 1000) << "load image data";
-      */
       int offset = batch->data_->offset(item_id);
 #if defined(USE_CUDNN)
       this->bdt(thread_id)->Transform(cv_img, prefetch_data + offset, buf_len, false);
-      uint64_t after=current_time();
-      LOG_EVERY_N(INFO, 100000) << "in loading "<<batch_size<<", " << lwp_id() << " cost "<< (middle-before)/1000.0 << " ms and " <<(after-middle)/1000.0 ;
-      if(thread_id==0 && im_solver ==0)
-      {
-        //static int cc=0;
-        //cc++;
-        //if(cc % 10 == 0) 
-        {
-          rrr.push_back((middle-before));
-          ttt.push_back((after-middle));
-          
-          int r_size=rrr.size();
-          int t_size=ttt.size();
-          r_avg += rrr[r_size-1];
-          t_avg += ttt[t_size-1];
-          
-          
-          if(r_size>=10000)
-          {
-            LOG(INFO) <<"read avg "<< r_avg/1000.0/r_size << " in " << r_size << " transform avg " << t_avg/1000.0/t_size << " in "<< t_size << " @ solver rank " << im_solver;
-
-            r_avg=0;
-            t_avg=0;
-            rrr.clear();
-            ttt.clear();
-          }
-        }
-      }
-
 #else
       CHECK_EQ(buf_len, tmp.size());
       this->bdt(thread_id)->Transform(cv_img, prefetch_data + offset, buf_len, false);
@@ -318,11 +257,8 @@ void ImageDataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_
           }
         }
         if (shuffle) {
-          uint64_t before=current_time();
           LOG(INFO) << "Shuffling data";
           ShuffleImages();
-          uint64_t after=current_time();
-          LOG(INFO)<< "shuffle, " << lwp_id() << " cost "<< (after-before)/1000.0 << " ms";
         }
       }
     }
