@@ -525,7 +525,7 @@ void DataLayer<Ftype, Btype>::load_batch_v2(Batch* batch, int thread_id, size_t 
   const int new_channel = this->layer_param_.data_param().new_channel();
 
   Packing packing = NHWC;  // OpenCV
-  
+
   //infer shape of blobs
   vector<int> top_shape = {batch_size, new_channel, cropped_height, cropped_width};
   if (top_shape != batch->data_->shape())
@@ -536,8 +536,6 @@ void DataLayer<Ftype, Btype>::load_batch_v2(Batch* batch, int thread_id, size_t 
   size_t datum_sizeof_element = 0UL;
   int datum_len = top_shape[1] * top_shape[2] * top_shape[3];
   size_t datum_size = 0UL;
-  const char *src_ptr = nullptr;
-  vector<char> src_buf;
 
   if (use_gpu_transform)
   {
@@ -548,7 +546,6 @@ void DataLayer<Ftype, Btype>::load_batch_v2(Batch* batch, int thread_id, size_t 
     vector<int> random_vec_shape(1, batch_size * 3);
     random_vectors_[thread_id]->Reshape(random_vec_shape);
     datum_size = datum_len * datum_sizeof_element;
-    src_buf.resize(datum_size);
   }
   if (this->output_labels_)
   {
