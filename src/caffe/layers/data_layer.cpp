@@ -402,6 +402,7 @@ void DataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t que
   {
     shared_ptr<Datum> datum = reader->full_pop(qid, "Waiting for datum");
     size_t item_id = datum->record_id() % batch_size;
+    LOG(INFO) << "warning : item id is: " << item_id;
     if (item_id == 0UL)
     {
       current_batch_id = datum->record_id() / batch_size;
