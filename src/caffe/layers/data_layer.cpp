@@ -402,7 +402,6 @@ void DataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t que
   {
     shared_ptr<Datum> datum = reader->full_pop(qid, "Waiting for datum");
     size_t item_id = datum->record_id() % batch_size;
-    LOG(INFO) << "warning : item id is: " << item_id;
     if (item_id == 0UL)
     {
       current_batch_id = datum->record_id() / batch_size;
@@ -594,7 +593,8 @@ void DataLayer<Ftype, Btype>::load_batch_v2(Batch* batch, int thread_id, size_t 
     {
       cudaStream_t stream = Caffe::thread_stream(Caffe::GPU_TRANSF_GROUP);
       size_t buffer_size = top_shape[0] * top_shape[1] * new_height * new_width;
-      CUDA_CHECK(cudaMemcpyAsync(static_cast<char*>(dst_gptr), src_buf, buffer_size, cudaMemcpyHostToDevice, stream));
+      CHECK_EQ(buffer_size, datum_size);
+      CUDA_CHECK(cudaMemcpyAsync(static_cast<char*>(dst_gptr), src_buf, datum_size, cudaMemcpyHostToDevice, stream));
       CUDA_CHECK(cudaStreamSynchronize(stream));
       for (size_t item_id = 0; item_id < batch_size; item_id++)
       {
@@ -605,7 +605,7 @@ void DataLayer<Ftype, Btype>::load_batch_v2(Batch* batch, int thread_id, size_t 
     else
     {
       // Get data offset for this datum to hand off to transform thread
-      LOG(FATAL) << "should enable transform GPU";
+      LOG(FATAL) << "require enabling transform GPU";
     }
 
     string a(src_buf);
