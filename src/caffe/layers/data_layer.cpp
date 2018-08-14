@@ -10,6 +10,9 @@ DataLayer<Ftype, Btype>::DataLayer(const LayerParameter& param, size_t solver_ra
   : BasePrefetchingDataLayer<Ftype, Btype>(param, solver_rank),
     cache_(param.data_param().cache()),
     shuffle_(param.data_param().shuffle()) {
+  //newplan added 
+  LOG(INFO) << " in auto mode: " << this->auto_mode_;
+  //
   sample_only_.store(this->auto_mode_);
   init_offsets();
   datum_encoded_ = false;
