@@ -220,7 +220,7 @@ DataLayer<Ftype, Btype>::DataLayerSetUp(const vector<Blob*>& bottom, const vecto
     const int cropped_height = param.transform_param().crop_size();
     const int cropped_width = param.transform_param().crop_size();
     //Packing packing = NHWC;  // OpenCV
-    vector<int> top_shape = {batch_size,new_channel,cropped_height,cropped_width};
+    vector<int> top_shape = {(int)batch_size,(int)new_channel,cropped_height,cropped_width};
     top[0]->Reshape(top_shape);
 
     // newplan added
