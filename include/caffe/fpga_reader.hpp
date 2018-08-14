@@ -93,13 +93,13 @@ protected:
 };
 
 template <typename DatumType>
-vector<boost::lockfree::queue<shared_ptr<DatumType>, boost::lockfree::capacity<1024>>> FPGAReader<DatumType>::pixel_queue(2);
+vector<boost::lockfree::queue<shared_ptr<DatumType>, boost::lockfree::capacity<1024>>> FPGAReader<DatumType>::pixel_queue(1);
 template <typename DatumType>
 boost::lockfree::queue<shared_ptr<DatumType>, boost::lockfree::capacity<1024>> FPGAReader<DatumType>::recycle_queue;
 template <typename DatumType>
-vector<std::pair<std::string, int>> DataLayer<Ftype, Btype>::train_index;
+vector<std::pair<std::string, int>> FPGAReader<DatumType>::train_manifest;
 template <typename DatumType>
-vector<std::pair<std::string, int>> DataLayer<Ftype, Btype>::val_index;
+vector<std::pair<std::string, int>> FPGAReader<DatumType>::val_manifest;
 
 }  // namespace caffe
 
