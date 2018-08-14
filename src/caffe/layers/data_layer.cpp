@@ -527,8 +527,6 @@ void DataLayer<Ftype, Btype>::load_batch_v2(Batch* batch, int thread_id, size_t 
 
   //infer shape of blobs
   vector<int> top_shape = {batch_size, new_channel, cropped_height, cropped_width};
-  top[0]->Reshape(top_shape);
-
   if (top_shape != batch->data_->shape())
   {
     batch->data_->Reshape(top_shape);
