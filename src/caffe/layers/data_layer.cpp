@@ -234,6 +234,10 @@ DataLayer<Ftype, Btype>::DataLayerSetUp(const vector<Blob*>& bottom, const vecto
       LOG(INFO) << "----------------------NEWPLAN----------- in rank: " << this->rank_ << ", and phase: " << this->phase_;
     }
   }
+  if(this->phase_ == TEST)
+  {
+    LOG(WARNING) << "should never be here for test phase";
+  }
   // Read a data point, and use it to initialize the top blob.
   shared_ptr<Datum> sample_datum = sample_only_ ? sample_reader_->sample() : reader_->sample();
   datum_encoded_ = sample_datum->encoded();
