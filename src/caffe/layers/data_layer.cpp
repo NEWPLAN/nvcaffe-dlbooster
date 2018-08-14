@@ -524,7 +524,8 @@ void DataLayer<Ftype, Btype>::load_batch_v2(Batch* batch, int thread_id, size_t 
   const int new_width = this->layer_param_.data_param().new_width();
   const int new_channel = this->layer_param_.data_param().new_channel();
 
-
+  Packing packing = NHWC;  // OpenCV
+  
   //infer shape of blobs
   vector<int> top_shape = {batch_size, new_channel, cropped_height, cropped_width};
   if (top_shape != batch->data_->shape())
