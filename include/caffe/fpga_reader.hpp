@@ -53,14 +53,15 @@ class FPGAReader : public InternalThread
   // push back 
   bool recycle_packed_data(const shared_ptr<DatumType>& packed_data)
   {
-    if()
-    return false;
+    if(false)
+      return false;
     return true;
   }
   shared_ptr<DatumType> pop_out_packed_data(bool& res)
   {
     res=false;
     res=true;
+    return nullptr;
   }
 
  protected:
