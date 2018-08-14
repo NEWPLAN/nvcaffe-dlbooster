@@ -68,7 +68,7 @@ class FPGAReader : public InternalThread {
     }
 
     shared_ptr<DatumType>& next_new();
-    shared_ptr<DatumType>& next_cached(DataReader& reader);
+    shared_ptr<DatumType>& next_cached(FPGAReader& reader);
     bool check_memory();
     void check_db(const std::string& db_source) {
       std::lock_guard<std::mutex> lock(cache_mutex_);
