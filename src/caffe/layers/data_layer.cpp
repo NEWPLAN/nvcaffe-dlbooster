@@ -518,8 +518,8 @@ void DataLayer<Ftype, Btype>::load_batch_v2(Batch* batch, int thread_id, size_t 
   // on single input batches allows for inputs of varying dimension.
   const int batch_size = this->layer_param_.data_param().batch_size();
   const bool use_gpu_transform = this->is_gpu_transform();
-  const int cropped_height = param.transform_param().crop_size();
-  const int cropped_width = param.transform_param().crop_size();
+  const int cropped_height = this->layer_param_.transform_param().crop_size();
+  const int cropped_width = this->layer_param_.transform_param().crop_size();
   const int new_height = this->layer_param_.data_param().new_height();
   const int new_width = this->layer_param_.data_param().new_width();
 
