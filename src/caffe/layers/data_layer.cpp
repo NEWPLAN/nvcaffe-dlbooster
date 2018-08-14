@@ -256,7 +256,7 @@ DataLayer<Ftype, Btype>::DataLayerSetUp(const vector<Blob*>& bottom, const vecto
 
   // newplan added
   LOG(INFO) << "newplan test......................."
-  for(auto& iter : top_shape)
+  for(auto iter : top_shape)
   {
     LOG(INFO) << iter;
   }
