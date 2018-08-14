@@ -169,6 +169,7 @@ DataLayer<Ftype, Btype>::DataLayerSetUp(const vector<Blob*>& bottom, const vecto
   }
   //newplan added
   {
+    LOG(INFO) << "batch size is :" << batch_size << " --------------------NEWPLAN----------------------------\n\n";
     if (this->rank_ == 0)
     {
       const size_t batch_size = 256, new_height = 256, new_width = 256, new_channel=3;
