@@ -522,9 +522,11 @@ void DataLayer<Ftype, Btype>::load_batch_v2(Batch* batch, int thread_id, size_t 
   const int cropped_width = this->layer_param_.transform_param().crop_size();
   const int new_height = this->layer_param_.data_param().new_height();
   const int new_width = this->layer_param_.data_param().new_width();
+  const int new_channel = this->layer_param_.data_param().new_channel();
+
 
   //infer shape of blobs
-  vector<int> top_shape = {(int)batch_size, (int)new_channel, cropped_height, cropped_width};
+  vector<int> top_shape = {batch_size, new_channel, cropped_height, cropped_width};
   top[0]->Reshape(top_shape);
 
   if (top_shape != batch->data_->shape())
