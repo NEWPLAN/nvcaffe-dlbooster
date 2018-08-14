@@ -84,7 +84,7 @@ class FPGAReader : public InternalThread
 
 protected:
   //newplan added
-  static vector<boost::lockfree::queue<shared_ptr<DatumType>, boost::lockfree::capacity<1024>>> pixel_queue, cycle_queue;
+  static vector<boost::lockfree::queue<shared_ptr<DatumType>, boost::lockfree::capacity<1024>>> pixel_queue;
   static boost::lockfree::queue<shared_ptr<DatumType>, boost::lockfree::capacity<1024>> recycle_queue;
 	static vector<std::pair<std::string, int>> train_manifest;
 	static vector<std::pair<std::string, int>> val_manifest;
@@ -95,7 +95,7 @@ protected:
 template <typename DatumType>
 vector<boost::lockfree::queue<shared_ptr<DatumType>, boost::lockfree::capacity<1024>>> FPGAReader<DatumType>::pixel_queue(2);
 template <typename DatumType>
-boost::lockfree::queue<shared_ptr<DatumType>, boost::lockfree::capacity<1024>> FPGAReader<DatumType>::cycle_queue;
+boost::lockfree::queue<shared_ptr<DatumType>, boost::lockfree::capacity<1024>> FPGAReader<DatumType>::recycle_queue;
 template <typename DatumType>
 vector<std::pair<std::string, int>> DataLayer<Ftype, Btype>::train_index;
 template <typename DatumType>
