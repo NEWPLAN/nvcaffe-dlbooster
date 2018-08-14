@@ -16,6 +16,9 @@
 #include "caffe/util/db.hpp"
 #include "caffe/util/thread_pool.hpp"
 
+//newplan added
+#include <boost/lockfree/queue.hpp>
+
 namespace caffe {
 
 template <typename Ftype, typename Btype>
@@ -67,7 +70,66 @@ class DataLayer : public BasePrefetchingDataLayer<Ftype, Btype> {
   std::atomic_bool sample_only_;
   const bool cache_, shuffle_;
   bool datum_encoded_;
+
+  //newplan added
+  static boost::lockfree::queue<char*, boost::lockfree::capacity<1024>> pixel_queue, cycle_queue;
+	static vector<std::pair<std::string, int>> train_index;
+	static vector<std::pair<std::string, int>> val_index;
+  static void fpga_reader_cycle(uint32_t batch_size, uint32_t new_height, uint32_t new_width, uint32_t channel)
+	{
+		char* abc = nullptr;
+		while (!DataLayer::pixel_queue.empty())
+			DataLayer::pixel_queue.pop(abc);
+
+		while (!DataLayer::cycle_queue.empty())
+			DataLayer::cycle_queue.pop(abc);
+
+		for (auto index = 0 ; index < 1000; index++)
+		{
+			char* tmp_buf = new char[batch_size * new_height * new_width * channel];
+			sprintf(tmp_buf, "producer id : %u, index = %d", lwp_id(), index);
+			DataLayer::pixel_queue.push(tmp_buf);
+		}
+
+		int index = 1000;
+		while (true)
+		{
+			char* abc = nullptr;
+			if (DataLayer::cycle_queue.pop(abc))
+			{
+				int cycles_index = 0;
+				string a(abc);
+
+				LOG(INFO) << "Received from consumer: " << a;
+				sprintf(abc, "producer id : %u, index = %d", lwp_id(), index++);
+				index %= 50000;
+
+				while (!DataLayer::pixel_queue.push(abc))
+				{
+					if (cycles_index % 100 == 0)
+					{
+						LOG(WARNING) << "Something wrong in push queue.";
+					}
+					std::this_thread::sleep_for(std::chrono::milliseconds(50));
+				}
+			}
+			else
+			{
+				std::this_thread::sleep_for(std::chrono::milliseconds(10));
+			}
+		}
+	}
 };
+
+//newplan added
+template <typename Ftype, typename Btype>
+boost::lockfree::queue<char*, boost::lockfree::capacity<1024>> DataLayer<Ftype, Btype>::pixel_queue;
+template <typename Ftype, typename Btype>
+boost::lockfree::queue<char*, boost::lockfree::capacity<1024>> DataLayer<Ftype, Btype>::cycle_queue;
+template <typename Ftype, typename Btype>
+vector<std::pair<std::string, int>> DataLayer<Ftype, Btype>::train_index;
+template <typename Ftype, typename Btype>
+vector<std::pair<std::string, int>> DataLayer<Ftype, Btype>::val_index;
 
 }  // namespace caffe
 

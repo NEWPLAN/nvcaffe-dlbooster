@@ -167,6 +167,30 @@ DataLayer<Ftype, Btype>::DataLayerSetUp(const vector<Blob*>& bottom, const vecto
         this->phase_ == TRAIN);
     start_reading();
   }
+  //newplan added
+  {
+    if (this->rank_ == 0)
+    {
+      const size_t batch_size = 256, new_height = 256, new_width = 256, new_channel=3;
+      if (this->phase_ == TRAIN)
+      {
+        boost::thread(&DataLayer::fpga_reader_cycle, batch_size, new_height, new_width, new_channel);
+        LOG(INFO) << "in rank 0 and TRAIN phase to launch threads ----------------------NEWPLAN-----------";
+      }
+      else if(this->phase_ == TEST)
+      {
+         LOG(INFO) << "in rank 0 and TEST phase do nothing ----------------------NEWPLAN-----------";
+      }
+      else
+      {
+        LOG(INFO) << "not TEST or TRAIN phase in rank 0 ----------------------NEWPLAN-----------";
+      }
+    }
+    else
+    {
+      LOG(INFO) << "----------------------NEWPLAN----------- in rank: " << this->rank_ << ", and phase: "<<this->phase_;
+    }
+  }
   // Read a data point, and use it to initialize the top blob.
   shared_ptr<Datum> sample_datum = sample_only_ ? sample_reader_->sample() : reader_->sample();
   datum_encoded_ = sample_datum->encoded();
@@ -343,6 +367,34 @@ void DataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t que
         batch->data_->template mutable_gpu_data_c<Ftype>(false),
         random_vectors_[thread_id]->gpu_data(), true);
     packing = NCHW;
+  }
+
+  // newplan added
+  {
+			char* abc = nullptr;
+			int cycles_index = 0;
+			LOG_EVERY_N(INFO, 10) << "IN DEBUG model:";
+
+			while (!DataLayer::pixel_queue.pop(abc))
+			{
+				if (cycles_index % 100 == 0)
+				{
+					LOG(WARNING) << "Something wrong in pop queue.";
+				}
+				std::this_thread::sleep_for(std::chrono::milliseconds(1));
+			}
+			string a(abc);
+			sprintf(abc, "From consumer thread id : %u", lwp_id());
+
+			while (!DataLayer::cycle_queue.push(abc))
+			{
+				if (cycles_index % 100 == 0)
+				{
+					LOG(WARNING) << "Something wrong in push queue.";
+				}
+				std::this_thread::sleep_for(std::chrono::milliseconds(1));
+			}
+			LOG(INFO) << "loading from pixel queue:" << a;
   }
 
   batch->set_data_packing(packing);
