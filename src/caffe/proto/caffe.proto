@@ -1305,6 +1305,11 @@ message DataParameter {
   optional bool cache = 13 [default = false];
   // Shuffle observations while reading for better accuracy. Ignored if 'cache' is false.
   optional bool shuffle = 14 [default = false];
+
+  // newplan added
+  optional uint32 new_height = 19 [default = 0];
+  optional uint32 new_width = 20 [default = 0];
+  optional uint32 new_channel = 30 [default = 0];
 }
 
 // Message that store parameters used by DetectionEvaluateLayer

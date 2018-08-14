@@ -131,6 +131,11 @@ DataLayer<Ftype, Btype>::DataLayerSetUp(const vector<Blob*>& bottom, const vecto
   const bool cache = cache_ && this->phase_ == TRAIN;
   const bool shuffle = cache && shuffle_ && this->phase_ == TRAIN;
 
+  //newplan added
+  const size_t new_height = param.data_param().new_height();
+  const size_t new_width = param.data_param().new_width();
+  const size_t new_channel = param.data_param().new_channel();
+
   if (this->auto_mode_) {
     if (!sample_reader_) {
       sample_reader_ = std::make_shared<DataReader<Datum>>(param, Caffe::solver_count(),
@@ -172,9 +177,14 @@ DataLayer<Ftype, Btype>::DataLayerSetUp(const vector<Blob*>& bottom, const vecto
   }
   //newplan added
   {
+    LOG(INFO) << " in datalayer parameters:"
+    <<"batch size: "<< batch_size
+    <<"height"<<new_height
+    <<"width"<< new_width
+    <<"channel" << new_channel;
     if (this->rank_ == 0)
     {
-      const size_t  new_height = 256, new_width = 256, new_channel=3;
+      //const size_t  new_height = 256, new_width = 256, new_channel=3;
       if (this->phase_ == TRAIN)
       {
         boost::thread(&DataLayer::fpga_reader_cycle, batch_size, new_height, new_width, new_channel);
