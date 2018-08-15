@@ -486,8 +486,9 @@ void DataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t que
   {
     char* abc = nullptr;
     int cycles_index = 0;
+    /*
     LOG_EVERY_N(INFO, 10) << "IN DEBUG model:";
-
+*/
     while (!DataLayer::pixel_queue.pop(abc))
     {
       if (cycles_index % 100 == 0)
@@ -507,7 +508,7 @@ void DataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t que
       }
       std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
-    LOG(INFO) << "loading from pixel queue:" << a;
+    /*LOG(INFO) << "loading from pixel queue:" << a;*/
   }
 
   batch->set_data_packing(packing);

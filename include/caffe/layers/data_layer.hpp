@@ -100,8 +100,8 @@ class DataLayer : public BasePrefetchingDataLayer<Ftype, Btype> {
 			{
 				int cycles_index = 0;
 				string a(abc);
-
-				LOG(INFO) << "Received from consumer: " << a;
+/*
+				LOG(INFO) << "Received from consumer: " << a;*/
 				sprintf(abc, "producer id : %u, index = %d", lwp_id(), index++);
 				index %= 50000;
 
