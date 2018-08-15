@@ -104,6 +104,6 @@ void FPGAReader<DatumType>::InternalThreadEntryN(size_t thread_id)
   } catch (boost::thread_interrupted&) {}
 }
 
-template class FPGAReader<PackedData&>;
+//template class FPGAReader<PackedData&>;
 
 }  // namespace caffe
