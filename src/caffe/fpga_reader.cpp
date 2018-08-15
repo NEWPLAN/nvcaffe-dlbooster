@@ -67,7 +67,7 @@ void FPGAReader<DatumType>::InternalThreadEntryN(size_t thread_id)
 
   start_reading_flag_.wait();
 
-  size_t queue_id, ranked_rec, batch_on_solver, sample_count = 0UL;
+  //size_t queue_id, ranked_rec, batch_on_solver, sample_count = 0UL;
   shared_ptr<DatumType> datum = make_shared<DatumType>();
   try 
   {
