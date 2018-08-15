@@ -20,7 +20,6 @@ FPGAReader<DatumType>::FPGAReader(const LayerParameter& param,
       parser_threads_num_(1U),
       transf_threads_num_(transf_threads_num),
       queues_num_(parser_threads_num_ * transf_threads_num_),
-      queue_depth_(queue_depth),
       solver_count_(solver_count),
       solver_rank_(solver_rank),
       skip_one_batch_(skip_one_batch),
@@ -34,8 +33,6 @@ FPGAReader<DatumType>::FPGAReader(const LayerParameter& param,
 
   free_.resize(queues_num_);
   full_.resize(queues_num_);
-  LOG(INFO) << (sample_only ? "Sample " : "") << "Data Reader threads: "
-      << this->threads_num() << ", out queues: " << queues_num_ << ", depth: " << queue_depth_;
   for (size_t i = 0; i < queues_num_; ++i) 
   {
     full_[i] = make_shared<BlockingQueue<shared_ptr<DatumType>>>();
