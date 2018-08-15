@@ -71,7 +71,7 @@ class FPGAReader : public InternalThread
   void InternalThreadEntryN(size_t thread_id) override;
 
   const size_t parser_threads_num_, transf_threads_num_;
-  const size_t queues_num_;
+  const size_t queues_num_,queue_depth_;
 
   const size_t solver_count_, solver_rank_;
   size_t batch_size_;

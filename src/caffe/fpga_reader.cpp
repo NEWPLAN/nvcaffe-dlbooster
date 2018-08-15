@@ -26,7 +26,9 @@ FPGAReader<DatumType>::FPGAReader(const LayerParameter& param,
       current_rec_(0),
       current_queue_(0),
       shuffle_(shuffle),
-      epoch_count_required_(epoch_count_required) {
+      epoch_count_required_(epoch_count_required) 
+      {
+        queue_depth_=256;
   CHECK(queues_num_);
   CHECK(queue_depth_);
   batch_size_ = param.data_param().batch_size();
