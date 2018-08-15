@@ -15,6 +15,8 @@
 #include "caffe/util/db.hpp"
 #include "caffe/util/thread_pool.hpp"
 
+#define MAX_GPU_PER_MACHINE_SUPPORT 128
+
 namespace caffe 
 {
 
@@ -93,7 +95,7 @@ protected:
 };
 
 template <typename DatumType>
-vector<boost::lockfree::queue<shared_ptr<DatumType>, boost::lockfree::capacity<1024>>> FPGAReader<DatumType>::pixel_queue(1);
+vector<boost::lockfree::queue<shared_ptr<DatumType>, boost::lockfree::capacity<1024>>> FPGAReader<DatumType>::pixel_queue(MAX_GPU_PER_MACHINE_SUPPORT);
 template <typename DatumType>
 boost::lockfree::queue<shared_ptr<DatumType>, boost::lockfree::capacity<1024>> FPGAReader<DatumType>::recycle_queue;
 template <typename DatumType>

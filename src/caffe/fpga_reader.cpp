@@ -31,7 +31,7 @@ FPGAReader<DatumType>::FPGAReader(const LayerParameter& param,
   CHECK(queue_depth_);
   batch_size_ = param.data_param().batch_size();
 
-  FPGAReader<DatumType>::pixel_queue.resize(2);
+  //FPGAReader<DatumType>::pixel_queue.resize(2);
   //full_.resize(queues_num_);
   // for (size_t i = 0; i < queues_num_; ++i) 
   // {
