@@ -22,7 +22,7 @@ FPGAReader<DatumType>::FPGAReader(const LayerParameter& param,
       queues_num_(parser_threads_num_ * transf_threads_num_),
       solver_count_(solver_count),
       solver_rank_(solver_rank),
-      skip_one_batch_(skip_one_batch),
+      //skip_one_batch_(skip_one_batch),
       current_rec_(0),
       current_queue_(0),
       shuffle_(shuffle),
@@ -31,19 +31,19 @@ FPGAReader<DatumType>::FPGAReader(const LayerParameter& param,
   CHECK(queue_depth_);
   batch_size_ = param.data_param().batch_size();
 
-  free_.resize(queues_num_);
-  full_.resize(queues_num_);
-  for (size_t i = 0; i < queues_num_; ++i) 
-  {
-    full_[i] = make_shared<BlockingQueue<shared_ptr<DatumType>>>();
-    free_[i] = make_shared<BlockingQueue<shared_ptr<DatumType>>>();
-    for (size_t j = 0; j < queue_depth_; ++j) 
-    {
-      free_[i]->push(make_shared<DatumType>());
-    }
-  }
-  db_source_ = param.data_param().source();
-  init_ = make_shared<BlockingQueue<shared_ptr<DatumType>>>();
+  pixel_queue.resize(queues_num_);
+  //full_.resize(queues_num_);
+  // for (size_t i = 0; i < queues_num_; ++i) 
+  // {
+  //   full_[i] = make_shared<BlockingQueue<shared_ptr<DatumType>>>();
+  //   free_[i] = make_shared<BlockingQueue<shared_ptr<DatumType>>>();
+  //   for (size_t j = 0; j < queue_depth_; ++j) 
+  //   {
+  //     free_[i]->push(make_shared<DatumType>());
+  //   }
+  // }
+  // db_source_ = param.data_param().source();
+  // init_ = make_shared<BlockingQueue<shared_ptr<DatumType>>>();
   StartInternalThread(false, Caffe::next_seed());
 }
 
