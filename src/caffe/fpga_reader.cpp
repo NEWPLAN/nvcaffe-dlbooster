@@ -64,14 +64,8 @@ void FPGAReader<DatumType>::InternalThreadEntryN(size_t thread_id)
 {
 
   shared_ptr<DatumType> init_datum = make_shared<DatumType>();
-  cm.fetch(init_datum.get());
-  init_->push(init_datum);
 
-  if (!sample_only_) {
-    start_reading_flag_.wait();
-  }
-  cm.rewind();
-  size_t skip = skip_one_batch_ ? batch_size_ : 0UL;
+  start_reading_flag_.wait();
 
   size_t queue_id, ranked_rec, batch_on_solver, sample_count = 0UL;
   shared_ptr<DatumType> datum = make_shared<DatumType>();
@@ -79,30 +73,30 @@ void FPGAReader<DatumType>::InternalThreadEntryN(size_t thread_id)
   {
     while (!must_stop(thread_id)) 
     {
-      cm.next(datum);
+      //cm.next(datum);
       // See comment below
-      ranked_rec = (size_t) datum->record_id() / cm.full_cycle();
-      batch_on_solver = ranked_rec * parser_threads_num_ + thread_id;
-      queue_id = batch_on_solver % queues_num_;
+      //ranked_rec = (size_t) datum->record_id() / cm.full_cycle();
+      //batch_on_solver = ranked_rec * parser_threads_num_ + thread_id;
+      //queue_id = batch_on_solver % queues_num_;
+//
+      // if (thread_id == 0 && skip > 0U) 
+      // {
+      //   --skip;
+      //   continue;
+      // }
 
-      if (thread_id == 0 && skip > 0U) 
-      {
-        --skip;
-        continue;
-      }
+      // full_push(queue_id, datum);
 
-      full_push(queue_id, datum);
-
-      if (sample_only_) 
-      {
-        ++sample_count;
-        if (sample_count >= batch_size_) 
-        {
-          // sample batch complete
-          break;
-        }
-      }
-      datum = free_pop(queue_id);
+      // if (sample_only_) 
+      // {
+      //   ++sample_count;
+      //   if (sample_count >= batch_size_) 
+      //   {
+      //     // sample batch complete
+      //     break;
+      //   }
+      // }
+      // datum = free_pop(queue_id);
     }
   } catch (boost::thread_interrupted&) {}
 }
