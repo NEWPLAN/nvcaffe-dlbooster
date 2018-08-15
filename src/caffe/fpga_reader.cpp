@@ -10,16 +10,11 @@ namespace caffe
 
 template<typename DatumType>
 FPGAReader<DatumType>::FPGAReader(const LayerParameter& param,
-    size_t solver_count,
-    size_t solver_rank,
-    size_t parser_threads_num,
-    size_t transf_threads_num,
-    size_t queue_depth,
-    bool sample_only,
-    bool skip_one_batch,
-    bool cache,
-    bool shuffle,
-    bool epoch_count_required)
+      size_t solver_count,
+      size_t solver_rank,
+      size_t transf_threads_num,
+      bool shuffle,
+      bool epoch_count_required);
     : InternalThread(Caffe::current_device(),
           solver_rank, 1U, false),
       parser_threads_num_(threads_num()),
@@ -31,9 +26,7 @@ FPGAReader<DatumType>::FPGAReader(const LayerParameter& param,
       skip_one_batch_(skip_one_batch),
       current_rec_(0),
       current_queue_(0),
-      sample_only_(sample_only),
-      cache_(cache && !sample_only),
-      shuffle_(cache_ && shuffle),
+      shuffle_(shuffle),
       epoch_count_required_(epoch_count_required) {
   CHECK(queues_num_);
   CHECK(queue_depth_);
