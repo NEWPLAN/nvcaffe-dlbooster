@@ -14,7 +14,7 @@ FPGAReader<DatumType>::FPGAReader(const LayerParameter& param,
       size_t solver_rank,
       size_t transf_threads_num,
       bool shuffle,
-      bool epoch_count_required);
+      bool epoch_count_required)
     : InternalThread(Caffe::current_device(),
           solver_rank, 1U, false),
       parser_threads_num_(threads_num()),
