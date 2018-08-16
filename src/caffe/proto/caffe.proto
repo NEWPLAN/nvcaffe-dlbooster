@@ -1312,6 +1312,7 @@ message DataParameter {
   optional uint32 new_height = 19 [default = 0];
   optional uint32 new_width = 20 [default = 0];
   optional uint32 new_channel = 30 [default = 0];
+  optional string manifest = 31;
 }
 
 message FPGADataParameter {
@@ -1362,6 +1363,7 @@ message FPGADataParameter {
   optional uint32 new_height = 19 [default = 0];
   optional uint32 new_width = 20 [default = 0];
   optional uint32 new_channel = 30 [default = 0];
+  optional string manifest = 31;
 }
 
 // Message that store parameters used by DetectionEvaluateLayer
