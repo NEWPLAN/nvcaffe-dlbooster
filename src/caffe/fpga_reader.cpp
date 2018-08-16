@@ -97,11 +97,13 @@ void FPGAReader<DatumType>::InternalThreadEntry()
 template<typename DatumType>
 void FPGAReader<DatumType>::InternalThreadEntryN(size_t thread_id)
 {
-
+  LOG(INFO)<< "In FPGA Reader.....loops";
   start_reading_flag_.wait(); // waiting for run.
   size_t tmp_solver_count = 0U;
   auto& pixel_buffer = FPGAReader::pixel_queue[tmp_solver_count];
   auto& recycle_buffer = FPGAReader::recycle_queue;
+
+  LOG(INFO)<< "In FPGA Reader.....after wait";
 
   //shared_ptr<DatumType> datum = make_shared<DatumType>();
   try
