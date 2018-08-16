@@ -17,7 +17,7 @@
 
 #define MAX_GPU_PER_MACHINE_SUPPORT 128
 
-namespace caffe 
+namespace caffe
 {
 
 
@@ -38,47 +38,47 @@ class PackedData
  * in a round-robin way to keep parallel training deterministic.
  */
 template <typename DatumType>
-class FPGAReader : public InternalThread 
+class FPGAReader : public InternalThread
 {
 
- public:
+public:
   FPGAReader(const LayerParameter& param,
-      size_t solver_count,
-      size_t solver_rank,
-      size_t transf_threads_num,
-      bool shuffle,
-      bool epoch_count_required);
+             size_t solver_count,
+             size_t solver_rank,
+             size_t transf_threads_num,
+             bool shuffle,
+             bool epoch_count_required);
   virtual ~FPGAReader();
 
   void start_reading() { start_reading_flag_.set();}
 
-  // push back 
+  // push back
   bool recycle_packed_data(const shared_ptr<DatumType>& packed_data)
   {
-    if(false)
-      return false;
+    while (FPGADataLayer::cycle_queue.push(packed_data))
+    {
+      std::this_thread::sleep_for(std::chrono::milliseconds(13));
+    }
     return true;
   }
-  shared_ptr<DatumType> pop_out_packed_data(bool& res)
+
+  bool pop_packed_data(shared_ptr<DatumType>& packed_data, int bulket == 0)
   {
-    res=false;
-    res=true;
-    return nullptr;
+    while (FPGADataLayer::pixel_queue[bulket].push(packed_data))
+    {
+      std::this_thread::sleep_for(std::chrono::milliseconds(13));
+    }
+    return true;
   }
 
- protected:
+protected:
   void InternalThreadEntry() override;
   void InternalThreadEntryN(size_t thread_id) override;
 
-  const size_t parser_threads_num_, transf_threads_num_;
-  const size_t queues_num_,queue_depth_;
-
   const size_t solver_count_, solver_rank_;
-  size_t batch_size_;
+  size_t batch_size_, channel_, height_, width_;
 
- private:
-  int current_rec_;
-  int current_queue_;
+private:
   Flag start_reading_flag_;
   const bool shuffle_;
   const bool epoch_count_required_;
@@ -86,10 +86,11 @@ class FPGAReader : public InternalThread
 
 protected:
   //newplan added
+  void images_shuffles(int shuffle_rank);
   static vector<boost::lockfree::queue<shared_ptr<DatumType>, boost::lockfree::capacity<1024>>> pixel_queue;
   static boost::lockfree::queue<shared_ptr<DatumType>, boost::lockfree::capacity<1024>> recycle_queue;
-	static vector<std::pair<std::string, int>> train_manifest;
-	static vector<std::pair<std::string, int>> val_manifest;
+  static vector<std::pair<std::string, int>> train_manifest;
+  static vector<std::pair<std::string, int>> val_manifest;
 
   DISABLE_COPY_MOVE_AND_ASSIGN(FPGAReader);
 };
