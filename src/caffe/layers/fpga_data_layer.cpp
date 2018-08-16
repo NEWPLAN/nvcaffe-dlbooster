@@ -216,6 +216,18 @@ FPGADataLayer<Ftype, Btype>::DataLayerSetUp(const vector<Blob*>& bottom, const v
         boost::thread(&FPGADataLayer::fpga_reader_cycle, batch_size, new_height, new_width, new_channel);
         LOG(INFO) << "in rank 0 and TRAIN phase to launch threads ----------------------NEWPLAN-----------";
         LOG(INFO) << "batch size is :" << batch_size << " --------------------NEWPLAN----------------------------\n\n";
+
+        if(!train_reader)
+        {
+          train_reader=std::make_shared<FPGAReader<PackedData>>(param,
+              Caffe::solver_count(),
+              this->rank_,
+              batch_size,
+              shuffle,
+              this->phase_ == TRAIN);
+          train_reader->start_reading();
+          LOG(INFO) << "create train reader...."
+        }
     }
   }
   // Read a data point, and use it to initialize the top blob.

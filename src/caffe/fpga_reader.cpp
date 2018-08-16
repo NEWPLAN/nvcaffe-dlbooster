@@ -13,17 +13,18 @@ template<typename DatumType>
 FPGAReader<DatumType>::FPGAReader(const LayerParameter& param,
                                   size_t solver_count,
                                   size_t solver_rank,
-                                  size_t transf_threads_num,
+                                  size_t batch_size,
                                   bool shuffle,
                                   bool epoch_count_required)
   : InternalThread(Caffe::current_device(), solver_rank, 1U, false),
     solver_count_(solver_count),
     solver_rank_(solver_rank),
+    batch_size_(batch_size),
     shuffle_(shuffle),
     epoch_count_required_(epoch_count_required)
 {
 
-  batch_size_ = param.data_param().batch_size();
+  //batch_size_ = param.data_param().batch_size();
   height_ = param.data_param().new_height();
   width_ = param.data_param().new_width();
   channel_ = param.data_param().new_channel();
@@ -67,12 +68,14 @@ FPGAReader<DatumType>::FPGAReader(const LayerParameter& param,
       }
     }
   }
+  LOG(INFO) << "FPGAReader finished construction function....";
   StartInternalThread(true, Caffe::next_seed());
 }
 
 template<typename DatumType>
 FPGAReader<DatumType>::~FPGAReader()
 {
+  LOG(INFO) << "FPGAReader goodbye....";
   StopInternalThread();
 }
 
@@ -81,6 +84,7 @@ void FPGAReader<DatumType>::images_shuffles(int shuffle_rank)
 {
   auto& shuffle_array = FPGAReader::val_manifest;
   std::random_shuffle ( shuffle_array.begin(), shuffle_array.end());
+  LOG(INFO) << "shuffle FPGAreader....";
 }
 
 template<typename DatumType>
@@ -112,8 +116,9 @@ void FPGAReader<DatumType>::InternalThreadEntryN(size_t thread_id)
       {
         int cycles_index = 0;
         string a(tmp_datum->data_);
-        /*
-                LOG(INFO) << "Received from consumer: " << a;*/
+        
+        LOG_EVERY_N(INFO, 10) << "Received from consumer: " << a;
+
         sprintf(tmp_datum->data_, "producer id : %u, index = %d", lwp_id(), index++);
         index %= 5000000;
 

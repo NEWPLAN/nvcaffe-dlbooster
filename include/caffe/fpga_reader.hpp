@@ -45,7 +45,7 @@ public:
   FPGAReader(const LayerParameter& param,
              size_t solver_count,
              size_t solver_rank,
-             size_t transf_threads_num,
+             size_t batch_size,
              bool shuffle,
              bool epoch_count_required);
   virtual ~FPGAReader();

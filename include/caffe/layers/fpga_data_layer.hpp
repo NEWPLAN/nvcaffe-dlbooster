@@ -65,6 +65,7 @@ class FPGADataLayer : public BasePrefetchingDataLayer<Ftype, Btype> {
   //newplan added
   std::shared_ptr<FPGAReader<PackedData>> train_reader, val_reader;
 
+
   static Flag fpga_reader_flag;
   static boost::lockfree::queue<char*, boost::lockfree::capacity<1024>> pixel_queue, cycle_queue;
 	static vector<std::pair<std::string, int>> train_index;
