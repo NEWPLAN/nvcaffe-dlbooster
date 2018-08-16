@@ -62,7 +62,7 @@ public:
     return true;
   }
 
-  bool pop_packed_data(shared_ptr<DatumType>& packed_data, int bulket == 0)
+  bool pop_packed_data(shared_ptr<DatumType>& packed_data, int bulket = 0)
   {
     while (FPGADataLayer::pixel_queue[bulket].push(packed_data))
     {
