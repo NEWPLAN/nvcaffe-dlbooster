@@ -42,7 +42,8 @@ FPGAReader<DatumType>::FPGAReader(const LayerParameter& param,
   {
     FPGAReader::train_manifest.emplace_back(std::make_pair(filename, label));
   }
-  LOG(INFO) << /*this->print_current_device() <<*/ " A total of " << FPGAReader::train_manifest.size() << " images.";
+  /*LOG(INFO) << this->print_current_device() << " A total of " << FPGAReader::train_manifest.size() << " images.";*/
+  LOG(INFO) <<" A total of " << FPGAReader::train_manifest.size() << " images.";
 
   size_t tmp_solver_count = 0U;
   auto& pixel_buffer = FPGAReader::pixel_queue[tmp_solver_count];
