@@ -4,6 +4,7 @@
 #include "caffe/util/rng.hpp"
 #include "caffe/parallel.hpp"
 #include "caffe/fpga_reader.hpp"
+#include <algorithm>
 
 namespace caffe
 {
