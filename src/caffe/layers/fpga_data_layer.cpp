@@ -9,8 +9,8 @@ namespace caffe
 template<typename Ftype, typename Btype>
 FPGADataLayer<Ftype, Btype>::FPGADataLayer(const LayerParameter& param, size_t solver_rank)
   : BasePrefetchingDataLayer<Ftype, Btype>(param, solver_rank),
-    cache_(param.fpga_data_param().cache()),
-    shuffle_(param.fpga_data_param().shuffle())
+    cache_(param.data_param().cache()),
+    shuffle_(param.data_param().shuffle())
 {
   //newplan added
   LOG(INFO) << " in auto mode: " << this->auto_mode_;
@@ -147,14 +147,14 @@ void
 FPGADataLayer<Ftype, Btype>::DataLayerSetUp(const vector<Blob*>& bottom, const vector<Blob*>& top)
 {
   const LayerParameter& param = this->layer_param();
-  const int batch_size = param.fpga_data_param().batch_size();
+  const int batch_size = param.data_param().batch_size();
   const bool cache = cache_ && this->phase_ == TRAIN;
   const bool shuffle = cache && shuffle_ && this->phase_ == TRAIN;
 
   //newplan added
-  const size_t new_height = param.fpga_data_param().new_height();
-  const size_t new_width = param.fpga_data_param().new_width();
-  const size_t new_channel = param.fpga_data_param().new_channel();
+  const size_t new_height = param.data_param().new_height();
+  const size_t new_width = param.data_param().new_width();
+  const size_t new_channel = param.data_param().new_channel();
 
   if (this->auto_mode_)
   {
@@ -320,7 +320,7 @@ void FPGADataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t
   const bool sample_only = sample_only_.load();
   // Reshape according to the first datum of each batch
   // on single input batches allows for inputs of varying dimension.
-  const int batch_size = this->layer_param_.fpga_data_param().batch_size();
+  const int batch_size = this->layer_param_.data_param().batch_size();
 
   const size_t qid = sample_only ? 0UL : queue_id;
   DataReader<Datum>* reader = sample_only ? sample_reader_.get() : reader_.get();
@@ -521,13 +521,13 @@ void FPGADataLayer<Ftype, Btype>::load_batch_v2(Batch* batch, int thread_id, siz
 {
   // Reshape according to the first datum of each batch
   // on single input batches allows for inputs of varying dimension.
-  const int batch_size = this->layer_param_.fpga_data_param().batch_size();
+  const int batch_size = this->layer_param_.data_param().batch_size();
   const bool use_gpu_transform = this->is_gpu_transform();
   const int cropped_height = this->layer_param_.transform_param().crop_size();
   const int cropped_width = this->layer_param_.transform_param().crop_size();
-  const int new_height = this->layer_param_.fpga_data_param().new_height();
-  const int new_width = this->layer_param_.fpga_data_param().new_width();
-  const int new_channel = this->layer_param_.fpga_data_param().new_channel();
+  const int new_height = this->layer_param_.data_param().new_height();
+  const int new_width = this->layer_param_.data_param().new_width();
+  const int new_channel = this->layer_param_.data_param().new_channel();
 
   Packing packing = NHWC;  // OpenCV
 
