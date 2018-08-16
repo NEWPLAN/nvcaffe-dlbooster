@@ -226,7 +226,7 @@ FPGADataLayer<Ftype, Btype>::DataLayerSetUp(const vector<Blob*>& bottom, const v
               shuffle,
               this->phase_ == TRAIN);
           train_reader->start_reading();
-          LOG(INFO) << "create train reader...."
+          LOG(INFO) << "create train reader....";
         }
     }
   }
