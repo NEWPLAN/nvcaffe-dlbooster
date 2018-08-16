@@ -53,7 +53,7 @@ FPGAReader<DatumType>::FPGAReader(const LayerParameter& param,
     {
       PackedData* tmp_buf = new PackedData;
       tmp_buf->label_ = new int[batch_size_];
-      tmp_buf->data_ = new int[batch_size_ * height_ * width_ * channel_];
+      tmp_buf->data_ = new char[batch_size_ * height_ * width_ * channel_];
 
       tmp_buf->channel = channel_;
       tmp_buf->height = height_;
