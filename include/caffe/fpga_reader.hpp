@@ -23,6 +23,7 @@ namespace caffe
 
 class PackedData
 {
+public:
   size_t channel;
   size_t height;
   size_t width;
