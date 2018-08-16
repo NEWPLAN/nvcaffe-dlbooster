@@ -217,6 +217,7 @@ FPGADataLayer<Ftype, Btype>::DataLayerSetUp(const vector<Blob*>& bottom, const v
         LOG(INFO) << "in rank 0 and TRAIN phase to launch threads ----------------------NEWPLAN-----------";
         LOG(INFO) << "batch size is :" << batch_size << " --------------------NEWPLAN----------------------------\n\n";
     }
+  }
   // Read a data point, and use it to initialize the top blob.
   shared_ptr<Datum> sample_datum = sample_only_ ? sample_reader_->sample() : reader_->sample();
   datum_encoded_ = sample_datum->encoded();
