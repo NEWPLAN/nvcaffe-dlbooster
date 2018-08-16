@@ -32,7 +32,7 @@ class FPGADataLayer : public BasePrefetchingDataLayer<Ftype, Btype> {
     return false;
   }
   const char* type() const override {
-    return "Data";
+    return "FPGAData";
   }
   int ExactNumBottomBlobs() const override {
     return 0;
