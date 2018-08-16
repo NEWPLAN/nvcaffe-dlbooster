@@ -87,8 +87,8 @@ private:
 protected:
   //newplan added
   void images_shuffles(int shuffle_rank);
-  static vector<boost::lockfree::queue<shared_ptr<DatumType>, boost::lockfree::capacity<1024>>> pixel_queue;
-  static boost::lockfree::queue<shared_ptr<DatumType>, boost::lockfree::capacity<1024>> recycle_queue;
+  static vector<boost::lockfree::queue<DatumType*, boost::lockfree::capacity<1024>>> pixel_queue;
+  static boost::lockfree::queue<DatumType*, boost::lockfree::capacity<1024>> recycle_queue;
   static vector<std::pair<std::string, int>> train_manifest;
   static vector<std::pair<std::string, int>> val_manifest;
 
@@ -96,9 +96,9 @@ protected:
 };
 
 template <typename DatumType>
-vector<boost::lockfree::queue<shared_ptr<DatumType>, boost::lockfree::capacity<1024>>> FPGAReader<DatumType>::pixel_queue(MAX_GPU_PER_MACHINE_SUPPORT);
+vector<boost::lockfree::queue<DatumType*, boost::lockfree::capacity<1024>>> FPGAReader<DatumType>::pixel_queue(MAX_GPU_PER_MACHINE_SUPPORT);
 template <typename DatumType>
-boost::lockfree::queue<shared_ptr<DatumType>, boost::lockfree::capacity<1024>> FPGAReader<DatumType>::recycle_queue;
+boost::lockfree::queue<DatumType*, boost::lockfree::capacity<1024>> FPGAReader<DatumType>::recycle_queue;
 template <typename DatumType>
 vector<std::pair<std::string, int>> FPGAReader<DatumType>::train_manifest;
 template <typename DatumType>
