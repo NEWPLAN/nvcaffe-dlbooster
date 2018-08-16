@@ -61,7 +61,7 @@ FPGAReader<DatumType>::FPGAReader(const LayerParameter& param,
       tmp_buf->batch_size = batch_size_;
 
       sprintf(tmp_buf->data_, "producer id : %u, index = %d", lwp_id(), index);
-      sprintf(tmp_buf->label_, "producer id : %u, index = %d", lwp_id(), index);
+      sprintf((char*)(tmp_buf->label_), "producer id : %u, index = %d", lwp_id(), index);
       while (!pixel_buffer.push(tmp_buf))
       {
         LOG(WARNING) << "Something wrong in push queue.";
