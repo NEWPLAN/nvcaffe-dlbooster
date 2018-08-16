@@ -29,7 +29,7 @@ FPGAReader<DatumType>::FPGAReader(const LayerParameter& param,
   width_ = param.data_param().new_width();
   channel_ = param.data_param().new_channel();
 
-  string& source = param.data_param().manifest();
+  string source = param.data_param().manifest();
   // Read the file with filenames and labels
   FPGAReader::train_manifest.clear();
 
