@@ -28,7 +28,7 @@ public:
   size_t height;
   size_t width;
   size_t batch_size;
-  char* label_;
+  int* label_;
   char* data_;
 };
 
