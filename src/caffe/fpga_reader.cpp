@@ -47,7 +47,7 @@ FPGAReader<DatumType>::FPGAReader(const LayerParameter& param,
 
   size_t tmp_solver_count = 0U;
   auto& pixel_buffer = FPGAReader::pixel_queue[tmp_solver_count];
-  auto& recycle_buffer = FPGAReader::cycle_queue;
+  auto& recycle_buffer = FPGAReader::recycle_queue;
   {
     for (auto index = 0 ; index < 1000; index++)
     {
@@ -101,7 +101,7 @@ void FPGAReader<DatumType>::InternalThreadEntryN(size_t thread_id)
   start_reading_flag_.wait(); // waiting for run.
   size_t tmp_solver_count = 0U;
   auto& pixel_buffer = FPGAReader::pixel_queue[tmp_solver_count];
-  auto& recycle_buffer = FPGAReader::cycle_queue;
+  auto& recycle_buffer = FPGAReader::recycle_queue;
 
   //shared_ptr<DatumType> datum = make_shared<DatumType>();
   try
