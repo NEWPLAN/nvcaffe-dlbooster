@@ -141,7 +141,7 @@ size_t FPGADataLayer<Ftype, Btype>::queue_id(size_t thread_id) const
   }
   return qid % this->queues_num_;
 };
-
+static bool doneee = false;
 template<typename Ftype, typename Btype>
 void
 FPGADataLayer<Ftype, Btype>::DataLayerSetUp(const vector<Blob*>& bottom, const vector<Blob*>& top)
@@ -217,7 +217,7 @@ FPGADataLayer<Ftype, Btype>::DataLayerSetUp(const vector<Blob*>& bottom, const v
         LOG(INFO) << "in rank 0 and TRAIN phase to launch threads ----------------------NEWPLAN-----------";
         LOG(INFO) << "batch size is :" << batch_size << " --------------------NEWPLAN----------------------------\n\n";
 
-        if(!train_reader)
+        if(!train_reader && !doneee)
         {
           train_reader=std::make_shared<FPGAReader<PackedData>>(param,
               Caffe::solver_count(),
@@ -227,6 +227,7 @@ FPGADataLayer<Ftype, Btype>::DataLayerSetUp(const vector<Blob*>& bottom, const v
               this->phase_ == TRAIN);
           train_reader->start_reading();
           LOG(INFO) << "create train reader....";
+          doneee = true;
         }
     }
   }
