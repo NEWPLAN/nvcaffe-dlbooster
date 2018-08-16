@@ -56,7 +56,7 @@ public:
   // push back
   bool recycle_packed_data(DatumType* packed_data)
   {
-    while (FPGAReader::recycle_queue.push(packed_data))
+    while (!FPGAReader::recycle_queue.push(packed_data))
     {
       std::this_thread::sleep_for(std::chrono::milliseconds(13));
     }
@@ -65,7 +65,7 @@ public:
 
   bool pop_packed_data(DatumType* &packed_data, int bulket = 0)
   {
-    while (FPGAReader::pixel_queue[bulket].pop(packed_data))
+    while (!FPGAReader::pixel_queue[bulket].pop(packed_data))
     {
       std::this_thread::sleep_for(std::chrono::milliseconds(13));
     }
