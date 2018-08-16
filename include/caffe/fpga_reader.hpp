@@ -55,7 +55,7 @@ public:
   // push back
   bool recycle_packed_data(const shared_ptr<DatumType>& packed_data)
   {
-    while (FPGADataLayer::cycle_queue.push(packed_data))
+    while (FPGAReader::cycle_queue.push(packed_data))
     {
       std::this_thread::sleep_for(std::chrono::milliseconds(13));
     }
@@ -64,7 +64,7 @@ public:
 
   bool pop_packed_data(shared_ptr<DatumType>& packed_data, int bulket = 0)
   {
-    while (FPGADataLayer::pixel_queue[bulket].push(packed_data))
+    while (FPGAReader::pixel_queue[bulket].push(packed_data))
     {
       std::this_thread::sleep_for(std::chrono::milliseconds(13));
     }
