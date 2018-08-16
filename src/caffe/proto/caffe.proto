@@ -660,6 +660,8 @@ message LayerParameter {
   optional ConvolutionParameter convolution_param = 106;
   optional CropParameter crop_param = 144;
   optional DataParameter data_param = 107;
+  //newplan added
+  optional FPGADataParameter fpga_data_param = 1314;
   optional DetectionEvaluateParameter detection_evaluate_param = 205;
   optional DetectionOutputParameter detection_output_param = 204;
   optional DropoutParameter dropout_param = 108;
@@ -1263,6 +1265,56 @@ message CropParameter {
 }
 
 message DataParameter {
+  enum DB {
+    LEVELDB = 0;
+    LMDB = 1;
+  }
+  // Specify the data source.
+  optional string source = 1;
+  // Specify the batch size.
+  optional uint32 batch_size = 4;
+  // The rand_skip variable is for the data layer to skip a few data points
+  // to avoid all asynchronous sgd clients to start at the same point. The skip
+  // point would be set as rand_skip * rand(0,1). Note that rand_skip should not
+  // be larger than the number of keys in the database.
+  // DEPRECATED. Each solver accesses a different subset of the database.
+  optional uint32 rand_skip = 7 [default = 0];
+  optional DB backend = 8 [default = LEVELDB];
+  // DEPRECATED. See TransformationParameter. For data pre-processing, we can do
+  // simple scaling and subtracting the data mean, if provided. Note that the
+  // mean subtraction is always carried out before scaling.
+  optional float scale = 2 [default = 1];
+  optional string mean_file = 3;
+  // DEPRECATED. See TransformationParameter. Specify if we would like to randomly
+  // crop an image.
+  optional uint32 crop_size = 5 [default = 0];
+  // DEPRECATED. See TransformationParameter. Specify if we want to randomly mirror
+  // data.
+  optional bool mirror = 6 [default = false];
+  // Force the encoded image to have 3 color channels
+  optional bool force_encoded_color = 9 [default = false];
+  // Deprecated
+  optional uint32 prefetch = 10 [default = 0];
+  // Number of Data Transformer threads per GPU. If 0 Caffe optimizes it automatically.
+  // Takes effect only when used together with 'parser_threads' setting.
+  // Ignored and always set to 1 for test nets.
+  optional uint32 threads  = 11 [default = 0];
+  // Number of Parser threads per GPU. If 0 Caffe optimizes it automatically.
+  // Takes effect only when used together with 'threads' setting.
+  // Ignored and always set to 1 for test nets.
+  optional uint32 parser_threads  = 12 [default = 0];
+  // Cache observations while reading
+  optional bool cache = 13 [default = false];
+  // Shuffle observations while reading for better accuracy. Ignored if 'cache' is false.
+  optional bool shuffle = 14 [default = false];
+
+  // newplan added
+  optional uint32 new_height = 19 [default = 0];
+  optional uint32 new_width = 20 [default = 0];
+  optional uint32 new_channel = 30 [default = 0];
+}
+
+message FPGADataParameter {
   enum DB {
     LEVELDB = 0;
     LMDB = 1;
@@ -2170,6 +2222,8 @@ message V1LayerParameter {
   optional ContrastiveLossParameter contrastive_loss_param = 40;
   optional ConvolutionParameter convolution_param = 10;
   optional DataParameter data_param = 11;
+  //newplan added
+  optional FPGADataParameter fpga_data_param = 1234;
   optional DropoutParameter dropout_param = 12;
   optional DummyDataParameter dummy_data_param = 26;
   optional EltwiseParameter eltwise_param = 24;

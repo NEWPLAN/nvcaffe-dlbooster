@@ -18,6 +18,10 @@
 #include "caffe/layers/data_layer.hpp"
 #include "caffe/layers/annotated_data_layer.hpp"
 
+//newplan added
+#include "caffe/layers/fpga_data_layer.hpp"
+
+
 namespace caffe {
 
 class Solver;
@@ -309,6 +313,11 @@ class Net {
       if (typeid(*layer) == typeid(DataLayer<Ftype, Btype>) ||
           typeid(*layer) == typeid(AnnotatedDataLayer<Ftype, Btype>)) {
         bytes += reinterpret_cast<DataLayer<Ftype, Btype>*>(layer.get())->prefetch_bytes();
+      }
+      //newplan added
+      if(typeid(*layer) == typeid(FPGADataLayer<Ftype, Btype>))
+      {
+        bytes += reinterpret_cast<FPGADataLayer<Ftype, Btype>*>(layer.get())->prefetch_bytes();
       }
     }
     return bytes;
