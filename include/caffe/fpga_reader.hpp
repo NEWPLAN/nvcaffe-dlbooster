@@ -54,7 +54,7 @@ public:
   void start_reading() { start_reading_flag_.set();}
 
   // push back
-  bool recycle_packed_data(const shared_ptr<DatumType>& packed_data)
+  bool recycle_packed_data(DatumType* packed_data)
   {
     while (FPGAReader::recycle_queue.push(packed_data))
     {
@@ -63,9 +63,9 @@ public:
     return true;
   }
 
-  bool pop_packed_data(shared_ptr<DatumType>& packed_data, int bulket = 0)
+  bool pop_packed_data(DatumType* &packed_data, int bulket = 0)
   {
-    while (FPGAReader::pixel_queue[bulket].push(packed_data))
+    while (FPGAReader::pixel_queue[bulket].pop(packed_data))
     {
       std::this_thread::sleep_for(std::chrono::milliseconds(13));
     }
