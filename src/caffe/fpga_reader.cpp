@@ -77,7 +77,7 @@ FPGAReader<DatumType>::~FPGAReader()
 }
 
 template<typename DatumType>
-void images_shuffles(int shuffle_rank)
+void FPGAReader<DatumType>::images_shuffles(int shuffle_rank)
 {
   auto& shuffle_array = FPGAReader::val_manifest;
   std::random_shuffle ( shuffle_array.begin(), shuffle_array.end());
