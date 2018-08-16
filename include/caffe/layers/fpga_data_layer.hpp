@@ -18,6 +18,7 @@
 
 //newplan added
 #include <boost/lockfree/queue.hpp>
+#include "caffe/fpga_reader.hpp"
 
 namespace caffe {
 
@@ -31,24 +32,14 @@ class FPGADataLayer : public BasePrefetchingDataLayer<Ftype, Btype> {
   bool ShareInParallel() const override {
     return false;
   }
-  const char* type() const override {
-    return "FPGAData";
-  }
-  int ExactNumBottomBlobs() const override {
-    return 0;
-  }
-  int MinTopBlobs() const override {
-    return 1;
-  }
-  int MaxTopBlobs() const override {
-    return 2;
-  }
+  const char* type() const override {return "FPGAData";}
+  int ExactNumBottomBlobs() const override { return 0;}
+  int MinTopBlobs() const override { return 1; }
+  int MaxTopBlobs() const override { return 2; }
   Flag* layer_inititialized_flag() override {
     return this->phase_ == TRAIN ? &layer_inititialized_flag_ : nullptr;
   }
-  size_t prefetch_bytes() {
-    return this->batch_transformer_->prefetch_bytes();
-  }
+  size_t prefetch_bytes() { return this->batch_transformer_->prefetch_bytes(); }
 
  protected:
   void InitializePrefetch() override;
@@ -56,9 +47,7 @@ class FPGADataLayer : public BasePrefetchingDataLayer<Ftype, Btype> {
   size_t queue_id(size_t thread_id) const override;
 
   void init_offsets();
-  void start_reading() override {
-    reader_->start_reading();
-  }
+  void start_reading() override { reader_->start_reading(); }
 
   std::shared_ptr<DataReader<Datum>> sample_reader_, reader_;
   std::vector<shared_ptr<GPUMemory::Workspace>> tmp_gpu_buffer_;
@@ -71,7 +60,12 @@ class FPGADataLayer : public BasePrefetchingDataLayer<Ftype, Btype> {
   const bool cache_, shuffle_;
   bool datum_encoded_;
 
+  
+
   //newplan added
+  std::shared_ptr<FPGAReader<PackedData>> train_reader, val_reader;
+
+  static Flag fpga_reader_flag;
   static boost::lockfree::queue<char*, boost::lockfree::capacity<1024>> pixel_queue, cycle_queue;
 	static vector<std::pair<std::string, int>> train_index;
 	static vector<std::pair<std::string, int>> val_index;
@@ -131,6 +125,8 @@ template <typename Ftype, typename Btype>
 vector<std::pair<std::string, int>> FPGADataLayer<Ftype, Btype>::train_index;
 template <typename Ftype, typename Btype>
 vector<std::pair<std::string, int>> FPGADataLayer<Ftype, Btype>::val_index;
+template <typename Ftype, typename Btype>
+Flag FPGADataLayer<Ftype, Btype>::fpga_reader_flag;
 
 }  // namespace caffe
 

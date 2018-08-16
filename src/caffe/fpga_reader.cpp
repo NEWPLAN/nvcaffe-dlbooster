@@ -17,21 +17,13 @@ FPGAReader<DatumType>::FPGAReader(const LayerParameter& param,
       bool epoch_count_required)
     : InternalThread(Caffe::current_device(),
           solver_rank, 1U, false),
-      parser_threads_num_(1U),
-      transf_threads_num_(transf_threads_num),
-      queues_num_(parser_threads_num_ * transf_threads_num_),
       solver_count_(solver_count),
       solver_rank_(solver_rank),
-      //skip_one_batch_(skip_one_batch),
-      current_rec_(0),
-      current_queue_(0),
       shuffle_(shuffle),
       queue_depth_(256),
       epoch_count_required_(epoch_count_required) 
       {
         
-  CHECK(queues_num_);
-  CHECK(queue_depth_);
   batch_size_ = param.data_param().batch_size();
 
   //FPGAReader<DatumType>::pixel_queue.resize(2);
@@ -47,7 +39,7 @@ FPGAReader<DatumType>::FPGAReader(const LayerParameter& param,
   // }
   // db_source_ = param.data_param().source();
   // init_ = make_shared<BlockingQueue<shared_ptr<DatumType>>>();
-  StartInternalThread(false, Caffe::next_seed());
+  StartInternalThread(true, Caffe::next_seed());
 }
 
 template<typename DatumType>
