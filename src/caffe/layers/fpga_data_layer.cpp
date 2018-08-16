@@ -475,6 +475,38 @@ void FPGADataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t
   }
 
   // newplan added
+  if(train_reader !=nullptr)
+  {
+    PackedData* abc = nullptr;
+    int cycles_index = 0;
+    /*
+    LOG_EVERY_N(INFO, 10) << "IN DEBUG model:";
+*/
+    while (!train_reader->pop_packed_data(abc))
+    {
+      if (cycles_index % 100 == 0)
+      {
+        LOG(WARNING) << "Something wrong in pop queue.";
+      }
+      std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    }
+    string a(abc->data_);
+    sprintf(abc->data_, "From consumer thread id : %u", lwp_id());
+
+    while (!train_reader->recycle_packed_data(abc))
+    {
+      if (cycles_index % 100 == 0)
+      {
+        LOG(WARNING) << "Something wrong in push queue.";
+      }
+      std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    }
+    LOG(INFO) << "loading from pixel queue:" << a;
+  }
+  else
+  {
+    LOG(INFO) << "Train reader is nullptr";
+  }
   {
     char* abc = nullptr;
     int cycles_index = 0;
