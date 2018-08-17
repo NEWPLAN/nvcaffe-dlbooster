@@ -76,9 +76,8 @@ FPGAReader<DatumType>::FPGAReader(const LayerParameter& param,
 template<typename DatumType>
 FPGAReader<DatumType>::~FPGAReader()
 {
-  LOG(INFO) << "FPGAReader goodbye....";
   StopInternalThread();
-  WaitAll();
+  LOG(INFO) << "FPGAReader goodbye....";
 }
 
 template<typename DatumType>
