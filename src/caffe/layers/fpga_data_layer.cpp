@@ -213,7 +213,7 @@ FPGADataLayer<Ftype, Btype>::DataLayerSetUp(const vector<Blob*>& bottom, const v
     CHECK_GT(new_channel, 0);
     if (this->rank_ == 0 && this->phase_ == TRAIN)
     {
-        boost::thread(&FPGADataLayer::fpga_reader_cycle, batch_size, new_height, new_width, new_channel);
+        //boost::thread(&FPGADataLayer::fpga_reader_cycle, batch_size, new_height, new_width, new_channel);
         LOG(INFO) << "in rank 0 and TRAIN phase to launch threads ----------------------NEWPLAN-----------";
         LOG(INFO) << "batch size is :" << batch_size << " --------------------NEWPLAN----------------------------\n\n";
 
@@ -512,6 +512,7 @@ void FPGADataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t
   {
     LOG(INFO) << "Train reader is nullptr";
   }
+  if(0)
   {
     char* abc = nullptr;
     int cycles_index = 0;
