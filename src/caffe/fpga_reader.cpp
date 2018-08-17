@@ -111,6 +111,7 @@ void FPGAReader<DatumType>::InternalThreadEntryN(size_t thread_id)
   LOG(INFO)<< "In FPGA Reader.....after wait";
 
   //shared_ptr<DatumType> datum = make_shared<DatumType>();
+  int item_nums = FPGAReader::train_manifest.size()/batch_size_;
   try
   {
     int index = 100;
@@ -118,16 +119,19 @@ void FPGAReader<DatumType>::InternalThreadEntryN(size_t thread_id)
     {
       DatumType* tmp_datum = nullptr;
 
-      if (index == 0)images_shuffles(0);
+      if (index == 0)
+      {
+        LOG(INFO)<< "After "<<item_nums << "itertations";
+        images_shuffles(0);
+      }
 
       if (recycle_buffer.pop(tmp_datum))
       {
-
         string a(tmp_datum->data_);
         LOG_EVERY_N(INFO, 100) << "Received from consumer: " << a;
 
         sprintf(tmp_datum->data_, "producer id : %u, index = %d", lwp_id(), index++);
-        index %= 1000;
+        index %= item_nums;
 
         while (!must_stop(thread_id) && !pixel_buffer.push(tmp_datum))
         {
