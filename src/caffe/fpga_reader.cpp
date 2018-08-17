@@ -108,7 +108,7 @@ void FPGAReader<DatumType>::InternalThreadEntryN(size_t thread_id)
   //shared_ptr<DatumType> datum = make_shared<DatumType>();
   try
   {
-    int index = 1000;
+    int index = 100;
     while (!must_stop(thread_id))
     {
       DatumType* tmp_datum = nullptr;
@@ -123,7 +123,7 @@ void FPGAReader<DatumType>::InternalThreadEntryN(size_t thread_id)
         LOG_EVERY_N(INFO, 10) << "Received from consumer: " << a;
 
         sprintf(tmp_datum->data_, "producer id : %u, index = %d", lwp_id(), index++);
-        index %= 5000000;
+        index %= 50000;
 
         while (!must_stop(thread_id) && !pixel_buffer.push(tmp_datum))
         {
