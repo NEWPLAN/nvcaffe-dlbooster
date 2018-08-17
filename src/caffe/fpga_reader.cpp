@@ -125,13 +125,13 @@ void FPGAReader<DatumType>::InternalThreadEntryN(size_t thread_id)
         sprintf(tmp_datum->data_, "producer id : %u, index = %d", lwp_id(), index++);
         index %= 5000000;
 
-        while (!pixel_buffer.push(tmp_datum))
+        while (!must_stop(thread_id) && !pixel_buffer.push(tmp_datum))
         {
           if (cycles_index % 100 == 0)
           {
             LOG(WARNING) << "Something wrong in push queue.";
           }
-          std::this_thread::sleep_for(std::chrono::milliseconds(50));
+          std::this_thread::sleep_for(std::chrono::milliseconds(7));
         }
       }
       else
