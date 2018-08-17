@@ -42,8 +42,7 @@ void FPGADataLayer<Ftype, Btype>::InitializePrefetch()
     return;
   }
   CHECK_EQ(this->threads_num(), this->transf_num_);
-  LOG(INFO) << this->print_current_device() << " Transformer threads: "
-            << this->transf_num_ << (auto_mode ? " (auto)" : "(fixed)");
+  LOG(INFO) << this->print_current_device() << " Transformer threads: " << this->transf_num_;
   layer_inititialized_flag_.set();
 }
 
