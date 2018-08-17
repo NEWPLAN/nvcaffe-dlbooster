@@ -371,6 +371,7 @@ FPGADataLayer<Ftype, Btype>::DataLayerSetUp(const vector<Blob*>& bottom, const v
   // newplan added
   if (this->phase_ == TRAIN)
   {
+    LOG(INFO) << "IN TRAIN phase...";
     const int cropped_height = param.transform_param().crop_size();
     const int cropped_width = param.transform_param().crop_size();
     //Packing packing = NHWC;  // OpenCV
@@ -664,9 +665,6 @@ void FPGADataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t
     dst_cptr = batch->data_->template mutable_cpu_data_c<Btype>(false);
   }
 
-  size_t current_batch_id = 0UL;
-  const size_t buf_len = batch->data_->offset(1);
-
   CHECK(train_reader != nullptr);
   
   PackedData* abc = nullptr;
@@ -702,6 +700,17 @@ void FPGADataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t
     {
       // Get data offset for this datum to hand off to transform thread
       LOG(FATAL) << "require enabling transform GPU";
+    }
+    if (use_gpu_transform)
+    {
+      this->fdt(thread_id)->TransformGPU(top_shape[0], top_shape[1],
+                                        new_height,  // non-crop
+                                        new_width,  // non-crop
+                                        datum_sizeof_element,
+                                        dst_gptr,
+                                        batch->data_->template mutable_gpu_data_c<Ftype>(false),
+                                        random_vectors_[thread_id]->gpu_data(), true);
+      packing = NCHW;
     }
   }
   string a(abc->data_);
