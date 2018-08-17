@@ -48,7 +48,6 @@ FPGAReader<DatumType>::FPGAReader(const LayerParameter& param,
 
   size_t tmp_solver_count = 0U;
   auto& pixel_buffer = FPGAReader::pixel_queue[tmp_solver_count];
-  auto& recycle_buffer = FPGAReader::recycle_queue;
   {
     for (auto index = 0 ; index < 16; index++)
     {
