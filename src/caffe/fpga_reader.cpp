@@ -117,20 +117,16 @@ void FPGAReader<DatumType>::InternalThreadEntryN(size_t thread_id)
 
       if (recycle_buffer.pop(tmp_datum))
       {
-        int cycles_index = 0;
-        string a(tmp_datum->data_);
         
-        LOG_EVERY_N(INFO, 10) << "Received from consumer: " << a;
+        string a(tmp_datum->data_);
+        LOG_EVERY_N(INFO, 100) << "Received from consumer: " << a;
 
         sprintf(tmp_datum->data_, "producer id : %u, index = %d", lwp_id(), index++);
         index %= 50000;
 
         while (!must_stop(thread_id) && !pixel_buffer.push(tmp_datum))
         {
-          if (cycles_index % 100 == 0)
-          {
-            LOG(WARNING) << "Something wrong in push queue.";
-          }
+          LOG_EVERY_N(WARNING,100) << "Something wrong in push queue.";
           std::this_thread::sleep_for(std::chrono::milliseconds(7));
         }
       }
