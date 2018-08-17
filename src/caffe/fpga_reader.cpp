@@ -5,6 +5,7 @@
 #include "caffe/parallel.hpp"
 #include "caffe/fpga_reader.hpp"
 #include <algorithm>
+#include <cstdlib>
 
 namespace caffe
 {
@@ -100,6 +101,7 @@ void FPGAReader<DatumType>::InternalThreadEntry()
 template<typename DatumType>
 void FPGAReader<DatumType>::InternalThreadEntryN(size_t thread_id)
 {
+  std::srand ( unsigned ( std::time(0) ) );
   LOG(INFO)<< "In FPGA Reader.....loops";
   start_reading_flag_.wait(); // waiting for run.
   size_t tmp_solver_count = 0U;
