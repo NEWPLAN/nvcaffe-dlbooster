@@ -58,7 +58,7 @@ public:
   {
     while (!FPGAReader::recycle_queue.push(packed_data))
     {
-      std::this_thread::sleep_for(std::chrono::milliseconds(3));
+      std::this_thread::sleep_for(std::chrono::milliseconds(11));
     }
     return true;
   }
@@ -67,7 +67,7 @@ public:
   {
     while (!FPGAReader::pixel_queue[bulket].pop(packed_data))
     {
-      std::this_thread::sleep_for(std::chrono::milliseconds(3));
+      std::this_thread::sleep_for(std::chrono::milliseconds(11));
     }
     return true;
   }
