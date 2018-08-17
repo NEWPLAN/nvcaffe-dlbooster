@@ -47,7 +47,7 @@ class FPGADataLayer : public BasePrefetchingDataLayer<Ftype, Btype> {
   size_t queue_id(size_t thread_id) const override;
 
   void init_offsets();
-  void start_reading() override { reader_->start_reading(); }
+  void start_reading() override ;
 
   std::shared_ptr<DataReader<Datum>> sample_reader_, reader_;
   std::vector<shared_ptr<GPUMemory::Workspace>> tmp_gpu_buffer_;

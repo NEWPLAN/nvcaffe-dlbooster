@@ -308,6 +308,12 @@ FPGADataLayer<Ftype, Btype>::DataLayerSetUp_v2(const vector<Blob*>& bottom, cons
               << top[0]->width();
   }
 }
+template<typename Ftype, typename Btype>
+void FPGADataLayer<Ftype, Btype>::start_reading()
+{
+  train_reader->start_reading();
+  //reader_->start_reading(); 
+}
 
 //newplan added
 template<typename Ftype, typename Btype>
