@@ -312,6 +312,178 @@ FPGADataLayer<Ftype, Btype>::DataLayerSetUp(const vector<Blob*>& bottom, const v
   }
 }
 
+//newplan added
+static bool doneee_v2 = false;
+template<typename Ftype, typename Btype>
+void
+FPGADataLayer<Ftype, Btype>::DataLayerSetUp_v2(const vector<Blob*>& bottom, const vector<Blob*>& top)
+{
+  const LayerParameter& param = this->layer_param();
+  const int batch_size = param.data_param().batch_size();
+  const bool cache = cache_ && this->phase_ == TRAIN;
+  const bool shuffle = shuffle_ && this->phase_ == TRAIN;
+
+  //newplan added
+  const size_t new_height = param.data_param().new_height();
+  const size_t new_width = param.data_param().new_width();
+  const size_t new_channel = param.data_param().new_channel();
+
+  if (this->auto_mode_)
+  {
+    if (!sample_reader_)
+    {
+      sample_reader_ = std::make_shared<DataReader<Datum>>(param, Caffe::solver_count(),
+                       this->rank_,
+                       this->parsers_num_,
+                       this->threads_num(),
+                       batch_size,
+                       true,
+                       false,
+                       cache,
+                       shuffle,
+                       false);
+    }
+    else if (!reader_)
+    {
+      reader_ = std::make_shared<DataReader<Datum>>(param,
+                Caffe::solver_count(),
+                this->rank_,
+                this->parsers_num_,
+                this->threads_num(),
+                batch_size,
+                false,
+                true,
+                cache,
+                shuffle,
+                this->phase_ == TRAIN);
+    }
+  }
+  else if (!reader_)
+  {
+    reader_ = std::make_shared<DataReader<Datum>>(param,
+              Caffe::solver_count(),
+              this->rank_,
+              this->parsers_num_,
+              this->threads_num(),
+              batch_size,
+              false,
+              false,
+              cache,
+              shuffle,
+              this->phase_ == TRAIN);
+    start_reading();
+  }
+  //newplan added
+  {
+    LOG(INFO) << " in FPGADataLayer parameters:" << std::endl
+              << "batch size: " << batch_size << std::endl
+              << "height: " << new_height <<  std::endl
+              << "width: " << new_width <<  std::endl
+              << "channel: " << new_channel;
+    CHECK_GT(new_height, 0);
+    CHECK_GT(new_width, 0);
+    CHECK_GT(new_channel, 0);
+    if (this->rank_ == 0 && this->phase_ == TRAIN)
+    {
+        //boost::thread(&FPGADataLayer::fpga_reader_cycle, batch_size, new_height, new_width, new_channel);
+        LOG(INFO) << "in rank 0 and TRAIN phase to launch threads ----------------------NEWPLAN-----------";
+        LOG(INFO) << "batch size is :" << batch_size << " --------------------NEWPLAN----------------------------\n\n";
+
+        if(!train_reader && !doneee_v2)
+        {
+          train_reader=std::make_shared<FPGAReader<PackedData>>(param,
+              Caffe::solver_count(),
+              this->rank_,
+              batch_size,
+              shuffle,
+              this->phase_ == TRAIN);
+          train_reader->start_reading();
+          LOG(INFO) << "create train reader....";
+          doneee_v2 = true;
+          FPGADataLayer::train_reader_=train_reader;
+          static int abababa =0;
+          LOG_IF(FATAL, abababa>0);
+          abababa++;
+        }
+    }
+  }
+  train_reader=FPGADataLayer::train_reader_;
+  // Read a data point, and use it to initialize the top blob.
+  shared_ptr<Datum> sample_datum = sample_only_ ? sample_reader_->sample() : reader_->sample();
+  datum_encoded_ = sample_datum->encoded();
+  this->ResizeQueues();
+  init_offsets();
+
+  // newplan added
+  if (this->phase_ == TRAIN)
+  {
+    const int cropped_height = param.transform_param().crop_size();
+    const int cropped_width = param.transform_param().crop_size();
+    //Packing packing = NHWC;  // OpenCV
+    vector<int> top_shape = {(int)batch_size, (int)new_channel, cropped_height, cropped_width};
+    top[0]->Reshape(top_shape);
+
+    if (this->is_gpu_transform())
+    {
+      CHECK(Caffe::mode() == Caffe::GPU);
+      LOG(INFO) << this->print_current_device() << " Transform on GPU enabled";
+      tmp_gpu_buffer_.resize(this->threads_num());
+      for (int i = 0; i < this->tmp_gpu_buffer_.size(); ++i)
+      {
+        this->tmp_gpu_buffer_[i] = make_shared<GPUMemory::Workspace>();
+      }
+    }
+    // label
+    vector<int> label_shape(1, batch_size);
+    if (this->output_labels_)
+    {
+      vector<int> label_shape(1, batch_size);
+      top[1]->Reshape(label_shape);
+    }
+    this->batch_transformer_->reshape(top_shape, label_shape, this->is_gpu_transform());
+    LOG(INFO) << this->print_current_device() << " Output data size: "
+              << top[0]->num() << ", "
+              << top[0]->channels() << ", "
+              << top[0]->height() << ", "
+              << top[0]->width();
+  }
+  else
+  {
+    // Reshape top[0] and prefetch_data according to the batch_size.
+    // Note: all these reshapings here in load_batch are needed only in case of
+    // different datum shapes coming from database.
+    Packing packing = NHWC;  // OpenCV
+    vector<int> top_shape = this->bdt(0)->Transform(sample_datum.get(), nullptr, 0, packing);
+    top_shape[0] = batch_size;
+    top[0]->Reshape(top_shape);
+
+
+    if (this->is_gpu_transform())
+    {
+      CHECK(Caffe::mode() == Caffe::GPU);
+      LOG(INFO) << this->print_current_device() << " Transform on GPU enabled";
+      tmp_gpu_buffer_.resize(this->threads_num());
+      for (int i = 0; i < this->tmp_gpu_buffer_.size(); ++i)
+      {
+        this->tmp_gpu_buffer_[i] = make_shared<GPUMemory::Workspace>();
+      }
+    }
+    // label
+    vector<int> label_shape(1, batch_size);
+    if (this->output_labels_)
+    {
+      vector<int> label_shape(1, batch_size);
+      top[1]->Reshape(label_shape);
+    }
+    this->batch_transformer_->reshape(top_shape, label_shape, this->is_gpu_transform());
+    LOG(INFO) << this->print_current_device() << " Output data size: "
+              << top[0]->num() << ", "
+              << top[0]->channels() << ", "
+              << top[0]->height() << ", "
+              << top[0]->width();
+  }
+}
+
 template<typename Ftype, typename Btype>
 void FPGADataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t queue_id)
 {

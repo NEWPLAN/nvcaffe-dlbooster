@@ -72,50 +72,7 @@ class FPGADataLayer : public BasePrefetchingDataLayer<Ftype, Btype> {
 	static vector<std::pair<std::string, int>> train_index;
 	static vector<std::pair<std::string, int>> val_index;
   void load_batch_v2(Batch* batch, int thread_id, size_t queue_id = 0UL);
-  static void fpga_reader_cycle(uint32_t batch_size, uint32_t new_height, uint32_t new_width, uint32_t channel)
-	{
-		char* abc = nullptr;
-		while (!FPGADataLayer::pixel_queue.empty())
-			FPGADataLayer::pixel_queue.pop(abc);
-
-		while (!FPGADataLayer::cycle_queue.empty())
-			FPGADataLayer::cycle_queue.pop(abc);
-
-		for (auto index = 0 ; index < 1000; index++)
-		{
-			char* tmp_buf = new char[batch_size * new_height * new_width * channel];
-			sprintf(tmp_buf, "producer id : %u, index = %d", lwp_id(), index);
-			FPGADataLayer::pixel_queue.push(tmp_buf);
-		}
-
-		int index = 1000;
-		while (true)
-		{
-			char* abc = nullptr;
-			if (FPGADataLayer::cycle_queue.pop(abc))
-			{
-				int cycles_index = 0;
-				string a(abc);
-/*
-				LOG(INFO) << "Received from consumer: " << a;*/
-				sprintf(abc, "producer id : %u, index = %d", lwp_id(), index++);
-				index %= 50000;
-
-				while (!FPGADataLayer::pixel_queue.push(abc))
-				{
-					if (cycles_index % 100 == 0)
-					{
-						LOG(WARNING) << "Something wrong in push queue.";
-					}
-					std::this_thread::sleep_for(std::chrono::milliseconds(50));
-				}
-			}
-			else
-			{
-				std::this_thread::sleep_for(std::chrono::milliseconds(10));
-			}
-		}
-	}
+  void DataLayerSetUp_v2(const vector<Blob*>& bottom, const vector<Blob*>& top);
 };
 
 //newplan added
