@@ -193,16 +193,11 @@ void FPGADataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t
                      batch->label_->template mutable_cpu_data_c<Ftype>(false) : nullptr;
 
     void* dst_gptr = nullptr;
-    Btype* dst_cptr = nullptr;
     if (use_gpu_transform)
   {
     size_t buffer_size = top_shape[0] * top_shape[1] * new_height * new_width;
     tmp_gpu_buffer_[thread_id]->safe_reserve(buffer_size);
     dst_gptr = tmp_gpu_buffer_[thread_id]->data();
-  }
-  else
-  {
-    dst_cptr = batch->data_->template mutable_cpu_data_c<Btype>(false);
   }
 
   CHECK(train_reader != nullptr);
