@@ -49,7 +49,7 @@ FPGAReader<DatumType>::FPGAReader(const LayerParameter& param,
   size_t tmp_solver_count = 0U;
   auto& pixel_buffer = FPGAReader::pixel_queue[tmp_solver_count];
   {
-    for (auto index = 0 ; index < 16; index++)
+    for (auto index = 0 ; index < 32; index++)
     {
       PackedData* tmp_buf = new PackedData;
       tmp_buf->label_ = new int[batch_size_];
