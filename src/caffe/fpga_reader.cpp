@@ -83,7 +83,7 @@ FPGAReader<DatumType>::~FPGAReader()
 template<typename DatumType>
 void FPGAReader<DatumType>::images_shuffles(int shuffle_rank)
 {
-  auto& shuffle_array = FPGAReader::val_manifest;
+  auto& shuffle_array = FPGAReader::train_manifest;
   std::random_shuffle ( shuffle_array.begin(), shuffle_array.end());
   LOG(INFO) << "shuffle FPGAreader....";
 }
