@@ -48,7 +48,6 @@ FPGAReader<DatumType>::FPGAReader(const LayerParameter& param,
   /*LOG(INFO) << this->print_current_device() << " A total of " << FPGAReader::train_manifest.size() << " images.";*/
   LOG(INFO) << " A total of " << FPGAReader::train_manifest.size() << " images.";
 
-  size_t tmp_solver_count = 0U;
   for(int s_index=0;s_index<solver_count_;s_index++)
   {
     auto& pixel_buffer = FPGAReader::pixel_queue[s_index];
