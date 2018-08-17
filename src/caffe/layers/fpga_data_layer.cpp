@@ -359,6 +359,7 @@ FPGADataLayer<Ftype, Btype>::DataLayerSetUp(const vector<Blob*>& bottom, const v
   {
     LOG(INFO) << "IN Root rank and test phase...";
   }
+  LOG(INFO) << "out of sides. "
   
   train_reader=FPGADataLayer::train_reader_;
 
