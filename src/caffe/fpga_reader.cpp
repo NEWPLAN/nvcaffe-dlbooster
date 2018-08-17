@@ -78,6 +78,7 @@ FPGAReader<DatumType>::~FPGAReader()
 {
   LOG(INFO) << "FPGAReader goodbye....";
   StopInternalThread();
+  WaitAll();
 }
 
 template<typename DatumType>
