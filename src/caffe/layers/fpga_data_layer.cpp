@@ -692,7 +692,7 @@ void FPGADataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t
     {
       cudaStream_t stream = Caffe::thread_stream(Caffe::GPU_TRANSF_GROUP);
       size_t buffer_size = top_shape[0] * top_shape[1] * new_height * new_width;
-      CHECK_EQ(buffer_size, datum_size);
+      
       CUDA_CHECK(cudaMemcpyAsync(static_cast<char*>(dst_gptr), abc->data_, buffer_size, cudaMemcpyHostToDevice, stream));
       CUDA_CHECK(cudaStreamSynchronize(stream));
       for (size_t item_id = 0; item_id < batch_size; item_id++)
