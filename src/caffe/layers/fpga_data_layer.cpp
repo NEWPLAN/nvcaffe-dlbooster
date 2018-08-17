@@ -9,10 +9,8 @@ namespace caffe
 template<typename Ftype, typename Btype>
 FPGADataLayer<Ftype, Btype>::FPGADataLayer(const LayerParameter& param, size_t solver_rank)
   : BasePrefetchingDataLayer<Ftype, Btype>(param, solver_rank),
-    cache_(param.data_param().cache()),
     shuffle_(param.data_param().shuffle())
 {
-  LOG(INFO) << " IS in auto mode ?: " << this->auto_mode_ ? "Yes" : "No";
   init_offsets();
 }
 
@@ -211,7 +209,6 @@ void FPGADataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t
   CHECK(train_reader != nullptr);
 
   PackedData* abc = nullptr;
-  int cycles_index = 0;
 
   while (!train_reader->pop_packed_data(abc))
   {
