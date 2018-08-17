@@ -40,6 +40,15 @@ void BatchTransformer<Ftype, Btype>::resize(bool skip_to_next) {
     prefetches_free_[i] = make_shared<BlockingQueue<shared_ptr<Batch>>>();
     prefetches_full_[i] = make_shared<BlockingQueue<shared_ptr<Batch>>>();
     prefetches_free_[i]->push(batch);
+    if(1)
+    {
+      shared_ptr<Batch> batch_ = gpu_transform_ ?
+                              make_shared<Batch>(tp<Ftype>(), tp<Ftype>()) :
+                              make_shared<Batch>(tp<Btype>(), tp<Btype>());
+      prefetch_.push_back(batch_);
+      prefetches_free_[i]->push(batch_);
+    }
+
   }
   if (skip_to_next) {
     next_batch_queue();  // 0th already processed
