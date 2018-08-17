@@ -674,12 +674,16 @@ void FPGADataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t
   
   PackedData* abc = nullptr;
   int cycles_index = 0;
+
+  LOG(WARNING) << "loops 1";
   
   while (!train_reader->pop_packed_data(abc))
   {
     LOG_EVERY_N(WARNING,10) << "Something wrong in pop queue.";
     std::this_thread::sleep_for(std::chrono::milliseconds(1));
   }
+
+  LOG(WARNING) << "loops 2";
   
   {
     if (top_label != nullptr)
@@ -692,7 +696,7 @@ void FPGADataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t
     {
       cudaStream_t stream = Caffe::thread_stream(Caffe::GPU_TRANSF_GROUP);
       size_t buffer_size = top_shape[0] * top_shape[1] * new_height * new_width;
-      
+
       CUDA_CHECK(cudaMemcpyAsync(static_cast<char*>(dst_gptr), abc->data_, buffer_size, cudaMemcpyHostToDevice, stream));
       CUDA_CHECK(cudaStreamSynchronize(stream));
       for (size_t item_id = 0; item_id < batch_size; item_id++)
@@ -706,6 +710,7 @@ void FPGADataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t
       // Get data offset for this datum to hand off to transform thread
       LOG(FATAL) << "require enabling transform GPU";
     }
+    LOG(WARNING) << "loops 3";
     if (use_gpu_transform)
     {
       this->fdt(thread_id)->TransformGPU(top_shape[0], top_shape[1],
@@ -720,7 +725,7 @@ void FPGADataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t
   }
   string a(abc->data_);
   sprintf(abc->data_, "From consumer thread id : %u", lwp_id());
-  
+  LOG(WARNING) << "loops 4";
   while (!train_reader->recycle_packed_data(abc))
   {
     LOG_EVERY_N(WARNING,10) << "Something wrong in push queue.";
@@ -730,6 +735,7 @@ void FPGADataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t
 
   batch->set_data_packing(packing);
   batch->set_id(123);
+  LOG(WARNING) << "loops 5";
 }
 
 INSTANTIATE_CLASS_FB(FPGADataLayer);
