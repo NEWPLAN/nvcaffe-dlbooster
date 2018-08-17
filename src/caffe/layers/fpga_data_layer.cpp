@@ -364,8 +364,6 @@ FPGADataLayer<Ftype, Btype>::DataLayerSetUp(const vector<Blob*>& bottom, const v
   train_reader=FPGADataLayer::train_reader_;
 
   // Read a data point, and use it to initialize the top blob.
-  shared_ptr<Datum> sample_datum = sample_only_ ? sample_reader_->sample() : reader_->sample();
-  datum_encoded_ = sample_datum->encoded();
   this->ResizeQueues();
   init_offsets();
 
