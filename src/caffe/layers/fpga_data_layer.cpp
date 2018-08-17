@@ -250,7 +250,7 @@ void FPGADataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t
     LOG_EVERY_N(WARNING, 10) << "Something wrong in push queue.";
     std::this_thread::sleep_for(std::chrono::milliseconds(1));
   }
-  LOG_EVERY_N(INFO, 100) << "Rank/TID: " << this->rank_ << "/" << thread_id << ", loading from pixel queue:" << a;
+  LOG_EVERY_N(INFO, 10) << "Rank/TID: " << this->rank_ << "/" << thread_id << ", loading from pixel queue:" << a;
 
   batch->set_data_packing(packing);
   batch->set_id(123);
