@@ -76,7 +76,8 @@ public:
   {
     while (!FPGAReader::recycle_queue[bulket].pop(packed_data))
     {
-      LOG_EVERY_N(WARNING, 100) << "pop recycle failed...";
+      /*
+      LOG_EVERY_N(WARNING, 100) << "pop recycle failed...";*/
       std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
     return true;
@@ -85,7 +86,8 @@ public:
   {
     while (!FPGAReader::pixel_queue[bulket].push(packed_data))
     {
-      LOG_EVERY_N(WARNING, 100) << "push pixel failed...";
+      /*
+      LOG_EVERY_N(WARNING, 100) << "push pixel failed...";*/
       std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
     return true;
@@ -95,7 +97,8 @@ public:
   {
     while (!FPGAReader::pixel_queue[bulket].pop(packed_data))
     {
-      LOG_EVERY_N(WARNING, 100) << "pop pixel failed...";
+      /*
+      LOG_EVERY_N(WARNING, 100) << "pop pixel failed...";*/
       std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
     return true;
@@ -104,7 +107,8 @@ public:
   {
     while (!FPGAReader::recycle_queue[bulket].push(packed_data))
     {
-      LOG_EVERY_N(WARNING, 100) << "push recycle failed...";
+      /*
+      LOG_EVERY_N(WARNING, 100) << "push recycle failed...";*/
       std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
     return true;
