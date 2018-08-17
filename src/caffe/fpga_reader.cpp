@@ -33,10 +33,6 @@ FPGAReader<DatumType>::FPGAReader(const LayerParameter& param,
   string source = param.data_param().manifest();
   // Read the file with filenames and labels
   FPGAReader::train_manifest.clear();
-  /*
-  FPGAReader::pixel_queue.resize(solver_count_);
-  FPGAReader::recycle_queue.resize(solver_count_);
-  */
 
   LOG(INFO) << "Opening file " << source;
   std::ifstream infile(source.c_str());
@@ -50,10 +46,10 @@ FPGAReader<DatumType>::FPGAReader(const LayerParameter& param,
   /*LOG(INFO) << this->print_current_device() << " A total of " << FPGAReader::train_manifest.size() << " images.";*/
   LOG(INFO) << " A total of " << FPGAReader::train_manifest.size() << " images.";
 
-  for(int s_index=0;s_index<solver_count_;s_index++)
+  size_t tmp_solver_count = 0U;
+  auto& pixel_buffer = FPGAReader::pixel_queue[tmp_solver_count];
   {
-    auto& pixel_buffer = FPGAReader::pixel_queue[s_index];
-    for (auto index = 0 ; index < 4; index++)
+    for (auto index = 0 ; index < 16; index++)
     {
       PackedData* tmp_buf = new PackedData;
       tmp_buf->label_ = new int[batch_size_];
@@ -69,12 +65,11 @@ FPGAReader<DatumType>::FPGAReader(const LayerParameter& param,
       while (!pixel_buffer.push(tmp_buf))
       {
         LOG(WARNING) << "Something wrong in push queue.";
-        std::this_thread::sleep_for(std::chrono::milliseconds(1));
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
       }
     }
   }
-  LOG(INFO) << "FPGAReader finished construction function, batch size is: " 
-  << batch_size_ << "Solver counter is : "<<solver_count_;
+  LOG(INFO) << "FPGAReader finished construction function, batch size is: " << batch_size_;
   StartInternalThread(false, Caffe::next_seed());
 }
 
@@ -107,7 +102,10 @@ void FPGAReader<DatumType>::InternalThreadEntryN(size_t thread_id)
 {
   std::srand ( unsigned ( std::time(0) ) );
   LOG(INFO) << "In FPGA Reader.....loops";
-  start_reading_flag_.wait(); // waiting for running.
+  start_reading_flag_.wait(); // waiting for run.
+  size_t tmp_solver_count = 0U;
+  auto& pixel_buffer = FPGAReader::pixel_queue[tmp_solver_count];
+  auto& recycle_buffer = FPGAReader::recycle_queue;
 
   LOG(INFO) << "In FPGA Reader.....after wait";
 
@@ -118,22 +116,31 @@ void FPGAReader<DatumType>::InternalThreadEntryN(size_t thread_id)
     int index = 100;
     while (!must_stop(thread_id))
     {
-      for(int s_index =0; s_index<solver_count_; s_index++)
+      DatumType* tmp_datum = nullptr;
+
+      if (index == 0)
       {
-        DatumType* tmp_datum = nullptr;
-        if (index == 0)
-        {
-          LOG(INFO) << "After " << item_nums << " itertations";
-          images_shuffles(0);
-        }
-        if(must_stop(thread_id)) break;
-        producer_pop(tmp_datum, s_index);
+        LOG(INFO) << "After " << item_nums << " itertations";
+        images_shuffles(0);
+      }
+
+      if (recycle_buffer.pop(tmp_datum))
+      {
         string a(tmp_datum->data_);
         LOG_EVERY_N(INFO, 100) << "Received from consumer: " << a;
+
         sprintf(tmp_datum->data_, "producer id : %u, index = %d", lwp_id(), index++);
         index %= item_nums;
-        if(must_stop(thread_id)) break;
-        producer_push(tmp_datum, s_index);
+
+        while (!must_stop(thread_id) && !pixel_buffer.push(tmp_datum))
+        {
+          LOG_EVERY_N(WARNING, 100) << "Something wrong in push queue.";
+          std::this_thread::sleep_for(std::chrono::milliseconds(1));
+        }
+      }
+      else
+      {
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
       }
     }
   }

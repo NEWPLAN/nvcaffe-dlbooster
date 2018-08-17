@@ -52,64 +52,22 @@ public:
   virtual ~FPGAReader();
 
   void start_reading() { start_reading_flag_.set();}
-/*
+
   // push back
-  bool recycle_packed_data(DatumType* packed_data,int bulket)
+  bool recycle_packed_data(DatumType* packed_data)
   {
-    while (!FPGAReader::recycle_queue[bulket].push(packed_data))
+    while (!FPGAReader::recycle_queue.push(packed_data))
     {
-      std::this_thread::sleep_for(std::chrono::milliseconds(1));
+      std::this_thread::sleep_for(std::chrono::milliseconds(13));
     }
     return true;
   }
 
-  bool pop_packed_data(DatumType* &packed_data, int bulket)
+  bool pop_packed_data(DatumType* &packed_data, int bulket = 0)
   {
     while (!FPGAReader::pixel_queue[bulket].pop(packed_data))
     {
-      std::this_thread::sleep_for(std::chrono::milliseconds(1));
-    }
-    return true;
-  }
-*/
-  bool producer_pop(DatumType* &packed_data, int bulket)
-  {
-    while (!FPGAReader::recycle_queue[bulket].pop(packed_data))
-    {
-      /*
-      LOG_EVERY_N(WARNING, 100) << "pop recycle failed...";*/
-      std::this_thread::sleep_for(std::chrono::milliseconds(1));
-    }
-    return true;
-  }
-  bool producer_push(DatumType* packed_data, int bulket)
-  {
-    while (!FPGAReader::pixel_queue[bulket].push(packed_data))
-    {
-      /*
-      LOG_EVERY_N(WARNING, 100) << "push pixel failed...";*/
-      std::this_thread::sleep_for(std::chrono::milliseconds(1));
-    }
-    return true;
-  }
-
-  bool consumer_pop(DatumType* &packed_data, int bulket)
-  {
-    while (!FPGAReader::pixel_queue[bulket].pop(packed_data))
-    {
-      /*
-      LOG_EVERY_N(WARNING, 100) << "pop pixel failed...";*/
-      std::this_thread::sleep_for(std::chrono::milliseconds(1));
-    }
-    return true;
-  }
-  bool consumer_push(DatumType* packed_data, int bulket)
-  {
-    while (!FPGAReader::recycle_queue[bulket].push(packed_data))
-    {
-      /*
-      LOG_EVERY_N(WARNING, 100) << "push recycle failed...";*/
-      std::this_thread::sleep_for(std::chrono::milliseconds(1));
+      std::this_thread::sleep_for(std::chrono::milliseconds(13));
     }
     return true;
   }
@@ -131,7 +89,7 @@ protected:
   //newplan added
   void images_shuffles(int shuffle_rank);
   static vector<boost::lockfree::queue<DatumType*, boost::lockfree::capacity<1024>>> pixel_queue;
-  static vector<boost::lockfree::queue<DatumType*, boost::lockfree::capacity<1024>>> recycle_queue;
+  static boost::lockfree::queue<DatumType*, boost::lockfree::capacity<1024>> recycle_queue;
   static vector<std::pair<std::string, int>> train_manifest;
   static vector<std::pair<std::string, int>> val_manifest;
 
@@ -141,7 +99,7 @@ protected:
 template <typename DatumType>
 vector<boost::lockfree::queue<DatumType*, boost::lockfree::capacity<1024>>> FPGAReader<DatumType>::pixel_queue(MAX_GPU_PER_MACHINE_SUPPORT);
 template <typename DatumType>
-vector<boost::lockfree::queue<DatumType*, boost::lockfree::capacity<1024>>> FPGAReader<DatumType>::recycle_queue(MAX_GPU_PER_MACHINE_SUPPORT);
+boost::lockfree::queue<DatumType*, boost::lockfree::capacity<1024>> FPGAReader<DatumType>::recycle_queue;
 template <typename DatumType>
 vector<std::pair<std::string, int>> FPGAReader<DatumType>::train_manifest;
 template <typename DatumType>
