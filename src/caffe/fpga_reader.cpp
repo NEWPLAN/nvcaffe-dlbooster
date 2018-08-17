@@ -117,7 +117,7 @@ void FPGAReader<DatumType>::InternalThreadEntryN(size_t thread_id)
 
       if (recycle_buffer.pop(tmp_datum))
       {
-        
+
         string a(tmp_datum->data_);
         LOG_EVERY_N(INFO, 100) << "Received from consumer: " << a;
 
@@ -127,12 +127,12 @@ void FPGAReader<DatumType>::InternalThreadEntryN(size_t thread_id)
         while (!must_stop(thread_id) && !pixel_buffer.push(tmp_datum))
         {
           LOG_EVERY_N(WARNING,100) << "Something wrong in push queue.";
-          std::this_thread::sleep_for(std::chrono::milliseconds(7));
+          std::this_thread::sleep_for(std::chrono::milliseconds(1));
         }
       }
       else
       {
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
       }
     }
   }
