@@ -84,10 +84,10 @@ template<typename DatumType>
 void FPGAReader<DatumType>::images_shuffles(int shuffle_rank)
 {
   CPUTimer timer;
-  timer.start();
+  timer.Start();
   auto& shuffle_array = FPGAReader::train_manifest;
   std::random_shuffle ( shuffle_array.begin(), shuffle_array.end());
-  timer.stop();
+  timer.Stop();
   LOG(INFO) << "shuffle "<<shuffle_array.size()<<" Images...." << timer.MilliSeconds()<< " ms";
 }
 
