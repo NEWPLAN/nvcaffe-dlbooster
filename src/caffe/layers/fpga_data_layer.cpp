@@ -173,7 +173,6 @@ void FPGADataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t
   }
   size_t datum_sizeof_element = 0UL;
   int datum_len = top_shape[1] * top_shape[2] * top_shape[3];
-  size_t datum_size = 0UL;
 
   if (use_gpu_transform)
   {
@@ -183,7 +182,6 @@ void FPGADataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t
 
     vector<int> random_vec_shape(1, batch_size * 3);
     random_vectors_[thread_id]->Reshape(random_vec_shape);
-    datum_size = datum_len * datum_sizeof_element;
   }
   if (this->output_labels_)
   {
