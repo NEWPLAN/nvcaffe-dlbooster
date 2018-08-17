@@ -13,11 +13,11 @@ FPGADataLayer<Ftype, Btype>::FPGADataLayer(const LayerParameter& param, size_t s
     shuffle_(param.data_param().shuffle())
 {
   //newplan added
-  LOG(INFO) << " in auto mode: " << this->auto_mode_;
+  LOG(INFO) << " IS in auto mode ?: " << this->auto_mode_ ?"Yes" : "No";
   //
-  sample_only_.store(this->auto_mode_);
+  //sample_only_.store(this->auto_mode_);
   init_offsets();
-  datum_encoded_ = false;
+  //datum_encoded_ = false;
 }
 
 template<typename Ftype, typename Btype>
@@ -25,15 +25,17 @@ void
 FPGADataLayer<Ftype, Btype>::init_offsets()
 {
   CHECK_EQ(this->transf_num_, this->threads_num());
+  /*
   CHECK_LE(parser_offsets_.size(), this->transf_num_);
   CHECK_LE(queue_ids_.size(), this->transf_num_);
   parser_offsets_.resize(this->transf_num_);
+  */
   random_vectors_.resize(this->transf_num_);
-  queue_ids_.resize(this->transf_num_);
+  //queue_ids_.resize(this->transf_num_);
   for (size_t i = 0; i < this->transf_num_; ++i)
   {
-    parser_offsets_[i] = 0;
-    queue_ids_[i] = i * this->parsers_num_;
+    //parser_offsets_[i] = 0;
+    //queue_ids_[i] = i * this->parsers_num_;
     if (!random_vectors_[i])
     {
       random_vectors_[i] = make_shared<TBlob<unsigned int>>();
@@ -56,7 +58,7 @@ FPGADataLayer<Ftype, Btype>::InitializePrefetch()
     return;
   }
   const bool auto_mode = this->auto_mode_;
-  if (auto_mode)
+  if (auto_mode && false)
   {
     // Here we try to optimize memory split between prefetching and convolution.
     // All data and parameter blobs are allocated at this moment.
@@ -122,29 +124,24 @@ FPGADataLayer<Ftype, Btype>::InitializePrefetch()
   }
 
   CHECK_EQ(this->threads_num(), this->transf_num_);
+  /*
   LOG(INFO) << this->print_current_device() << " Parser threads: "
-            << this->parsers_num_ << (auto_mode ? " (auto)" : "");
+            << this->parsers_num_ << (auto_mode ? " (auto)" : "(fixed)");
+  */
   LOG(INFO) << this->print_current_device() << " Transformer threads: "
-            << this->transf_num_ << (auto_mode ? " (auto)" : "");
+            << this->transf_num_ << (auto_mode ? " (auto)" : "(fixed)");
   layer_inititialized_flag_.set();
 }
 
 template<typename Ftype, typename Btype>
 size_t FPGADataLayer<Ftype, Btype>::queue_id(size_t thread_id) const
 {
-  const size_t qid = queue_ids_[thread_id] + parser_offsets_[thread_id];
-  parser_offsets_[thread_id]++;
-  if (parser_offsets_[thread_id] >= this->parsers_num_)
-  {
-    parser_offsets_[thread_id] = 0UL;
-    queue_ids_[thread_id] += this->parsers_num_ * this->threads_num();
-  }
-  return qid % this->queues_num_;
-};
+  return thread_id % this->queues_num_;
+}
 static bool doneee = false;
 template<typename Ftype, typename Btype>
 void
-FPGADataLayer<Ftype, Btype>::DataLayerSetUp(const vector<Blob*>& bottom, const vector<Blob*>& top)
+FPGADataLayer<Ftype, Btype>::DataLayerSetUp_v2(const vector<Blob*>& bottom, const vector<Blob*>& top)
 {
   const LayerParameter& param = this->layer_param();
   const int batch_size = param.data_param().batch_size();
@@ -313,10 +310,9 @@ FPGADataLayer<Ftype, Btype>::DataLayerSetUp(const vector<Blob*>& bottom, const v
 }
 
 //newplan added
-static bool doneee_v2 = false;
 template<typename Ftype, typename Btype>
 void
-FPGADataLayer<Ftype, Btype>::DataLayerSetUp_v2(const vector<Blob*>& bottom, const vector<Blob*>& top)
+FPGADataLayer<Ftype, Btype>::DataLayerSetUp(const vector<Blob*>& bottom, const vector<Blob*>& top)
 {
   const LayerParameter& param = this->layer_param();
   const int batch_size = param.data_param().batch_size();
@@ -330,50 +326,9 @@ FPGADataLayer<Ftype, Btype>::DataLayerSetUp_v2(const vector<Blob*>& bottom, cons
 
   if (this->auto_mode_)
   {
-    if (!sample_reader_)
-    {
-      sample_reader_ = std::make_shared<DataReader<Datum>>(param, Caffe::solver_count(),
-                       this->rank_,
-                       this->parsers_num_,
-                       this->threads_num(),
-                       batch_size,
-                       true,
-                       false,
-                       cache,
-                       shuffle,
-                       false);
-    }
-    else if (!reader_)
-    {
-      reader_ = std::make_shared<DataReader<Datum>>(param,
-                Caffe::solver_count(),
-                this->rank_,
-                this->parsers_num_,
-                this->threads_num(),
-                batch_size,
-                false,
-                true,
-                cache,
-                shuffle,
-                this->phase_ == TRAIN);
-    }
+    LOG(INFO) << "This FPGADataLayer is in auto mode.";
   }
-  else if (!reader_)
-  {
-    reader_ = std::make_shared<DataReader<Datum>>(param,
-              Caffe::solver_count(),
-              this->rank_,
-              this->parsers_num_,
-              this->threads_num(),
-              batch_size,
-              false,
-              false,
-              cache,
-              shuffle,
-              this->phase_ == TRAIN);
-    start_reading();
-  }
-  //newplan added
+  //LOG parameters
   {
     LOG(INFO) << " in FPGADataLayer parameters:" << std::endl
               << "batch size: " << batch_size << std::endl
@@ -383,31 +338,30 @@ FPGADataLayer<Ftype, Btype>::DataLayerSetUp_v2(const vector<Blob*>& bottom, cons
     CHECK_GT(new_height, 0);
     CHECK_GT(new_width, 0);
     CHECK_GT(new_channel, 0);
-    if (this->rank_ == 0 && this->phase_ == TRAIN)
+  }
+  if (this->rank_ == 0 && this->phase_ == TRAIN)
+  {
+    if(!train_reader)
     {
-        //boost::thread(&FPGADataLayer::fpga_reader_cycle, batch_size, new_height, new_width, new_channel);
-        LOG(INFO) << "in rank 0 and TRAIN phase to launch threads ----------------------NEWPLAN-----------";
-        LOG(INFO) << "batch size is :" << batch_size << " --------------------NEWPLAN----------------------------\n\n";
-
-        if(!train_reader && !doneee_v2)
-        {
-          train_reader=std::make_shared<FPGAReader<PackedData>>(param,
-              Caffe::solver_count(),
-              this->rank_,
-              batch_size,
-              shuffle,
-              this->phase_ == TRAIN);
-          train_reader->start_reading();
-          LOG(INFO) << "create train reader....";
-          doneee_v2 = true;
-          FPGADataLayer::train_reader_=train_reader;
-          static int abababa =0;
-          LOG_IF(FATAL, abababa>0);
-          abababa++;
-        }
+      train_reader=std::make_shared<FPGAReader<PackedData>>(param, 
+                                                            Caffe::solver_count(),
+                                                            this->rank_,
+                                                            batch_size,
+                                                            shuffle,
+                                                            this->phase_ == TRAIN);
+      train_reader->start_reading();
+      LOG(INFO) << "create train reader....";
+      
+      FPGADataLayer::train_reader_=train_reader;
     }
   }
+  else if(this->rank_ == 0 && this->phase_ == TEST)
+  {
+    LOG(INFO) << "IN Root rank and test phase...";
+  }
+  
   train_reader=FPGADataLayer::train_reader_;
+
   // Read a data point, and use it to initialize the top blob.
   shared_ptr<Datum> sample_datum = sample_only_ ? sample_reader_->sample() : reader_->sample();
   datum_encoded_ = sample_datum->encoded();
@@ -447,45 +401,10 @@ FPGADataLayer<Ftype, Btype>::DataLayerSetUp_v2(const vector<Blob*>& bottom, cons
               << top[0]->height() << ", "
               << top[0]->width();
   }
-  else
-  {
-    // Reshape top[0] and prefetch_data according to the batch_size.
-    // Note: all these reshapings here in load_batch are needed only in case of
-    // different datum shapes coming from database.
-    Packing packing = NHWC;  // OpenCV
-    vector<int> top_shape = this->bdt(0)->Transform(sample_datum.get(), nullptr, 0, packing);
-    top_shape[0] = batch_size;
-    top[0]->Reshape(top_shape);
-
-
-    if (this->is_gpu_transform())
-    {
-      CHECK(Caffe::mode() == Caffe::GPU);
-      LOG(INFO) << this->print_current_device() << " Transform on GPU enabled";
-      tmp_gpu_buffer_.resize(this->threads_num());
-      for (int i = 0; i < this->tmp_gpu_buffer_.size(); ++i)
-      {
-        this->tmp_gpu_buffer_[i] = make_shared<GPUMemory::Workspace>();
-      }
-    }
-    // label
-    vector<int> label_shape(1, batch_size);
-    if (this->output_labels_)
-    {
-      vector<int> label_shape(1, batch_size);
-      top[1]->Reshape(label_shape);
-    }
-    this->batch_transformer_->reshape(top_shape, label_shape, this->is_gpu_transform());
-    LOG(INFO) << this->print_current_device() << " Output data size: "
-              << top[0]->num() << ", "
-              << top[0]->channels() << ", "
-              << top[0]->height() << ", "
-              << top[0]->width();
-  }
 }
 
 template<typename Ftype, typename Btype>
-void FPGADataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t queue_id)
+void FPGADataLayer<Ftype, Btype>::load_batch_v2(Batch* batch, int thread_id, size_t queue_id)
 {
   const bool sample_only = sample_only_.load();
   // Reshape according to the first datum of each batch
@@ -684,34 +603,6 @@ void FPGADataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t
   {
     LOG(INFO) << "Train reader is nullptr";
   }
-  if(0)
-  {
-    char* abc = nullptr;
-    int cycles_index = 0;
-    /*
-    LOG_EVERY_N(INFO, 10) << "IN DEBUG model:";
-*/
-    while (!FPGADataLayer::pixel_queue.pop(abc))
-    {
-      if (cycles_index % 100 == 0)
-      {
-        LOG(WARNING) << "Something wrong in pop queue.";
-      }
-      std::this_thread::sleep_for(std::chrono::milliseconds(1));
-    }
-    string a(abc);
-    sprintf(abc, "From consumer thread id : %u", lwp_id());
-
-    while (!FPGADataLayer::cycle_queue.push(abc))
-    {
-      if (cycles_index % 100 == 0)
-      {
-        LOG(WARNING) << "Something wrong in push queue.";
-      }
-      std::this_thread::sleep_for(std::chrono::milliseconds(1));
-    }
-    /*LOG(INFO) << "loading from pixel queue:" << a;*/
-  }
 
   batch->set_data_packing(packing);
   batch->set_id(current_batch_id);
@@ -719,7 +610,7 @@ void FPGADataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t
 }
 
 template<typename Ftype, typename Btype>
-void FPGADataLayer<Ftype, Btype>::load_batch_v2(Batch* batch, int thread_id, size_t queue_id)
+void FPGADataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t queue_id)
 {
   // Reshape according to the first datum of each batch
   // on single input batches allows for inputs of varying dimension.
@@ -739,7 +630,6 @@ void FPGADataLayer<Ftype, Btype>::load_batch_v2(Batch* batch, int thread_id, siz
   {
     batch->data_->Reshape(top_shape);
   }
-
   size_t datum_sizeof_element = 0UL;
   int datum_len = top_shape[1] * top_shape[2] * top_shape[3];
   size_t datum_size = 0UL;
@@ -761,9 +651,9 @@ void FPGADataLayer<Ftype, Btype>::load_batch_v2(Batch* batch, int thread_id, siz
   Ftype* top_label = this->output_labels_ ?
                      batch->label_->template mutable_cpu_data_c<Ftype>(false) : nullptr;
 
-    void* dst_gptr = nullptr;
-    Btype* dst_cptr = nullptr;
-    if (use_gpu_transform)
+  void* dst_gptr = nullptr;
+  Btype* dst_cptr = nullptr;
+  if (use_gpu_transform)
   {
     size_t buffer_size = top_shape[0] * top_shape[1] * new_height * new_width;
     tmp_gpu_buffer_[thread_id]->safe_reserve(buffer_size);
@@ -777,19 +667,18 @@ void FPGADataLayer<Ftype, Btype>::load_batch_v2(Batch* batch, int thread_id, siz
   size_t current_batch_id = 0UL;
   const size_t buf_len = batch->data_->offset(1);
 
+  CHECK(train_reader != nullptr);
+  
+  PackedData* abc = nullptr;
+  int cycles_index = 0;
+  
+  while (!train_reader->pop_packed_data(abc))
   {
-    char* src_buf = nullptr;
-    int cycles_index = 0;
-
-    while (!FPGADataLayer::pixel_queue.pop(src_buf))
-    {
-      if (cycles_index % 100 == 0)
-      {
-        LOG(WARNING) << "Something wrong in pop queue.";
-      }
-      std::this_thread::sleep_for(std::chrono::milliseconds(1));
-    }
-
+    LOG_EVERY_N(WARNING,10) << "Something wrong in pop queue.";
+    std::this_thread::sleep_for(std::chrono::milliseconds(1));
+  }
+  
+  {
     if (top_label != nullptr)
     {
       for (size_t label_index = 0; label_index < batch_size; label_index++)
@@ -801,7 +690,7 @@ void FPGADataLayer<Ftype, Btype>::load_batch_v2(Batch* batch, int thread_id, siz
       cudaStream_t stream = Caffe::thread_stream(Caffe::GPU_TRANSF_GROUP);
       size_t buffer_size = top_shape[0] * top_shape[1] * new_height * new_width;
       CHECK_EQ(buffer_size, datum_size);
-      CUDA_CHECK(cudaMemcpyAsync(static_cast<char*>(dst_gptr), src_buf, datum_size, cudaMemcpyHostToDevice, stream));
+      CUDA_CHECK(cudaMemcpyAsync(static_cast<char*>(dst_gptr), abc->data_, buffer_size, cudaMemcpyHostToDevice, stream));
       CUDA_CHECK(cudaStreamSynchronize(stream));
       for (size_t item_id = 0; item_id < batch_size; item_id++)
       {
@@ -814,32 +703,16 @@ void FPGADataLayer<Ftype, Btype>::load_batch_v2(Batch* batch, int thread_id, siz
       // Get data offset for this datum to hand off to transform thread
       LOG(FATAL) << "require enabling transform GPU";
     }
-
-    string a(src_buf);
-    sprintf(src_buf, "From consumer thread id : %u", lwp_id());
-
-    while (!FPGADataLayer::cycle_queue.push(src_buf))
-    {
-      if (cycles_index % 100 == 0)
-      {
-        LOG(WARNING) << "Something wrong in push queue.";
-      }
-      std::this_thread::sleep_for(std::chrono::milliseconds(1));
-    }
-    LOG(INFO) << "loading from pixel queue:" << a;
   }
-
-  if (use_gpu_transform)
+  string a(abc->data_);
+  sprintf(abc->data_, "From consumer thread id : %u", lwp_id());
+  
+  while (!train_reader->recycle_packed_data(abc))
   {
-    this->fdt(thread_id)->TransformGPU(top_shape[0], top_shape[1],
-                                       new_height,  // non-crop
-                                       new_width,  // non-crop
-                                       datum_sizeof_element,
-                                       dst_gptr,
-                                       batch->data_->template mutable_gpu_data_c<Ftype>(false),
-                                       random_vectors_[thread_id]->gpu_data(), true);
-    packing = NCHW;
+    LOG_EVERY_N(WARNING,10) << "Something wrong in push queue.";
+    std::this_thread::sleep_for(std::chrono::milliseconds(1));
   }
+  LOG(INFO) << "loading from pixel queue:" << a;
 
   batch->set_data_packing(packing);
   batch->set_id(123);
