@@ -33,8 +33,10 @@ FPGAReader<DatumType>::FPGAReader(const LayerParameter& param,
   string source = param.data_param().manifest();
   // Read the file with filenames and labels
   FPGAReader::train_manifest.clear();
+  /*
   FPGAReader::pixel_queue.resize(solver_count_);
   FPGAReader::recycle_queue.resize(solver_count_);
+  */
 
   LOG(INFO) << "Opening file " << source;
   std::ifstream infile(source.c_str());
@@ -106,7 +108,6 @@ void FPGAReader<DatumType>::InternalThreadEntryN(size_t thread_id)
   std::srand ( unsigned ( std::time(0) ) );
   LOG(INFO) << "In FPGA Reader.....loops";
   start_reading_flag_.wait(); // waiting for running.
-  size_t tmp_solver_count = 0U;
 
   LOG(INFO) << "In FPGA Reader.....after wait";
 
