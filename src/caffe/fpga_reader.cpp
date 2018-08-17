@@ -44,7 +44,7 @@ FPGAReader<DatumType>::FPGAReader(const LayerParameter& param,
     FPGAReader::train_manifest.emplace_back(std::make_pair(filename, label));
   }
   /*LOG(INFO) << this->print_current_device() << " A total of " << FPGAReader::train_manifest.size() << " images.";*/
-  LOG(INFO) <<" A total of " << FPGAReader::train_manifest.size() << " images.";
+  LOG(INFO) << " A total of " << FPGAReader::train_manifest.size() << " images.";
 
   size_t tmp_solver_count = 0U;
   auto& pixel_buffer = FPGAReader::pixel_queue[tmp_solver_count];
@@ -70,7 +70,7 @@ FPGAReader<DatumType>::FPGAReader(const LayerParameter& param,
       }
     }
   }
-  LOG(INFO) << "FPGAReader finished construction function, batch size is: "<< batch_size_;
+  LOG(INFO) << "FPGAReader finished construction function, batch size is: " << batch_size_;
   StartInternalThread(false, Caffe::next_seed());
 }
 
@@ -89,7 +89,7 @@ void FPGAReader<DatumType>::images_shuffles(int shuffle_rank)
   auto& shuffle_array = FPGAReader::train_manifest;
   std::random_shuffle ( shuffle_array.begin(), shuffle_array.end());
   timer.Stop();
-  LOG(INFO) << "shuffle "<<shuffle_array.size()<<" Images...." << timer.MilliSeconds()<< " ms";
+  LOG(INFO) << "shuffle " << shuffle_array.size() << " Images...." << timer.MilliSeconds() << " ms";
 }
 
 template<typename DatumType>
@@ -102,16 +102,16 @@ template<typename DatumType>
 void FPGAReader<DatumType>::InternalThreadEntryN(size_t thread_id)
 {
   std::srand ( unsigned ( std::time(0) ) );
-  LOG(INFO)<< "In FPGA Reader.....loops";
+  LOG(INFO) << "In FPGA Reader.....loops";
   start_reading_flag_.wait(); // waiting for run.
   size_t tmp_solver_count = 0U;
   auto& pixel_buffer = FPGAReader::pixel_queue[tmp_solver_count];
   auto& recycle_buffer = FPGAReader::recycle_queue;
 
-  LOG(INFO)<< "In FPGA Reader.....after wait";
+  LOG(INFO) << "In FPGA Reader.....after wait";
 
   //shared_ptr<DatumType> datum = make_shared<DatumType>();
-  int item_nums = FPGAReader::train_manifest.size()/batch_size_;
+  int item_nums = FPGAReader::train_manifest.size() / batch_size_;
   try
   {
     int index = 100;
@@ -121,7 +121,7 @@ void FPGAReader<DatumType>::InternalThreadEntryN(size_t thread_id)
 
       if (index == 0)
       {
-        LOG(INFO)<< "After "<<item_nums << "itertations";
+        LOG(INFO) << "After " << item_nums << " itertations";
         images_shuffles(0);
       }
 
@@ -135,7 +135,7 @@ void FPGAReader<DatumType>::InternalThreadEntryN(size_t thread_id)
 
         while (!must_stop(thread_id) && !pixel_buffer.push(tmp_datum))
         {
-          LOG_EVERY_N(WARNING,100) << "Something wrong in push queue.";
+          LOG_EVERY_N(WARNING, 100) << "Something wrong in push queue.";
           std::this_thread::sleep_for(std::chrono::milliseconds(1));
         }
       }
