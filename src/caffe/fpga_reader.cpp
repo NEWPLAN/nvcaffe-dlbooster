@@ -70,8 +70,8 @@ FPGAReader<DatumType>::FPGAReader(const LayerParameter& param,
       }
     }
   }
-  LOG(INFO) << "FPGAReader finished construction function....";
-  StartInternalThread(true, Caffe::next_seed());
+  LOG(INFO) << "FPGAReader finished construction function, batch size is: "<< batch_size_;
+  StartInternalThread(false, Caffe::next_seed());
 }
 
 template<typename DatumType>
