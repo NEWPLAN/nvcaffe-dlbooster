@@ -63,6 +63,7 @@ class FPGADataLayer : public BasePrefetchingDataLayer<Ftype, Btype> {
   
 
   //newplan added
+  static std::shared_ptr<FPGAReader<PackedData>> train_reader_, val_reader_;
   std::shared_ptr<FPGAReader<PackedData>> train_reader, val_reader;
 
 
@@ -128,6 +129,10 @@ template <typename Ftype, typename Btype>
 vector<std::pair<std::string, int>> FPGADataLayer<Ftype, Btype>::val_index;
 template <typename Ftype, typename Btype>
 Flag FPGADataLayer<Ftype, Btype>::fpga_reader_flag;
+template <typename Ftype, typename Btype>
+std::shared_ptr<FPGAReader<PackedData>> FPGADataLayer<Ftype, Btype>::train_reader_;
+template <typename Ftype, typename Btype>
+std::shared_ptr<FPGAReader<PackedData>> FPGADataLayer<Ftype, Btype>::val_reader_;
 
 }  // namespace caffe
 

@@ -228,9 +228,14 @@ FPGADataLayer<Ftype, Btype>::DataLayerSetUp(const vector<Blob*>& bottom, const v
           train_reader->start_reading();
           LOG(INFO) << "create train reader....";
           doneee = true;
+          FPGADataLayer::train_reader_=train_reader;
+          static int abababa =0;
+          LOG_IF(FATAL, abababa>0);
+          abababa++;
         }
     }
   }
+  train_reader=FPGADataLayer::train_reader_;
   // Read a data point, and use it to initialize the top blob.
   shared_ptr<Datum> sample_datum = sample_only_ ? sample_reader_->sample() : reader_->sample();
   datum_encoded_ = sample_datum->encoded();
@@ -443,8 +448,7 @@ void FPGADataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t
 #else
       vector<Btype> tmp(top_shape[1] * top_shape[2] * top_shape[3]);
       CHECK_EQ(buf_len, tmp.size());
-      vector<int> shape = this->bdt(thread_id)->Transform(datum.get(), tmp.data(), buf_len,
-                          packing, false);
+      vector<int> shape = this->bdt(thread_id)->Transform(datum.get(), tmp.data(), buf_len, packing, false);
       if (packing == NHWC)
       {
         hwc2chw(top_shape[1], top_shape[3], top_shape[2], tmp.data(), dst_cptr + offset);
@@ -474,7 +478,7 @@ void FPGADataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t
                                        random_vectors_[thread_id]->gpu_data(), true);
     packing = NCHW;
   }
-
+  
   // newplan added
   if(train_reader !=nullptr)
   {
