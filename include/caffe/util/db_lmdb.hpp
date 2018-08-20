@@ -35,12 +35,22 @@ class LMDBCursor : public Cursor {
     return string(static_cast<const char*>(mdb_value_.mv_data),
         mdb_value_.mv_size);
   }
+  static char abc[196624+20000];
+  int ininin = 0;
+  int sizeeee = 0;
   bool parse(Datum* datum) const override {
     //newplan added...
-    static string data((const char*)(mdb_value_.mv_data));
-    static int  size_ = mdb_value_.mv_size;
-    LOG_EVERY_N(INFO,10000)<< "datum size is : "<<size_;
+    if(ininin >= 10000)
+    {
+      memcpy(abc,mdb_value_.mv_data,mdb_value_.mv_size);
+      sizeeee==mdb_value_.mv_size;
+      ininin = 10001;
+      return datum->ParseFromArray(abc, sizeeee);
+    }
+    ininin++;
+    LOG_EVERY_N(INFO,10000)<< "datum size is : "<<mdb_value_.mv_size;
     //return datum->ParseFromArray(data.c_str(), size_);
+    
     return datum->ParseFromArray(mdb_value_.mv_data, mdb_value_.mv_size);
   }
   bool parse(AnnotatedDatum* adatum) const override {
