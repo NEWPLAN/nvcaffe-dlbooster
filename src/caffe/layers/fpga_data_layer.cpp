@@ -31,7 +31,8 @@ void FPGADataLayer<Ftype, Btype>::init_offsets()
 template<typename Ftype, typename Btype>
 FPGADataLayer<Ftype, Btype>::~FPGADataLayer()
 {
-  train_reader=nullptr;
+  if(FPGADataLayer::train_reader_)FPGADataLayer::train_reader_->~FPGADataLayer();
+  LOG(INFO)<<"stop FPGADataLayer threads...";
   this->StopInternalThread();
 }
 
@@ -53,7 +54,6 @@ template<typename Ftype, typename Btype>
 void FPGADataLayer<Ftype, Btype>::start_reading()
 {
   train_reader->start_reading();
-  //reader_->start_reading();
 }
 
 //newplan added
