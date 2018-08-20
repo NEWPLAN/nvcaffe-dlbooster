@@ -145,9 +145,8 @@ void FPGAReader<DatumType>::InternalThreadEntryN(size_t thread_id)
     }
   }
   catch (boost::thread_interrupted&) {}
-  catch(boost::exception& e)
-  {
-    LOG(INFO)<<e.what();
+  catch (std::exception& e) {
+    std::cout << "Exception: " << e.what() << std::endl;
   }
 }
 
