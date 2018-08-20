@@ -334,75 +334,66 @@ void DataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t que
 	size_t current_batch_id = 0UL;
 	const size_t buf_len = batch->data_->offset(1);
 	//newplan added
-	if (0)
+	if (1)
 	{
-		for (size_t entry = 0; entry < batch_size; ++entry)
-		{
-			shared_ptr<Datum> datum = reader->full_pop(qid, "Waiting for datum");
-			size_t item_id = datum->record_id() % batch_size;
-			if (item_id == 0UL)
-			{
-				current_batch_id = datum->record_id() / batch_size;
-			}
-			// Copy label.
-			if (top_label != nullptr)
-			{
-				top_label[item_id] = datum->label();
-			}
+		shared_ptr<Datum> datum = reader->full_pop(qid, "Waiting for datum");
 
-			if (use_gpu_transform)
+		current_batch_id = 1023;
+
+		// Copy label.
+		if (top_label != nullptr)
+		{
+			for (int entry = 0 ; entry > batch_size; entry++)
+				top_label[entry] = 54;
+		}
+
+		if (use_gpu_transform)
+		{
+			cudaStream_t stream = Caffe::thread_stream(Caffe::GPU_TRANSF_GROUP);
+
+			CHECK_EQ(datum_len, datum->channels() * datum->height() * datum->width())
+			        << "Datum size can't vary in the same batch";
+
+			CUDA_CHECK(cudaMemcpyAsync(static_cast<char*>(dst_gptr),
+			                           batch_data, datum_size * batch_size, cudaMemcpyHostToDevice, stream));
+			CUDA_CHECK(cudaStreamSynchronize(stream));
+
+			for (int entry = 0 ; entry > batch_size; entry++)
 			{
-				cudaStream_t stream = Caffe::thread_stream(Caffe::GPU_TRANSF_GROUP);
-				if (datum->encoded())
-				{
-					DecodeDatumToSignedBuf(*datum, color_mode, src_buf.data(), datum_size, false);
-				}
-				else
-				{
-					CHECK_EQ(datum_len, datum->channels() * datum->height() * datum->width())
-					        << "Datum size can't vary in the same batch";
-					src_ptr = datum->data().size() > 0 ?
-					          &datum->data().front() :
-					          reinterpret_cast<const char*>(&datum->float_data().Get(0));
-					// NOLINT_NEXT_LINE(caffe/alt_fn)
-					std::memcpy(src_buf.data(), src_ptr, datum_size);
-				}
-				CUDA_CHECK(cudaMemcpyAsync(static_cast<char*>(dst_gptr) + item_id * datum_size,
-				                           src_buf.data(), datum_size, cudaMemcpyHostToDevice, stream));
-				CUDA_CHECK(cudaStreamSynchronize(stream));
 				this->bdt(thread_id)->Fill3Randoms(&random_vectors_[thread_id]->
-				                                   mutable_cpu_data()[item_id * 3]);
+				                                   mutable_cpu_data()[entry * 3]);
+			}
+			LOG_EVERY_N(INFO, 50) << "In batch transform...";
+		}
+		else
+		{
+			// Get data offset for this datum to hand off to transform thread
+			const size_t offset = batch->data_->offset(item_id);
+			CHECK_EQ(0, offset % buf_len);
+#if defined(USE_CUDNN)
+			vector<int> shape = this->bdt(thread_id)->Transform(datum.get(), dst_cptr + offset,
+			                    buf_len, packing, false);
+#else
+			vector<Btype> tmp(top_shape[1] * top_shape[2] * top_shape[3]);
+			CHECK_EQ(buf_len, tmp.size());
+			vector<int> shape = this->bdt(thread_id)->Transform(datum.get(), tmp.data(), buf_len,
+			                    packing, false);
+			if (packing == NHWC)
+			{
+				hwc2chw(top_shape[1], top_shape[3], top_shape[2], tmp.data(), dst_cptr + offset);
+				packing = NCHW;
 			}
 			else
 			{
-				// Get data offset for this datum to hand off to transform thread
-				const size_t offset = batch->data_->offset(item_id);
-				CHECK_EQ(0, offset % buf_len);
-#if defined(USE_CUDNN)
-				vector<int> shape = this->bdt(thread_id)->Transform(datum.get(), dst_cptr + offset,
-				                    buf_len, packing, false);
-#else
-				vector<Btype> tmp(top_shape[1] * top_shape[2] * top_shape[3]);
-				CHECK_EQ(buf_len, tmp.size());
-				vector<int> shape = this->bdt(thread_id)->Transform(datum.get(), tmp.data(), buf_len,
-				                    packing, false);
-				if (packing == NHWC)
-				{
-					hwc2chw(top_shape[1], top_shape[3], top_shape[2], tmp.data(), dst_cptr + offset);
-					packing = NCHW;
-				}
-				else
-				{
-					// NOLINT_NEXT_LINE(caffe/alt_fn)
-					memcpy(dst_cptr + offset, tmp.data(), buf_len * sizeof(Btype));
-				}
-#endif
-				CHECK_EQ(top_shape[1], shape[1]) << "Number of channels can't vary in the same batch";
-				CHECK_EQ(top_shape[2], shape[2]) << "Image height can't vary in the same batch";
-				CHECK_EQ(top_shape[3], shape[3]) << "Image width can't vary in the same batch";
+				// NOLINT_NEXT_LINE(caffe/alt_fn)
+				memcpy(dst_cptr + offset, tmp.data(), buf_len * sizeof(Btype));
 			}
-			reader->free_push(qid, datum);
+#endif
+			CHECK_EQ(top_shape[1], shape[1]) << "Number of channels can't vary in the same batch";
+			CHECK_EQ(top_shape[2], shape[2]) << "Image height can't vary in the same batch";
+			CHECK_EQ(top_shape[3], shape[3]) << "Image width can't vary in the same batch";
 		}
+		reader->free_push(qid, datum);
 	}
 	else
 	{
@@ -487,7 +478,9 @@ void DataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t que
 		                                   random_vectors_[thread_id]->gpu_data(), true);
 		packing = NCHW;
 	}
-  LOG(INFO) <<"current_batch_id: " << current_batch_id;
+	/*
+	LOG(INFO) <<"current_batch_id: " << current_batch_id;
+	*/
 	batch->set_data_packing(packing);
 	batch->set_id(current_batch_id);
 	sample_only_.store(false);
