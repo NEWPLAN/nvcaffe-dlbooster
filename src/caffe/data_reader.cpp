@@ -307,6 +307,10 @@ void DataReader<DatumType>::CursorManager::next(shared_ptr<DatumType>& datum) {
   }
   LOG_EVERY_N(INFO,10000)<< "next CursorManager::next... " << reader_->rank_;
   LOG_EVERY_N(INFO,10000)<<reader_->free_.size() << ","<< reader_->full_.size();
+  for(int index = 0 ; index < reader_->free_.size(); index++)
+  {
+    LOG_EVERY_N(INFO,10000)<<reader_->free_[index].size() << ","<< reader_->full_[index].size();
+  }
   return;//newplan added
   for (size_t i = old_id; i < rec_id_; ++i) {
     cursor_->Next();
