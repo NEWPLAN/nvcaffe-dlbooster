@@ -52,7 +52,7 @@ FPGAReader<DatumType>::FPGAReader(const LayerParameter& param,
 
   for(int s_index=0;s_index<solver_count_;s_index++)
   {
-    auto& pixel_buffer = FPGAReader::pixel_queue[s_index];
+    auto& pixel_buffer = FPGAReader::fpga_pixel_queue[s_index];
     for (auto index = 0 ; index < 4; index++)
     {
       PackedData* tmp_buf = new PackedData;
@@ -142,45 +142,49 @@ void FPGAReader<DatumType>::InternalThreadEntryN(size_t thread_id)
 template<typename DatumType>
 bool  FPGAReader<DatumType>::producer_pop(DatumType* &packed_data, int bulket)
   {
-    while (!FPGAReader::recycle_queue[bulket].pop(packed_data))
-    {
-      /*
-      LOG_EVERY_N(WARNING, 100) << "pop recycle failed...";*/
-      std::this_thread::sleep_for(std::chrono::milliseconds(1));
-    }
+    // while (!FPGAReader::recycle_queue[bulket].pop(packed_data))
+    // {
+    //   /*
+    //   LOG_EVERY_N(WARNING, 100) << "pop recycle failed...";*/
+    //   std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    // }
+    packed_data = FPGAReader::fpga_cycle_queue[bulket].pop("producer pop empty");
     return true;
   }
   template<typename DatumType>
   bool  FPGAReader<DatumType>::producer_push(DatumType* packed_data, int bulket)
   {
-    while (!FPGAReader::pixel_queue[bulket].push(packed_data))
-    {
-      /*
-      LOG_EVERY_N(WARNING, 100) << "push pixel failed...";*/
-      std::this_thread::sleep_for(std::chrono::milliseconds(1));
-    }
+    // while (!FPGAReader::pixel_queue[bulket].push(packed_data))
+    // {
+    //   /*
+    //   LOG_EVERY_N(WARNING, 100) << "push pixel failed...";*/
+    //   std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    // }
+    FPGAReader::fpga_pixel_queue[bulket].push(packed_data);
     return true;
   }
   template<typename DatumType>
   bool FPGAReader<DatumType>::consumer_pop(DatumType* &packed_data, int bulket)
   {
-    while (!FPGAReader::pixel_queue[bulket].pop(packed_data))
-    {
-      /*
-      LOG_EVERY_N(WARNING, 100) << "pop pixel failed...";*/
-      std::this_thread::sleep_for(std::chrono::milliseconds(1));
-    }
+    // while (!FPGAReader::pixel_queue[bulket].pop(packed_data))
+    // {
+    //   /*
+    //   LOG_EVERY_N(WARNING, 100) << "pop pixel failed...";*/
+    //   std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    // }
+    packed_data=FPGAReader::fpga_pixel_queue[bulket].pop("consumer pop empty");
     return true;
   }
   template<typename DatumType>
   bool  FPGAReader<DatumType>::consumer_push(DatumType* packed_data, int bulket)
   {
-    while (!FPGAReader::recycle_queue[bulket].push(packed_data))
-    {
-      /*
-      LOG_EVERY_N(WARNING, 100) << "push recycle failed...";*/
-      std::this_thread::sleep_for(std::chrono::milliseconds(1));
-    }
+    // while (!FPGAReader::recycle_queue[bulket].push(packed_data))
+    // {
+    //   /*
+    //   LOG_EVERY_N(WARNING, 100) << "push recycle failed...";*/
+    //   std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    // }
+    FPGAReader::fpga_cycle_queue[bulket].push(packed_data);
     return true;
   }
 
