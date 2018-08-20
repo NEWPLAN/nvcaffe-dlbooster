@@ -336,7 +336,7 @@ void DataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t que
 	//newplan added
 	if (1)
 	{
-		shared_ptr<Datum> datum = reader->full_pop(qid, "Waiting for datum");
+		//shared_ptr<Datum> datum = reader->full_pop(qid, "Waiting for datum");
 
 		current_batch_id = 1023;
 
@@ -350,9 +350,9 @@ void DataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t que
 		if (use_gpu_transform)
 		{
 			cudaStream_t stream = Caffe::thread_stream(Caffe::GPU_TRANSF_GROUP);
-
-			CHECK_EQ(datum_len, datum->channels() * datum->height() * datum->width())
-			        << "Datum size can't vary in the same batch";
+			/*
+						CHECK_EQ(datum_len, datum->channels() * datum->height() * datum->width())
+						        << "Datum size can't vary in the same batch";*/
 
 			CUDA_CHECK(cudaMemcpyAsync(static_cast<char*>(dst_gptr),
 			                           batch_data, datum_size * batch_size, cudaMemcpyHostToDevice, stream));
@@ -369,7 +369,7 @@ void DataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t que
 		{
 			LOG(ERROR) << "SHOUDLE never come here...";
 		}
-		reader->free_push(qid, datum);
+		//reader->free_push(qid, datum);
 	}
 	else
 	{
