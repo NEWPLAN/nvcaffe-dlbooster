@@ -241,6 +241,7 @@ void DataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t que
 		//this->batch_transformer_->display_resources(50);
 	}
 	const bool sample_only = sample_only_.load();
+  LOG(INFO) << sample_only_? "smaple only..." : "not sample..." ;
 	// Reshape according to the first datum of each batch
 	// on single input batches allows for inputs of varying dimension.
 	const int batch_size = this->layer_param_.data_param().batch_size();
