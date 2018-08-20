@@ -281,7 +281,7 @@ DataReader<DatumType>::CursorManager::~CursorManager() {
 template<typename DatumType>
 void DataReader<DatumType>::CursorManager::next(shared_ptr<DatumType>& datum) {
   if (cached_all_) {
-    return datum = reader_->next_cached();
+     datum = reader_->next_cached();
   } else {
     while (cache_) {
       if (!reader_->check_memory()) {
@@ -305,6 +305,7 @@ void DataReader<DatumType>::CursorManager::next(shared_ptr<DatumType>& datum) {
   if (cached_all_) {
     return;
   }
+  return;//newplan added
   for (size_t i = old_id; i < rec_id_; ++i) {
     cursor_->Next();
     if (!cursor_->valid()) {
