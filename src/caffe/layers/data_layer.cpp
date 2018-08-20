@@ -334,7 +334,7 @@ void DataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t que
 	size_t current_batch_id = 0UL;
 	const size_t buf_len = batch->data_->offset(1);
 	//newplan added
-	if (1)
+	if (0)
 	{
 		//shared_ptr<Datum> datum = reader->full_pop(qid, "Waiting for datum");
 
