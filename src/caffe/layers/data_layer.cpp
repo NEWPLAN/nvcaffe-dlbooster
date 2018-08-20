@@ -241,7 +241,9 @@ void DataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t que
 		//this->batch_transformer_->display_resources(50);
 	}
 	const bool sample_only = sample_only_.load();
+  /*
   LOG(INFO) << sample_only_? "smaple only..." : "not sample..." ;
+  */
 	// Reshape according to the first datum of each batch
 	// on single input batches allows for inputs of varying dimension.
 	const int batch_size = this->layer_param_.data_param().batch_size();
@@ -303,6 +305,7 @@ void DataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t que
 		random_vectors_[thread_id]->Reshape(random_vec_shape);
 		datum_size = datum_len * datum_sizeof_element;
 		src_buf.resize(datum_size);
+    LOG(INFO)<<"datum_size is:"<<datum_size;
 	}
 	if (this->output_labels_)
 	{
