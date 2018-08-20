@@ -153,6 +153,10 @@ void FPGADataLayer<Ftype, Btype>::DataLayerSetUp(const vector<Blob*>& bottom, co
 template<typename Ftype, typename Btype>
 void FPGADataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t queue_id)
 {
+  //newplan added
+  {
+    this->batch_transformer_->display_resources(50);
+  }
   // Reshape according to the first datum of each batch
   // on single input batches allows for inputs of varying dimension.
   const int batch_size = this->layer_param_.data_param().batch_size();
