@@ -12,7 +12,6 @@
 #include "caffe/common.hpp"
 #include "caffe/internal_thread.hpp"
 #include "caffe/util/blocking_queue.hpp"
-#include "caffe/util/db.hpp"
 #include "caffe/util/thread_pool.hpp"
 
 #define MAX_GPU_PER_MACHINE_SUPPORT 128
@@ -52,28 +51,6 @@ public:
   virtual ~FPGAReader();
 
   void start_reading() { start_reading_flag_.set();}
-/*
-  // push back
-  bool recycle_packed_data(DatumType* packed_data,int bulket)
-  {
-    while (!FPGAReader::recycle_queue[bulket].push(packed_data))
-    {
-      std::this_thread::sleep_for(std::chrono::milliseconds(1));
-    }
-    return true;
-  }
-
-  bool pop_packed_data(DatumType* &packed_data, int bulket)
-  {
-    while (!FPGAReader::pixel_queue[bulket].pop(packed_data))
-    {
-      std::this_thread::sleep_for(std::chrono::milliseconds(1));
-    }
-    return true;
-  }
-*/
-  
-
   bool producer_pop(DatumType* &packed_data, int bulket);
   bool producer_push(DatumType* packed_data, int bulket);
   bool consumer_pop(DatumType* &packed_data, int bulket);
@@ -93,10 +70,7 @@ private:
   string manifest_path;
 
 protected:
-  //newplan added
   void images_shuffles(int shuffle_rank);
-  //static vector<boost::lockfree::queue<DatumType*, boost::lockfree::capacity<1024>>> pixel_queue;
-  //static vector<boost::lockfree::queue<DatumType*, boost::lockfree::capacity<1024>>> recycle_queue;
   static vector<std::pair<std::string, int>> train_manifest;
   static vector<std::pair<std::string, int>> val_manifest;
 
@@ -107,21 +81,15 @@ protected:
   DISABLE_COPY_MOVE_AND_ASSIGN(FPGAReader);
 };
 
-/*
-template <typename DatumType>
-vector<boost::lockfree::queue<DatumType*, boost::lockfree::capacity<1024>>> FPGAReader<DatumType>::pixel_queue(MAX_GPU_PER_MACHINE_SUPPORT);
-template <typename DatumType>
-vector<boost::lockfree::queue<DatumType*, boost::lockfree::capacity<1024>>> FPGAReader<DatumType>::recycle_queue(MAX_GPU_PER_MACHINE_SUPPORT);
-*/
 template <typename DatumType>
 vector<std::pair<std::string, int>> FPGAReader<DatumType>::train_manifest;
 template <typename DatumType>
 vector<std::pair<std::string, int>> FPGAReader<DatumType>::val_manifest;
 
 template <typename DatumType>
-vector<std::shared_ptr<BlockingQueue<DatumType*>>> FPGAReader<DatumType>::fpga_pixel_queue(2);
+vector<std::shared_ptr<BlockingQueue<DatumType*>>> FPGAReader<DatumType>::fpga_pixel_queue;
 template <typename DatumType>
-vector<std::shared_ptr<BlockingQueue<DatumType*>>> FPGAReader<DatumType>::fpga_cycle_queue(2);
+vector<std::shared_ptr<BlockingQueue<DatumType*>>> FPGAReader<DatumType>::fpga_cycle_queue;
 
 }  // namespace caffe
 
