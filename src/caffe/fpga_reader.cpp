@@ -36,7 +36,7 @@ FPGAReader<DatumType>::FPGAReader(const LayerParameter& param,
   
   FPGAReader::fpga_pixel_queue.resize(solver_count_);
   FPGAReader::fpga_cycle_queue.resize(solver_count_);
-  for(size_t index = 0; index=solver_count_; index++)
+  for(size_t index = 0; index<solver_count_; index++)
   {
     FPGAReader::fpga_pixel_queue[index]=std::make_shared<BlockingQueue<DatumType*>>();
     FPGAReader::fpga_cycle_queue[index]=std::make_shared<BlockingQueue<DatumType*>>();
