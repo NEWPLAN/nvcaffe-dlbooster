@@ -112,6 +112,9 @@ void FPGAReader<DatumType>::InternalThreadEntryN(size_t thread_id)
   LOG(INFO) << "In FPGA Reader.....loops";
   start_reading_flag_.wait(); // waiting for running.
   LOG(INFO) << "In FPGA Reader.....after wait";
+  CPUTimer ctime_;
+  size_t epoch_cou=0;
+  ctime_.Start();
   
   int current_shuffle = 1;
   std::future<int> f1 = std::async(std::launch::async, [&,current_shuffle](){
@@ -131,13 +134,15 @@ void FPGAReader<DatumType>::InternalThreadEntryN(size_t thread_id)
         if (index == 0)
         {
           f1.get();
-          LOG(INFO) << "After " << item_nums << " itertations" ;
+          ctime_.Stop();
+          LOG(INFO) << "Finished the "<<epoch_cou++<< "th Epoch, cost " <<ctime_.Seconds();
+          <<" s. This Epoch contains "<< item_nums << " itertations in all" ;
           f1=std::async(std::launch::async, [&,current_shuffle](){
             FPGAReader::images_shuffles(current_shuffle%2);
             return 0;
           });
           current_shuffle++;
-          //images_shuffles(0);
+          ctime_.Start();
         }
         if (must_stop(thread_id)) break;
         producer_pop(tmp_datum, s_index);
