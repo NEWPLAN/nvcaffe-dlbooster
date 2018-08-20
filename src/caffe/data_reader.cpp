@@ -305,7 +305,7 @@ void DataReader<DatumType>::CursorManager::next(shared_ptr<DatumType>& datum) {
   if (cached_all_) {
     return;
   }
-  LOG_EVERY_N(INFO,10000)<< "next CursorManager::next..." << ::rank_;
+  LOG_EVERY_N(INFO,10000)<< "next CursorManager::next...";
   return;//newplan added
   for (size_t i = old_id; i < rec_id_; ++i) {
     cursor_->Next();
