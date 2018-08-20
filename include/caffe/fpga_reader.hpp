@@ -89,7 +89,7 @@ protected:
   //newplan added
   void images_shuffles(int shuffle_rank);
   static vector<BlockingQueue<DatumType*>> fpga_pixel_queue;
-  static BlockingQueue<DatumType*> fpga_recycle_queue_;
+  static BlockingQueue<DatumType*> fpga_recycle_queue;
 
   static vector<boost::lockfree::queue<DatumType*, boost::lockfree::capacity<1024>>> pixel_queue;
   static boost::lockfree::queue<DatumType*, boost::lockfree::capacity<1024>> recycle_queue;
@@ -111,7 +111,7 @@ vector<std::pair<std::string, int>> FPGAReader<DatumType>::val_manifest;
 template <typename DatumType>
 vector<BlockingQueue<DatumType*>> FPGAReader<DatumType>::fpga_pixel_queue(MAX_GPU_PER_MACHINE_SUPPORT);
 template <typename DatumType>
-vector<BlockingQueue<DatumType*>> FPGAReader<DatumType>::fpga_recycle_queue_;
+BlockingQueue<DatumType*> FPGAReader<DatumType>::fpga_recycle_queue;
 
 }  // namespace caffe
 
