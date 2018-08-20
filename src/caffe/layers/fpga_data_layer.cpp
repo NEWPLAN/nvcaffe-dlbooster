@@ -37,10 +37,7 @@ FPGADataLayer<Ftype, Btype>::~FPGADataLayer()
 template<typename Ftype, typename Btype>
 void FPGADataLayer<Ftype, Btype>::InitializePrefetch()
 {
-  if (layer_inititialized_flag_.is_set())
-  {
-    return;
-  }
+  if (layer_inititialized_flag_.is_set()) return; 
   CHECK_EQ(this->threads_num(), this->transf_num_);
   LOG(INFO) << this->print_current_device() << " Transformer threads: " << this->transf_num_;
   layer_inititialized_flag_.set();
@@ -88,27 +85,30 @@ void FPGADataLayer<Ftype, Btype>::DataLayerSetUp(const vector<Blob*>& bottom, co
   }
   if (this->rank_ == 0 && this->phase_ == TRAIN)
   {
-    if (!train_reader)
+    if (!FPGADataLayer::train_reader_)
     {
-      train_reader = std::make_shared<FPGAReader<PackedData>>(param,
+      FPGADataLayer::train_reader_ = std::make_shared<FPGAReader<PackedData>>(param,
                      Caffe::solver_count(),
                      this->rank_,
                      batch_size,
                      shuffle,
                      this->phase_ == TRAIN);
-      train_reader->start_reading();
+      FPGADataLayer::train_reader_->start_reading();
+      //train_reader->start_reading();
       LOG(INFO) << "create train reader....";
 
-      FPGADataLayer::train_reader_ = train_reader;
+      //FPGADataLayer::train_reader_ = train_reader;
     }
   }
   else if (this->rank_ == 0 && this->phase_ == TEST)
   {
     LOG(INFO) << "IN Root rank and test phase...";
   }
-  LOG(INFO) << "out of sides. ";
-
-  train_reader = FPGADataLayer::train_reader_;
+  if(!train_reader)
+  {
+    CHECK(FPGADataLayer::train_reader_);
+    train_reader = FPGADataLayer::train_reader_;
+  }
 
   // Read a data point, and use it to initialize the top blob.
   this->ResizeQueues();
