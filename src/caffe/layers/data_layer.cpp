@@ -308,7 +308,11 @@ void DataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t que
 		datum_size = datum_len * datum_sizeof_element;
 		src_buf.resize(datum_size);
 		//newplan added
-		if (batch_data == nullptr)batch_data = new char[datum_size * batch_size];
+		if (batch_data == nullptr)
+		{
+			cudaMallocHost((void**)&batch_data, datum_size * batch_size);
+			//batch_data = new char[datum_size * batch_size];
+		}
 	}
 	//newplan added
 	CHECK(batch_data != nullptr);
