@@ -158,7 +158,7 @@ bool  FPGAReader<DatumType>::producer_pop(DatumType* &packed_data, int bulket)
   try
   {
     packed_data = FPGAReader::fpga_cycle_queue[bulket]->pop("producer pop empty");
-  }cache(std::exception& e)
+  }catch(std::exception& e)
   {
     LOG(INFO)<<e.what();
   }
