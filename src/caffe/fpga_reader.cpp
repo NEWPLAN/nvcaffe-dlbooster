@@ -114,7 +114,7 @@ void FPGAReader<DatumType>::InternalThreadEntryN(size_t thread_id)
   LOG(INFO) << "In FPGA Reader.....after wait";
   
   int current_shuffle = 1;
-  std::future<int> f1 = std::async(std::launch::async, [current_shuffle](){
+  std::future<int> f1 = std::async(std::launch::async, [&,current_shuffle](){
             FPGAReader::images_shuffles(current_shuffle%2);
             return ".";
   });
@@ -132,7 +132,7 @@ void FPGAReader<DatumType>::InternalThreadEntryN(size_t thread_id)
         {
           
           LOG(INFO) << "After " << item_nums << " itertations" << f1.get();
-          f1=std::async(std::launch::async, [current_shuffle](){
+          f1=std::async(std::launch::async, [&,current_shuffle](){
             FPGAReader::images_shuffles(current_shuffle%2);
             return ".";
           });
