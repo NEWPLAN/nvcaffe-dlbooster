@@ -130,8 +130,8 @@ void FPGAReader<DatumType>::InternalThreadEntryN(size_t thread_id)
         DatumType* tmp_datum = nullptr;
         if (index == 0)
         {
-          
-          LOG(INFO) << "After " << item_nums << " itertations" << f1.get();
+          f1.get();
+          LOG(INFO) << "After " << item_nums << " itertations" ;
           f1=std::async(std::launch::async, [&,current_shuffle](){
             FPGAReader::images_shuffles(current_shuffle%2);
             return 0;
