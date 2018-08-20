@@ -281,7 +281,7 @@ DataReader<DatumType>::CursorManager::~CursorManager() {
 template<typename DatumType>
 void DataReader<DatumType>::CursorManager::next(shared_ptr<DatumType>& datum) {
   if (cached_all_) {
-    return datum = reader_->next_cached();
+    datum = reader_->next_cached();
   } else {
     while (cache_) {
       if (!reader_->check_memory()) {
@@ -292,7 +292,7 @@ void DataReader<DatumType>::CursorManager::next(shared_ptr<DatumType>& datum) {
       datum = reader_->next_new();
       break;
     }
-  return  fetch(datum.get());
+    fetch(datum.get());
   }
 
   datum->set_record_id(rec_id_);
