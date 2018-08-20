@@ -145,6 +145,10 @@ void FPGAReader<DatumType>::InternalThreadEntryN(size_t thread_id)
     }
   }
   catch (boost::thread_interrupted&) {}
+  catch(boost::exception& e)
+  {
+    LOG(INFO)<<e.what();
+  }
 }
 
 template class FPGAReader<PackedData>;
