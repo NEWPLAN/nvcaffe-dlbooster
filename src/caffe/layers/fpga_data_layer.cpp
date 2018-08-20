@@ -31,9 +31,6 @@ void FPGADataLayer<Ftype, Btype>::init_offsets()
 template<typename Ftype, typename Btype>
 FPGADataLayer<Ftype, Btype>::~FPGADataLayer()
 {
-  LOG(INFO)<< "Will delete FPGADataLayer..";
-  if (!train_reader) train_reader->~FPGAReader();
-  train_reader=nullptr;
   this->StopInternalThread();
 }
 
