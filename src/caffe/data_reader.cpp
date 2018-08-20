@@ -292,7 +292,7 @@ void DataReader<DatumType>::CursorManager::next(shared_ptr<DatumType>& datum) {
       datum = reader_->next_new();
       break;
     }
-  return  fetch(datum.get());
+    fetch(datum.get());
   }
 
   datum->set_record_id(rec_id_);
