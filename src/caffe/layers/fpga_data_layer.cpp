@@ -150,6 +150,7 @@ void FPGADataLayer<Ftype, Btype>::DataLayerSetUp(const vector<Blob*>& bottom, co
   }
 }
 
+PackedData* abc=nullptr;
 template<typename Ftype, typename Btype>
 void FPGADataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t queue_id)
 {
@@ -200,11 +201,14 @@ void FPGADataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t
 
   CHECK(train_reader != nullptr);
 
-  PackedData* abc = nullptr;
+  //PackedData* abc = nullptr;
 
   
-
-  train_reader->consumer_pop(abc,this->rank_);
+  if(!abc)
+  {
+    train_reader->consumer_pop(abc,this->rank_);
+    //a=abc;
+  }
   {
     if (top_label != nullptr)
     {
@@ -244,7 +248,7 @@ void FPGADataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t
   string a(abc->data_);
   sprintf(abc->data_, "From consumer thread id : %u", lwp_id());
   
-  train_reader->consumer_push(abc,this->rank_);
+  //train_reader->consumer_push(abc,this->rank_);
   LOG_EVERY_N(INFO, 100) << "Rank/TID: " << this->rank_ << "/" << thread_id << ", loading from pixel queue:" << a;
 
   batch->set_data_packing(packing);
