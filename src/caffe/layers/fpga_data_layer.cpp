@@ -71,11 +71,11 @@ void FPGADataLayer<Ftype, Btype>::DataLayerSetUp(const vector<Blob*>& bottom, co
 
   if (this->auto_mode_)
   {
-    LOG(INFO) << "This FPGADataLayer is in auto mode.";
+    LOG(INFO) << "FPGADataLayer is in auto mode.";
   }
   //LOG parameters
   {
-    LOG(INFO) << " in FPGADataLayer parameters:" << std::endl
+    LOG(INFO) << "FPGADataLayer parameters:" << std::endl
               << "batch size: " << batch_size << std::endl
               << "height: " << new_height <<  std::endl
               << "width: " << new_width <<  std::endl
