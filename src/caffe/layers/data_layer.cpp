@@ -357,11 +357,10 @@ void DataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t que
 			CUDA_CHECK(cudaMemcpyAsync(static_cast<char*>(dst_gptr),
 			                           batch_data, datum_size * batch_size, cudaMemcpyHostToDevice, stream));
 
-
+			auto vec_fill = random_vectors_[thread_id]->mutable_cpu_data();
 			for (int entry = 0 ; entry > batch_size; entry++)
 			{
-				this->bdt(thread_id)->Fill3Randoms(&random_vectors_[thread_id]->
-				                                   mutable_cpu_data()[entry * 3]);
+				this->bdt(thread_id)->Fill3Randoms(&vec_fill[entry * 3]);
 			}
 			CUDA_CHECK(cudaStreamSynchronize(stream));
 			LOG_EVERY_N(INFO, 50) << "In batch transform...";
