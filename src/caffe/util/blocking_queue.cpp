@@ -90,7 +90,7 @@ bool BlockingQueue<T>::nonblocking_size(size_t* size) const {
   }
   return false;
 }
-
+template class BlockingQueue<PackedData*>;
 template class BlockingQueue<int>;
 template class BlockingQueue<shared_ptr<Batch>>;
 template class BlockingQueue<shared_ptr<Datum>>;
