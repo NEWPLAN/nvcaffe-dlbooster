@@ -205,6 +205,13 @@ DataLayer<Ftype, Btype>::DataLayerSetUp(const vector<Blob*>& bottom, const vecto
 
 template<typename Ftype, typename Btype>
 void DataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t queue_id) {
+  //newplan added
+  {
+    
+    LOG_EVERY_N(INFO,50) << "batch transform" << this->batch_transformer_->prefetch_.size();
+    LOG_EVERY_N(INFO,50) << "prefetches_full_" << this->batch_transformer_->prefetches_full_.size();
+    LOG_EVERY_N(INFO,50) << "prefetches_free_" << this->batch_transformer_->prefetches_free_.size();
+  }
   const bool sample_only = sample_only_.load();
   // Reshape according to the first datum of each batch
   // on single input batches allows for inputs of varying dimension.
