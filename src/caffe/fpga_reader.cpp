@@ -119,7 +119,7 @@ void FPGAReader<DatumType>::InternalThreadEntryN(size_t thread_id)
             return 0;
   });
 
-  int item_nums = FPGAReader::train_manifest.size() / batch_size_/10;
+  int item_nums = FPGAReader::train_manifest.size() / batch_size_;
   try
   {
     int index = 100;
