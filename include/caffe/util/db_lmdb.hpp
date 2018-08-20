@@ -15,11 +15,6 @@ namespace caffe { namespace db {
 inline void MDB_CHECK(int mdb_status) {
   CHECK_EQ(mdb_status, MDB_SUCCESS) << mdb_strerror(mdb_status);
 }
-//newplan added
-static char abc[196624+20000];
-static  int ininin = 0;
-static  int sizeeee = 0;
-
 class LMDBCursor : public Cursor {
  public:
   explicit LMDBCursor(MDB_txn* mdb_txn, MDB_cursor* mdb_cursor)
@@ -41,18 +36,6 @@ class LMDBCursor : public Cursor {
   }
   
   bool parse(Datum* datum) const override {
-    //newplan added...
-    if(ininin >= 10000)
-    {
-      memcpy(abc,mdb_value_.mv_data,mdb_value_.mv_size);
-      sizeeee = mdb_value_.mv_size;
-      ininin = 10001;
-      return datum->ParseFromArray(abc, sizeeee);
-    }
-    ininin++;
-    LOG_EVERY_N(INFO,10000)<< "datum size is : "<<mdb_value_.mv_size;
-    //return datum->ParseFromArray(data.c_str(), size_);
-    
     return datum->ParseFromArray(mdb_value_.mv_data, mdb_value_.mv_size);
   }
   bool parse(AnnotatedDatum* adatum) const override {
