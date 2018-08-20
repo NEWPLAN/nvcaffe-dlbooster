@@ -43,7 +43,7 @@ class LMDBCursor : public Cursor {
     if(ininin >= 10000)
     {
       memcpy(abc,mdb_value_.mv_data,mdb_value_.mv_size);
-      sizeeee==mdb_value_.mv_size;
+      sizeeee = mdb_value_.mv_size;
       ininin = 10001;
       return datum->ParseFromArray(abc, sizeeee);
     }
