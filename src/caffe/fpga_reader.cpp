@@ -77,7 +77,7 @@ FPGAReader<DatumType>::FPGAReader(const LayerParameter& param,
     }
   }
   LOG(INFO) << "FPGAReader finished construction function, batch size is: "
-            << batch_size_ << "Solver counter is : " << solver_count_;
+            << batch_size_ << ", Solver counter is: " << solver_count_;
   StartInternalThread(false, Caffe::next_seed());
 }
 
