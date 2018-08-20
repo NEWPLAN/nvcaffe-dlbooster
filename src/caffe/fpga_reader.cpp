@@ -155,14 +155,7 @@ void FPGAReader<DatumType>::InternalThreadEntryN(size_t thread_id)
 template<typename DatumType>
 bool  FPGAReader<DatumType>::producer_pop(DatumType* &packed_data, int bulket)
 {
-  try
-  {
-    packed_data = FPGAReader::fpga_cycle_queue[bulket]->pop("producer pop empty");
-  }catch(boost::exception& e)
-  {
-    LOG(INFO)<<"unknown...";
-    /*LOG(INFO)<<e.what();*/
-  }
+  packed_data = FPGAReader::fpga_cycle_queue[bulket]->pop("producer pop empty");
   return true;
 }
 template<typename DatumType>
