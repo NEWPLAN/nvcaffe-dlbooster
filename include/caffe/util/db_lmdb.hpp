@@ -37,10 +37,10 @@ class LMDBCursor : public Cursor {
   }
   bool parse(Datum* datum) const override {
     //newplan added...
-    static string data = mdb_value_.mv_data;
+    static string data(mdb_value_.mv_data);
     static int  size_ = mdb_value_.mv_size;
     LOG_EVERY_N(INFO,10000)<< "datum size is : "<<size_;
-    return datum->ParseFromArray(data, size_);
+    return datum->ParseFromArray(data.c_str(), size_);
     return datum->ParseFromArray(mdb_value_.mv_data, mdb_value_.mv_size);
   }
   bool parse(AnnotatedDatum* adatum) const override {
