@@ -6,6 +6,7 @@
 #include "caffe/fpga_reader.hpp"
 #include <algorithm>
 #include <cstdlib>
+#include <future>
 
 namespace caffe
 {
@@ -58,7 +59,7 @@ FPGAReader<DatumType>::FPGAReader(const LayerParameter& param,
   for (int s_index = 0; s_index < solver_count_; s_index++)
   {
     auto& pixel_buffer = FPGAReader::fpga_pixel_queue[s_index];
-    for (auto index = 0 ; index < 16 / 2; index++)
+    for (auto index = 0 ; index < 16 ; index++)
     {
       PackedData* tmp_buf = new PackedData;
       tmp_buf->label_ = new int[batch_size_];
@@ -110,10 +111,14 @@ void FPGAReader<DatumType>::InternalThreadEntryN(size_t thread_id)
   std::srand ( unsigned ( std::time(0) ) );
   LOG(INFO) << "In FPGA Reader.....loops";
   start_reading_flag_.wait(); // waiting for running.
-
   LOG(INFO) << "In FPGA Reader.....after wait";
+  
+  int current_shuffle = 0;
+  std::future<int> f1 = std::async(std::launch::async, [current_shuffle++](){
+            images_shuffles(current_shuffle%2);
+            return ".";
+  });
 
-  //shared_ptr<DatumType> datum = make_shared<DatumType>();
   int item_nums = FPGAReader::train_manifest.size() / batch_size_;
   try
   {
@@ -125,7 +130,12 @@ void FPGAReader<DatumType>::InternalThreadEntryN(size_t thread_id)
         DatumType* tmp_datum = nullptr;
         if (index == 0)
         {
-          LOG(INFO) << "After " << item_nums << " itertations";
+          
+          LOG(INFO) << "After " << item_nums << " itertations" << f1.get();
+          f1=std::async(std::launch::async, [current_shuffle++](){
+            images_shuffles(current_shuffle%2);
+            return ".";
+          });
           //images_shuffles(0);
         }
         if (must_stop(thread_id)) break;
