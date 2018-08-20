@@ -140,7 +140,7 @@ void FPGAReader<DatumType>::InternalThreadEntryN(size_t thread_id)
   catch (boost::thread_interrupted&) {}
 }
 template<typename DatumType>
-bool void FPGAReader<DatumType>::producer_pop(DatumType* &packed_data, int bulket)
+bool  FPGAReader<DatumType>::producer_pop(DatumType* &packed_data, int bulket)
   {
     while (!FPGAReader::recycle_queue[bulket].pop(packed_data))
     {
@@ -151,7 +151,7 @@ bool void FPGAReader<DatumType>::producer_pop(DatumType* &packed_data, int bulke
     return true;
   }
   template<typename DatumType>
-  bool void FPGAReader<DatumType>::producer_push(DatumType* packed_data, int bulket)
+  bool  FPGAReader<DatumType>::producer_push(DatumType* packed_data, int bulket)
   {
     while (!FPGAReader::pixel_queue[bulket].push(packed_data))
     {
@@ -162,7 +162,7 @@ bool void FPGAReader<DatumType>::producer_pop(DatumType* &packed_data, int bulke
     return true;
   }
   template<typename DatumType>
-  bool void FPGAReader<DatumType>::consumer_pop(DatumType* &packed_data, int bulket)
+  bool FPGAReader<DatumType>::consumer_pop(DatumType* &packed_data, int bulket)
   {
     while (!FPGAReader::pixel_queue[bulket].pop(packed_data))
     {
@@ -173,7 +173,7 @@ bool void FPGAReader<DatumType>::producer_pop(DatumType* &packed_data, int bulke
     return true;
   }
   template<typename DatumType>
-  bool void FPGAReader<DatumType>::consumer_push(DatumType* packed_data, int bulket)
+  bool  FPGAReader<DatumType>::consumer_push(DatumType* packed_data, int bulket)
   {
     while (!FPGAReader::recycle_queue[bulket].push(packed_data))
     {
