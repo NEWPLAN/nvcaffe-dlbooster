@@ -238,7 +238,7 @@ void DataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t que
 	//newplan added
 	//for display...
 	{
-		this->batch_transformer_->display_resources(50);
+		//this->batch_transformer_->display_resources(50);
 	}
 	const bool sample_only = sample_only_.load();
 	// Reshape according to the first datum of each batch
