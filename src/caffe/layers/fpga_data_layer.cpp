@@ -245,7 +245,7 @@ void FPGADataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t
   sprintf(abc->data_, "From consumer thread id : %u", lwp_id());
   
   train_reader->consumer_push(abc,this->rank_);
-  LOG_EVERY_N(INFO, 10) << "Rank/TID: " << this->rank_ << "/" << thread_id << ", loading from pixel queue:" << a;
+  LOG_EVERY_N(INFO, 100) << "Rank/TID: " << this->rank_ << "/" << thread_id << ", loading from pixel queue:" << a;
 
   batch->set_data_packing(packing);
   batch->set_id(123);
