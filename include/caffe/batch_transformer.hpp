@@ -78,6 +78,8 @@ class BatchTransformer : public InternalThread {
 
   void ResizeQueues(size_t queues_num);
 
+  void display_resources(int iter_num);
+
  protected:
   void InternalThreadEntry() override;
 

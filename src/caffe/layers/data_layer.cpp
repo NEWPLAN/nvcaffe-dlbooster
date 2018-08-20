@@ -207,10 +207,7 @@ template<typename Ftype, typename Btype>
 void DataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t queue_id) {
   //newplan added
   {
-    
-    LOG_EVERY_N(INFO,50) << "batch transform" << this->batch_transformer_->prefetch_.size();
-    LOG_EVERY_N(INFO,50) << "prefetches_full_" << this->batch_transformer_->prefetches_full_.size();
-    LOG_EVERY_N(INFO,50) << "prefetches_free_" << this->batch_transformer_->prefetches_free_.size();
+    this->batch_transformer_->display_resources(50);
   }
   const bool sample_only = sample_only_.load();
   // Reshape according to the first datum of each batch
