@@ -108,18 +108,18 @@ template<typename Ftype, typename Btype>
 void BatchTransformer<Ftype, Btype>::display_resources(int iter_num) 
 {
   CHECK(iter_num>0);
-  LOG_EVERT_N(INFO,iter_num) <<"Batch transform: info:"<<std::endl 
+  LOG_EVERY_N(INFO,iter_num) <<"Batch transform: info:"<<std::endl 
   <<"prefetch_:"<<prefetch_.size()
   <<"prefetches_full_:"<<prefetches_full_.size()
   <<"prefetches_free_:"<<prefetches_free_.size();
 
   for(int index =0;index<prefetches_full_.size();index++)
   {
-    LOG_EVERT_N(INFO,iter_num) <<"prefetches_full_[index]:"<<prefetches_full_[index]->size();
+    LOG_EVERY_N(INFO,iter_num) <<"prefetches_full_[index]:"<<prefetches_full_[index]->size();
   }
   for(int index =0;index<prefetches_free_.size();index++)
   {
-    LOG_EVERT_N(INFO,iter_num) <<"prefetches_free_[index]:"<<prefetches_free_[index]->size();
+    LOG_EVERY_N(INFO,iter_num) <<"prefetches_free_[index]:"<<prefetches_free_[index]->size();
   }
   
 }
