@@ -109,9 +109,11 @@ void BatchTransformer<Ftype, Btype>::display_resources(int iter_num)
 {
   CHECK(iter_num>0);
   LOG_EVERY_N(INFO,iter_num) <<"Batch transform: info:"<<std::endl 
-  <<"prefetch_:"<<prefetch_.size()
-  <<"prefetches_full_:"<<prefetches_full_.size()
-  <<"prefetches_free_:"<<prefetches_free_.size();
+  <<"prefetch_:"<<prefetch_.size()<<std::endl 
+  <<"prefetches_full_:"<<prefetches_full_.size()<<std::endl 
+  <<"prefetches_free_:"<<prefetches_free_.size()<<std::endl 
+  <<"process_full:"<<processed_full_->size()<<std::endl 
+  <<"process_free:"<<processed_free_->size()<<std::endl 
 
   for(int index =0;index<prefetches_full_.size();index++)
   {
