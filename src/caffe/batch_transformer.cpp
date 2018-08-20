@@ -112,8 +112,8 @@ void BatchTransformer<Ftype, Btype>::display_resources(int iter_num)
   <<"prefetch_:"<<prefetch_.size()<<std::endl 
   <<"prefetches_full_:"<<prefetches_full_.size()<<std::endl 
   <<"prefetches_free_:"<<prefetches_free_.size()<<std::endl 
-  <<"process_full:"<<processed_full_->size()<<std::endl 
-  <<"process_free:"<<processed_free_->size()<<std::endl 
+  <<"process_full:"<<processed_full_.size()<<std::endl 
+  <<"process_free:"<<processed_free_.size()<<std::endl 
 
   for(int index =0;index<prefetches_full_.size();index++)
   {
