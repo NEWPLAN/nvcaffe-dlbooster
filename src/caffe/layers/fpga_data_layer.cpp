@@ -166,10 +166,7 @@ void FPGADataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t
 
   Packing packing = NHWC;  // OpenCV
 
-  //newplan
-  shared_ptr<GPUMemory::Workspace>& ws = GPUMemory::workspace_[Caffe::current_device()];
-  LOG(INFO)<<"work space size on rank: "<<Caffe::current_device()<<" is: "<<ws->size();
-
+  
   //infer shape of blobs
   vector<int> top_shape = {batch_size, new_channel, cropped_height, cropped_width};
   if (top_shape != batch->data_->shape())

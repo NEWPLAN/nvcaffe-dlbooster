@@ -18,6 +18,9 @@ void BasePrefetchingDataLayer<Ftype, Btype>::Forward_gpu(const vector<Blob*>& bo
   if (this->output_labels_) {
     top[1]->Swap(*batch->label_);
   }
+  //newplan
+  shared_ptr<GPUMemory::Workspace>& ws = GPUMemory::workspace_[Caffe::current_device()];
+  LOG(INFO)<<"work space size on rank: "<<Caffe::current_device()<<" is: "<<ws->size();
   this->batch_transformer_->processed_push(batch);
 }
 
