@@ -100,8 +100,8 @@ protected:
   static vector<std::pair<std::string, int>> train_manifest;
   static vector<std::pair<std::string, int>> val_manifest;
 
-  static vector<BlockingQueue<DatumType*>> fpga_pixel_queue;
-  static vector<BlockingQueue<DatumType*>> fpga_cycle_queue;
+  static vector<std::shared_ptr<BlockingQueue<DatumType*>>> fpga_pixel_queue;
+  static vector<std::shared_ptr<BlockingQueue<DatumType*>>> fpga_cycle_queue;
 
 
   DISABLE_COPY_MOVE_AND_ASSIGN(FPGAReader);
