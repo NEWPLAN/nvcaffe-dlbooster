@@ -142,7 +142,7 @@ void FPGAReader<DatumType>::InternalThreadEntryN(size_t thread_id)
         if (must_stop(thread_id)) break;
         producer_pop(tmp_datum, s_index);
         string a(tmp_datum->data_);
-        LOG_EVERY_N(INFO, 100) << "Received from consumer: " << a;
+        DLOG_EVERY_N(INFO, 100) << "Received from consumer: " << a;
         sprintf(tmp_datum->data_, "producer id : %u, index = %d", lwp_id(), index++);
         index %= item_nums;
         if (must_stop(thread_id)) break;
