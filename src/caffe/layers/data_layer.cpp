@@ -334,7 +334,7 @@ void DataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t que
 	size_t current_batch_id = 0UL;
 	const size_t buf_len = batch->data_->offset(1);
 	//newplan added
-	if (0)
+	if (10)
 	{
 		//shared_ptr<Datum> datum = reader->full_pop(qid, "Waiting for datum");
 
@@ -356,13 +356,14 @@ void DataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t que
 
 			CUDA_CHECK(cudaMemcpyAsync(static_cast<char*>(dst_gptr),
 			                           batch_data, datum_size * batch_size, cudaMemcpyHostToDevice, stream));
-			CUDA_CHECK(cudaStreamSynchronize(stream));
+
 
 			for (int entry = 0 ; entry > batch_size; entry++)
 			{
 				this->bdt(thread_id)->Fill3Randoms(&random_vectors_[thread_id]->
 				                                   mutable_cpu_data()[entry * 3]);
 			}
+			CUDA_CHECK(cudaStreamSynchronize(stream));
 			LOG_EVERY_N(INFO, 50) << "In batch transform...";
 		}
 		else
