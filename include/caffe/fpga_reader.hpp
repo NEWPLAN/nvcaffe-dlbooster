@@ -119,9 +119,9 @@ template <typename DatumType>
 vector<std::pair<std::string, int>> FPGAReader<DatumType>::val_manifest;
 
 template <typename DatumType>
-vector<BlockingQueue<DatumType*>> FPGAReader<DatumType>::fpga_pixel_queue(2);
+vector<std::shared_ptr<BlockingQueue<DatumType*>>> FPGAReader<DatumType>::fpga_pixel_queue(2);
 template <typename DatumType>
-vector<BlockingQueue<DatumType*>> FPGAReader<DatumType>::fpga_cycle_queue(2);
+vector<std::shared_ptr<BlockingQueue<DatumType*>>> FPGAReader<DatumType>::fpga_cycle_queue(2);
 
 }  // namespace caffe
 
