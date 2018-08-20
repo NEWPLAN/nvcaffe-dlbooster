@@ -155,7 +155,7 @@ void FPGADataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t
 {
   //newplan added
   {
-    this->batch_transformer_->display_resources(50);
+    //this->batch_transformer_->display_resources(50);
   }
   // Reshape according to the first datum of each batch
   // on single input batches allows for inputs of varying dimension.
