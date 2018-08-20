@@ -72,47 +72,12 @@ public:
     return true;
   }
 */
-  bool producer_pop(DatumType* &packed_data, int bulket)
-  {
-    while (!FPGAReader::recycle_queue[bulket].pop(packed_data))
-    {
-      /*
-      LOG_EVERY_N(WARNING, 100) << "pop recycle failed...";*/
-      std::this_thread::sleep_for(std::chrono::milliseconds(1));
-    }
-    return true;
-  }
-  bool producer_push(DatumType* packed_data, int bulket)
-  {
-    while (!FPGAReader::pixel_queue[bulket].push(packed_data))
-    {
-      /*
-      LOG_EVERY_N(WARNING, 100) << "push pixel failed...";*/
-      std::this_thread::sleep_for(std::chrono::milliseconds(1));
-    }
-    return true;
-  }
+  
 
-  bool consumer_pop(DatumType* &packed_data, int bulket)
-  {
-    while (!FPGAReader::pixel_queue[bulket].pop(packed_data))
-    {
-      /*
-      LOG_EVERY_N(WARNING, 100) << "pop pixel failed...";*/
-      std::this_thread::sleep_for(std::chrono::milliseconds(1));
-    }
-    return true;
-  }
-  bool consumer_push(DatumType* packed_data, int bulket)
-  {
-    while (!FPGAReader::recycle_queue[bulket].push(packed_data))
-    {
-      /*
-      LOG_EVERY_N(WARNING, 100) << "push recycle failed...";*/
-      std::this_thread::sleep_for(std::chrono::milliseconds(1));
-    }
-    return true;
-  }
+  bool producer_pop(DatumType* &packed_data, int bulket);
+  bool producer_push(DatumType* packed_data, int bulket);
+  bool consumer_pop(DatumType* &packed_data, int bulket);
+  bool consumer_push(DatumType* packed_data, int bulket);
 
 protected:
   void InternalThreadEntry() override;
@@ -135,6 +100,10 @@ protected:
   static vector<std::pair<std::string, int>> train_manifest;
   static vector<std::pair<std::string, int>> val_manifest;
 
+  static vector<BlockingQueue<DatumType*>> fpga_pixel_queue;
+  static vector<BlockingQueue<DatumType*>> fpga_cycle_queue;
+
+
   DISABLE_COPY_MOVE_AND_ASSIGN(FPGAReader);
 };
 
@@ -146,6 +115,11 @@ template <typename DatumType>
 vector<std::pair<std::string, int>> FPGAReader<DatumType>::train_manifest;
 template <typename DatumType>
 vector<std::pair<std::string, int>> FPGAReader<DatumType>::val_manifest;
+
+template <typename DatumType>
+vector<BlockingQueue<DatumType*>> FPGAReader<DatumType>::fpga_pixel_queue(2);
+template <typename DatumType>
+vector<BlockingQueue<DatumType*>> FPGAReader<DatumType>::fpga_cycle_queue(2);
 
 }  // namespace caffe
 
