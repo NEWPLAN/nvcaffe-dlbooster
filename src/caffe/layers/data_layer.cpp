@@ -232,6 +232,7 @@ DataLayer<Ftype, Btype>::DataLayerSetUp(const vector<Blob*>& bottom, const vecto
 	          << top[0]->width();
 }
 
+char* batch_data=nullptr;
 template<typename Ftype, typename Btype>
 void DataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t queue_id)
 {
@@ -305,8 +306,11 @@ void DataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t que
 		random_vectors_[thread_id]->Reshape(random_vec_shape);
 		datum_size = datum_len * datum_sizeof_element;
 		src_buf.resize(datum_size);
-    LOG(INFO)<<"datum_size is:"<<datum_size;
+    //newplan added
+    if(batch_data==nullptr)batch_data =new char[datum_size*batch_size];
 	}
+  //newplan added
+  CHECK(batch_data!=nullptr);
 	if (this->output_labels_)
 	{
 		batch->label_->Reshape(vector<int>(1, batch_size));
