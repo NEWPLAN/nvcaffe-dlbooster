@@ -61,14 +61,9 @@ protected:
   //newplan added
   static std::shared_ptr<FPGAReader<PackedData>> train_reader_, val_reader_;
   std::shared_ptr<FPGAReader<PackedData>> train_reader, val_reader;
-  static boost::lockfree::queue<char*, boost::lockfree::capacity<1024>> pixel_queue, cycle_queue;
 };
 
 //newplan added
-template <typename Ftype, typename Btype>
-boost::lockfree::queue<char*, boost::lockfree::capacity<1024>> FPGADataLayer<Ftype, Btype>::pixel_queue;
-template <typename Ftype, typename Btype>
-boost::lockfree::queue<char*, boost::lockfree::capacity<1024>> FPGADataLayer<Ftype, Btype>::cycle_queue;
 template <typename Ftype, typename Btype>
 std::shared_ptr<FPGAReader<PackedData>> FPGADataLayer<Ftype, Btype>::train_reader_;
 template <typename Ftype, typename Btype>
