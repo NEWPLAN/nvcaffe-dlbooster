@@ -15,6 +15,10 @@ namespace caffe { namespace db {
 inline void MDB_CHECK(int mdb_status) {
   CHECK_EQ(mdb_status, MDB_SUCCESS) << mdb_strerror(mdb_status);
 }
+//newplan added
+static char abc[196624+20000];
+static  int ininin = 0;
+static  int sizeeee = 0;
 
 class LMDBCursor : public Cursor {
  public:
@@ -35,9 +39,7 @@ class LMDBCursor : public Cursor {
     return string(static_cast<const char*>(mdb_value_.mv_data),
         mdb_value_.mv_size);
   }
-  static char abc[196624+20000];
-  int ininin = 0;
-  int sizeeee = 0;
+  
   bool parse(Datum* datum) const override {
     //newplan added...
     if(ininin >= 10000)
