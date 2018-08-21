@@ -66,7 +66,7 @@ Both  `baseprefetchinglayer` and `FPGAReader` inherit `InternalThread` and enabl
 
 `InternalThread`: thread manager.
 
-arch can be found at ![arch](https://github.com/NEWPLAN/nvcaffe/tree/fpgalayer_v2/arch.jpg)
+arch can be found at ![arch](arch.jpg)
 
 `FPGADataLayer`     `DataLayer`       `ImageDataLayer`
             \                   |                         /
