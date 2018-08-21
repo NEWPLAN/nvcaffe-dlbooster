@@ -68,6 +68,19 @@ class BatchTransformer : public InternalThread {
   void processed_push(const boost::shared_ptr<Batch>& batch) {
     return this->processed_free_.push(batch);
   }
+  //newplan added to disable IO.
+  void processed_push(bool without_process,const boost::shared_ptr<Batch>& batch) 
+  {
+    if(without_process && false)
+    {
+      LOG(INFO) << "error in processed free queue";
+       return this->processed_free_.push(batch);
+    }
+    else
+    {
+      return this->processed_full_.push(batch);
+    }
+  }
 
   void reshape(const vector<int>& data_shape, const vector<int>& label_shape,
       bool preallocate = false);

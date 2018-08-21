@@ -19,6 +19,8 @@ void BasePrefetchingDataLayer<Ftype, Btype>::Forward_gpu(const vector<Blob*>& bo
     top[1]->Swap(*batch->label_);
   }
   this->batch_transformer_->processed_push(batch);
+  //newplan added disable IO.
+  //this->batch_transformer_->processed_push(true,batch);
 }
 
 INSTANTIATE_LAYER_GPU_FORWARD_ONLY_FB(BasePrefetchingDataLayer);
