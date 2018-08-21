@@ -67,13 +67,6 @@ Both  `baseprefetchinglayer` and `FPGAReader` inherit `InternalThread` and enabl
 `InternalThread`: thread manager.
 
 arch can be found at ![arch](arch.jpg)
-
-`FPGADataLayer`     `DataLayer`       `ImageDataLayer`
-            \                   |                         /
-             \                  |                        /
-              \                 |                       /
-               \                |
-                \               |
-                 \              |
-                  \             |
-                  `baseprefetchinglayer`
+<div align=center>
+<img width="150" height="150" src="arch.jpg"/>
+</div>
