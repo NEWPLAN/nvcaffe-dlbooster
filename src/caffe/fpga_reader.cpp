@@ -135,8 +135,8 @@ void FPGAReader<DatumType>::InternalThreadEntryN(size_t thread_id)
         {
           f1.get();
           ctime_.Stop();
-          LOG(INFO) << "Finished the "<<epoch_cou++<< "th Epoch, cost " <<ctime_.Seconds()
-          <<" s. This Epoch contains "<< item_nums << " itertations in all" ;
+          LOG(INFO) << "Finished the "<<epoch_cou++<< "th Epoch in " <<ctime_.Seconds()
+          <<" s. This Epoch contains "<< item_nums << " itertations.";
           f1=std::async(std::launch::async, [&,current_shuffle](){
             FPGAReader::images_shuffles(current_shuffle%2);
             return 0;

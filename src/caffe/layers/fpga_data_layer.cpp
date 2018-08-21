@@ -11,6 +11,7 @@ FPGADataLayer<Ftype, Btype>::FPGADataLayer(const LayerParameter& param, size_t s
   : BasePrefetchingDataLayer<Ftype, Btype>(param, solver_rank),
     shuffle_(param.data_param().shuffle())
 {
+  _solver_rank=solver_rank;
   init_offsets();
 }
 
@@ -32,7 +33,7 @@ template<typename Ftype, typename Btype>
 FPGADataLayer<Ftype, Btype>::~FPGADataLayer()
 {
   if(FPGADataLayer::train_reader_)FPGADataLayer::train_reader_->StopInternalThread();
-  LOG(INFO)<<"stop FPGADataLayer threads...";
+  LOG(INFO)<<"Solver "<<_solver_rank<<" stop FPGADataLayer threads...";
   this->StopInternalThread();
 }
 

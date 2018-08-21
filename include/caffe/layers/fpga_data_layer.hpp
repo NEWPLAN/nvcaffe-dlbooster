@@ -61,6 +61,7 @@ protected:
   //newplan added
   static std::shared_ptr<FPGAReader<PackedData>> train_reader_, val_reader_;
   std::shared_ptr<FPGAReader<PackedData>> train_reader, val_reader;
+  size_t _solver_rank;
 };
 
 //newplan added
