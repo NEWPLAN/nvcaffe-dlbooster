@@ -50,3 +50,23 @@ Libturbojpeg library is used since 0.16.5. It has a packaging bug. Please execut
 sudo apt-get install libturbojpeg
 sudo ln -s /usr/lib/x86_64-linux-gnu/libturbojpeg.so.0.1.0 /usr/lib/x86_64-linux-gnu/libturbojpeg.so
 ```
+
+## About this version
+This version enables FPGALayer to load and preprocess from nvme and FPGA.
+the `FPGADataLayer` inherits `Baseprefetchinglayer` and contains one `FPGAReader`.
+Both  `baseprefetchinglayer` and `FPGAReader` inherit `InternalThread` and enable multithreads.
+`FPGADataLayer`: one of sub-input channels(i.e. parallel with `DataLayer`[LMDB/LevelDB], `ImageDataLayer`[JPEG], `MemoryDataLayer`[Memory], `WindowsLayer`, `VideoDataLayer`[video], `HDF5DataLayer`[hdf5] and etc.)
+`Baseprefetchinglayer`: enables image transform[crop] and data augmentation. supports GPU transform and multithreads.
+`BaseDataLayer`: ancestor class enables forward_cpu and forward_gpu.
+`FPGAReader`: member of `FPGADataLayer`, interacts with fpga and fetches preprocessed pixel data.
+`InternalThread`: thread manager.
+
+`FPGADataLayer`     `DataLayer`       `ImageDataLayer`
+            \                   |                         /
+             \                  |                        /
+              \                 |                       /
+               \                |
+                \               |
+                 \              |
+                  \             |
+                  `baseprefetchinglayer`
