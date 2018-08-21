@@ -65,8 +65,6 @@ Both  `baseprefetchinglayer` and `FPGAReader` inherit `InternalThread` and enabl
 `FPGAReader`: member of `FPGADataLayer`, interacts with fpga and fetches preprocessed pixel data.
 
 `InternalThread`: thread manager.
-
-arch can be found at ![arch](arch.jpg)
 <div align=center>
-<img width="80%" src="arch.jpg"/>
+<img width="80%" src="arch.jpg"/ alt="Architecture of NVCaffe IO module.">
 </div>
