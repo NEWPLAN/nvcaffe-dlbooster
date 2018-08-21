@@ -68,5 +68,5 @@ Both  `baseprefetchinglayer` and `FPGAReader` inherit `InternalThread` and enabl
 
 arch can be found at ![arch](arch.jpg)
 <div align=center>
-<img width="150" height="150" src="arch.jpg"/>
+<img width="80%" src="arch.jpg"/>
 </div>
