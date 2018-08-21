@@ -13,7 +13,6 @@ void CuDNNConvolutionLayer<Ftype, Btype>::Forward_gpu(const vector<Blob*>& botto
     const vector<Blob*>& top) {
   const Ftype* weight = this->blobs_[0]->template gpu_data<Ftype>();
   shared_ptr<GPUMemory::Workspace>& ws = GPUMemory::workspace_[Caffe::current_device()];
-  LOG(INFO)<<"bottom size"<<bottom.size();
   if (use_v7grouping()) {
     for (int i = 0; i < bottom.size(); ++i) {
       const Ftype *bottom_data = bottom[i]->gpu_data<Ftype>();
