@@ -189,7 +189,7 @@ CudaStream::CudaStream(bool high_priority) {
   } else {
     CUDA_CHECK(cudaStreamCreate(&stream_));
   }
-  DLOG(INFO) << "New " << (high_priority ? "high priority " : "") << "stream "
+  LOG(INFO) << "New " << (high_priority ? "high priority " : "") << "stream "
       << stream_ << ", device " << Caffe::current_device() << ", thread "
       << lwp_id();
 }
