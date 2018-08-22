@@ -6,8 +6,8 @@
 #include "caffe/net.hpp"
 #include "caffe/solver.hpp"
 //newplan added
-#include <stdio .h>
-#include <stdlib .h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <execinfo.h>
 
 namespace caffe {
