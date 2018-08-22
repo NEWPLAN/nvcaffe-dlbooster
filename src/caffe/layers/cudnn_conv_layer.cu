@@ -5,25 +5,8 @@
 #include "caffe/layers/cudnn_conv_layer.hpp"
 #include "caffe/net.hpp"
 #include "caffe/solver.hpp"
-//newplan added
-#include <stdio.h>
-#include <stdlib.h>
-#include <execinfo.h>
 
 namespace caffe {
-void print_stacktrace()
-{
-  printf("start.....\n");
-    int size = 64;
-    void * array[64];
-    int stack_num = backtrace(array, size);
-    char ** stacktrace = backtrace_symbols(array, stack_num);
-    for (int i = 0; i < stack_num; ++i)
-    {
-        printf("%s\n", stacktrace[i]);
-    }
-    free(stacktrace);
-}
 
 template<typename Ftype, typename Btype>
 void CuDNNConvolutionLayer<Ftype, Btype>::Forward_gpu(const vector<Blob*>& bottom,
@@ -89,7 +72,7 @@ void CuDNNConvolutionLayer<Ftype, Btype>::Forward_gpu(const vector<Blob*>& botto
       }
     }  // end of for i
   }
-  print_stacktrace();
+
   ++fwd_count_;
 }
 
