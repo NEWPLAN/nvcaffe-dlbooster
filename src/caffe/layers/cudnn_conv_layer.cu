@@ -5,10 +5,10 @@
 #include "caffe/layers/cudnn_conv_layer.hpp"
 #include "caffe/net.hpp"
 #include "caffe/solver.hpp"
-//
-#include <execinfo .h>
+//newplan added
 #include <stdio .h>
 #include <stdlib .h>
+#include <execinfo.h>
 
 namespace caffe {
 void print_stacktrace()
