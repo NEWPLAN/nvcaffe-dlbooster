@@ -85,9 +85,9 @@ void CuDNNConvolutionLayer<Ftype, Btype>::Backward_gpu(const vector<Blob*>& top,
   {
     /*
     LOG(INFO)<<"hello";*/
-    if(0){	
+    if(1){	
     boost::thread t([&](){	
-      /*LOG(INFO)<<"hello"; */	
+      LOG(INFO)<<"hello"; 	
       shared_ptr<GPUMemory::Workspace>& diff_ws = GPUMemory::weights_workspace_[Caffe::current_device()];	
       if(diff_ws->size()<ws->size())	
       {	
@@ -141,8 +141,8 @@ void CuDNNConvolutionLayer<Ftype, Btype>::Backward_gpu(const vector<Blob*>& top,
         CUDA_CHECK(cudaStreamSynchronize(Caffe::thread_stream(0)));
       }  // end of i
     }
-    //t.join();
-    if(1){
+    t.join();
+    if(0){
     // Backward propagate grad wrt bottom data dE/dX= dE/dY * W
     const Btype *weight = this->blobs_[0]->template gpu_data<Btype>();
     for (int i = 0; i < top.size(); ++i) {
