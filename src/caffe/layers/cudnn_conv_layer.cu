@@ -173,9 +173,7 @@ void CuDNNConvolutionLayer<Ftype, Btype>::Backward_gpu(const vector<Blob*>& top,
         }
       }  // end of i
     }
-
-     ++bwd_count_;
-     return;
+    
     // Backward propagate grad wrt bottom data dE/dX= dE/dY * W
     const Btype* weight = this->blobs_[0]->template gpu_data<Btype>();
     for (int i = 0; i < top.size(); ++i) {
