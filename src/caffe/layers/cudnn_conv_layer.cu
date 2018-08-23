@@ -82,6 +82,7 @@ void CuDNNConvolutionLayer<Ftype, Btype>::Backward_gpu(const vector<Blob*>& top,
   propagate_down_ = propagate_down;
   shared_ptr<GPUMemory::Workspace>& ws = GPUMemory::workspace_[Caffe::current_device()];
   if (use_v7grouping()) {
+    LOG(INFO)<<"hello";
     // compute dE/dB = sum_c(dE/dy)
     if (this->bias_term_ && this->param_propagate_down_[1]) {
       Btype *bias_diff = this->blobs_[1]->template mutable_gpu_diff<Btype>();
