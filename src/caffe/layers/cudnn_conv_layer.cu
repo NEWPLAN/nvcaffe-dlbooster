@@ -88,7 +88,7 @@ void CuDNNConvolutionLayer<Ftype, Btype>::Backward_gpu(const vector<Blob*>& top,
     {
       diffws->safe_reserve(ws->size());
     }
-    LOG(INFO)<<"ws->size()= "ws->size()
+    LOG(INFO)<<"ws->size()= "<<ws->size()
     <<", "<<diffws->size();
   }
   if (use_v7grouping()) {
