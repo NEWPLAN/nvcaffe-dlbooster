@@ -93,21 +93,21 @@ void CuDNNConvolutionLayer<Ftype, Btype>::Backward_gpu(const vector<Blob*>& top,
   {
     //{
       // Backward propagate grad wrt bottom data dE/dX= dE/dY * W
-      std::future<int> f1= std::async(std::launch::async,this->blobs_[0]->template [&]<Btype>()
+      std::future<int> f1= std::async(std::launch::async,[&]()
       {
-        const Btype *weight = this->blobs_[0]->template gpu_data<Btype>();
+        const float *weight = this->blobs_[0]->template gpu_data<float>();
         for (int i = 0; i < top.size(); ++i) 
         {
           if (propagate_down[i]) 
           {
-            Btype *top_diff = top[i]->mutable_gpu_diff<Btype>();
-            Btype *bottom_diff = bottom[i]->mutable_gpu_diff<Btype>();
+            float *top_diff = top[i]->mutable_gpu_diff<float>();
+            float *bottom_diff = bottom[i]->mutable_gpu_diff<float>();
             CUDNN_CHECK(cudnnConvolutionBackwardData(Caffe::cudnn_handle(1),
-                cudnn::dataType<Btype>::one, bwd_filter_desc_, weight,
+                cudnn::dataType<float>::one, bwd_filter_desc_, weight,
                 bwd_top_descs_[i], top_diff,
                 bwd_conv_data_descs_[i],
                 bwd_data_algo_[i], diffws->data(), diffws->size(),
-                cudnn::dataType<Btype>::zero, bwd_bottom_descs_[i], bottom_diff));
+                cudnn::dataType<float>::zero, bwd_bottom_descs_[i], bottom_diff));
             CUDA_CHECK(cudaStreamSynchronize(Caffe::thread_stream(1)));
           }  // end if propagate down
         }  // end for i
