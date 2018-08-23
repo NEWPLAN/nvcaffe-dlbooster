@@ -100,7 +100,8 @@ void CuDNNConvolutionLayer<Ftype, Btype>::Backward_gpu(const vector<Blob*>& top,
           if (propagate_down[i]) {	
             Btype *top_diff = top[i]->mutable_gpu_diff<Btype>();	
             Btype *bottom_diff = bottom[i]->mutable_gpu_diff<Btype>();	
-            CUDNN_CHECK(cudnnConvolutionBackwardData(Caffe::cudnn_handle(1),	
+            static cudnnHandle_t hand = Caffe::cudnn_handle(1);
+            CUDNN_CHECK(cudnnConvolutionBackwardData(hand,	
                 cudnn::dataType<Btype>::one, bwd_filter_desc_, weight,	
                 bwd_top_descs_[i], top_diff,	
                 bwd_conv_data_descs_[i],	
