@@ -82,7 +82,14 @@ void CuDNNConvolutionLayer<Ftype, Btype>::Backward_gpu(const vector<Blob*>& top,
   propagate_down_ = propagate_down;
   shared_ptr<GPUMemory::Workspace>& ws = GPUMemory::workspace_[Caffe::current_device()];
   {
-    boost::thread* t=new boost::thread([&](){LOG(INFO)<<"hello"; });
+    boost::thread* t=new boost::thread([&](){
+      LOG(INFO)<<"hello"; 
+      shared_ptr<GPUMemory::Workspace>& diff_ws = GPUMemory::weights_workspace_[Caffe::current_device()];
+      if(diff_ws->size()<ws->size())
+      {
+        diff_ws->safe_reserve(ws->size());
+      }
+      });
   }
   if (use_v7grouping()) {
     // compute dE/dB = sum_c(dE/dy)
