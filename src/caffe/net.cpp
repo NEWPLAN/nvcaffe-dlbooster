@@ -678,7 +678,8 @@ void Net::AppendParam(const NetParameter& param, const int layer_id, const int p
     }
   }
 }
-
+//newplan added debug
+#include <cstdio>
 float Net::ForwardFromTo(int start, int end) {
   CHECK_GE(start, 0);
   CHECK_LT(end, layers_.size());
@@ -687,6 +688,8 @@ float Net::ForwardFromTo(int start, int end) {
     // LOG(INFO) << " ****** [Forward] (" << i << ") Layer '" << layer_names_[i];
     // << "' FT " << Type_Name(layers_[i]->forward_type())
     // << " BT " << Type_Name(layers_[i]->backward_type());
+    printf("FORWARD: Layer Name: %s , bottom_addr: %p, top_addr: %p\n",
+    layer_names_[i].c_str(),bottom_vecs_[i][0],top_vecs_[i][0]);
     float layer_loss = layers_[i]->Forward(bottom_vecs_[i], top_vecs_[i]);
     loss += layer_loss;
     if (debug_info_) { ForwardDebugInfo(i); }
