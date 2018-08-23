@@ -75,7 +75,7 @@ void CuDNNConvolutionLayer<Ftype, Btype>::Forward_gpu(const vector<Blob*>& botto
 
   ++fwd_count_;
 }
-
+ThreadPool tp(1);
 template <typename Ftype, typename Btype>
 void CuDNNConvolutionLayer<Ftype, Btype>::Backward_gpu(const vector<Blob*>& top,
     const vector<bool>& propagate_down, const vector<Blob*>& bottom) {

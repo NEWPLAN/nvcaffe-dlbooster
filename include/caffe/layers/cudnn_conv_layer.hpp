@@ -153,7 +153,6 @@ class CuDNNConvolutionLayer : public ConvolutionLayer<Ftype, Btype> {
 
   Type forward_math_, backward_data_math_, backward_filter_math_;
   vector<bool> propagate_down_;
-static ThreadPool tp;
 };
 
 template<typename Ftype, typename Btype>
@@ -173,9 +172,6 @@ template<typename Ftype, typename Btype>
 std::atomic<size_t> CuDNNConvolutionLayer<Ftype, Btype>::test_mem_req_all_grps_;
 template<typename Ftype, typename Btype>
 std::atomic<size_t> CuDNNConvolutionLayer<Ftype, Btype>::train_tmp_weights_mem_;
-
-template<typename Ftype, typename Btype>
-ThreadPool CuDNNConvolutionLayer<Ftype, Btype>::tp(1);
 
 #endif
 
