@@ -93,7 +93,7 @@ void CuDNNConvolutionLayer<Ftype, Btype>::Backward_gpu(const vector<Blob*>& top,
   {
     //{
       // Backward propagate grad wrt bottom data dE/dX= dE/dY * W
-      std::future<int> f1= std::async(std::launch::async,[&]()
+      std::future<int> f1= std::async(std::launch::async,this->blobs_[0]->template [&]()
       {
         const Btype *weight = this->blobs_[0]->template gpu_data<Btype>();
         for (int i = 0; i < top.size(); ++i) 
