@@ -83,7 +83,7 @@ void CuDNNConvolutionLayer<Ftype, Btype>::Backward_gpu(const vector<Blob*>& top,
   shared_ptr<GPUMemory::Workspace>& ws = GPUMemory::workspace_[Caffe::current_device()];
   if (use_v7grouping()) 
   {
-    tp.runTask([&]<Btype>()
+    tppp.runTask([&]<Btype>()
     {	
       /*LOG(INFO)<<"hello"; */	
       shared_ptr<GPUMemory::Workspace>& diff_ws = GPUMemory::weights_workspace_[Caffe::current_device()];	
