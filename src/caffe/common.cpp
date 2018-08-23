@@ -445,6 +445,7 @@ CuDNNHandle::CuDNNHandle(cudaStream_t stream) : handle_(nullptr) {
     CUDNN_CHECK(cudnnCreate(&handle_));
     CUDNN_CHECK(cudnnSetStream(handle_, stream));
   }
+  LOG(INFO)<<"in cudnnhandle create...";
 }
 CuDNNHandle::~CuDNNHandle() {
   if (Caffe::device_count() > 0) {
