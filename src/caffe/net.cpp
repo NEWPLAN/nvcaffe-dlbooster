@@ -690,7 +690,7 @@ float Net::ForwardFromTo(int start, int end) {
     // << " BT " << Type_Name(layers_[i]->backward_type());
     float layer_loss = layers_[i]->Forward(bottom_vecs_[i], top_vecs_[i]);
     printf("FORWARD: Layer Name: %s , bottom_addr: %p, top_addr: %p\n",
-    layer_names_[i].c_str(),bottom_vecs_[i][0],top_vecs_[i][0]);
+    layer_names_[i].c_str()/*,bottom_vecs_[i][0],top_vecs_[i][0]*/);
     loss += layer_loss;
     if (debug_info_) { ForwardDebugInfo(i); }
   }
