@@ -82,6 +82,10 @@ int CuDNNConvolutionLayer<Ftype, Btype>::backward_x(const vector<Blob*>& top,
     {
       return -1;
     }
+    int hello()
+    {
+      return 10;
+    }
 template <typename Ftype, typename Btype>
 void CuDNNConvolutionLayer<Ftype, Btype>::Backward_gpu(const vector<Blob*>& top,
     const vector<bool>& propagate_down, const vector<Blob*>& bottom) {
@@ -99,7 +103,7 @@ void CuDNNConvolutionLayer<Ftype, Btype>::Backward_gpu(const vector<Blob*>& top,
   {
     //{
       // Backward propagate grad wrt bottom data dE/dX= dE/dY * W
-      std::future<int> f1= std::async(std::launch::async,backward_x,std::ref(top),std::ref(propagate_down),std::ref(bottom));
+      std::future<int> f1= std::async(std::launch::async,hello);
       f1.get();
       
     //}
