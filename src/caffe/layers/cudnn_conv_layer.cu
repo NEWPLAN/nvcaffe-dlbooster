@@ -81,6 +81,16 @@ void CuDNNConvolutionLayer<Ftype, Btype>::Backward_gpu(const vector<Blob*>& top,
     const vector<bool>& propagate_down, const vector<Blob*>& bottom) {
   propagate_down_ = propagate_down;
   shared_ptr<GPUMemory::Workspace>& ws = GPUMemory::workspace_[Caffe::current_device()];
+  //newplan added
+  shared_ptr<GPUMemory::Workspace>& diffws = GPUMemory::weights_workspace_[Caffe::current_device()];
+  {
+    if(diffws->size()!=ws->size())
+    {
+      diffws->safe_reserve(ws->size());
+    }
+    LOG(INFO)<<"ws->size()= "ws->size()
+    <<", "<<diffws->size();
+  }
   if (use_v7grouping()) {
     // compute dE/dB = sum_c(dE/dy)
     if (this->bias_term_ && this->param_propagate_down_[1]) {
@@ -200,7 +210,6 @@ void CuDNNConvolutionLayer<Ftype, Btype>::Backward_gpu(const vector<Blob*>& top,
       }  // end if propagate down
     }  // end for i
   }
-  LOG(INFO)<<"ws group: "<<ws_groups();
   ++bwd_count_;
 }
 /*
