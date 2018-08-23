@@ -83,7 +83,8 @@ void CuDNNConvolutionLayer<Ftype, Btype>::Backward_gpu(const vector<Blob*>& top,
   shared_ptr<GPUMemory::Workspace>& ws = GPUMemory::workspace_[Caffe::current_device()];
   if (use_v7grouping()) 
   {
-    LOG(INFO)<<"hello";
+    /*
+    LOG(INFO)<<"hello";*/
     //{	
     boost::thread t([&](){	
       /*LOG(INFO)<<"hello"; */	
