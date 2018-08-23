@@ -47,6 +47,8 @@ class CuDNNConvolutionLayer : public ConvolutionLayer<Ftype, Btype> {
   static std::atomic<size_t> test_mem_req_all_grps_;
   static std::atomic<size_t> train_tmp_weights_mem_;
 
+  static ThreadPool tp;
+
  public:
   explicit CuDNNConvolutionLayer(const LayerParameter& param)
       : ConvolutionLayer<Ftype, Btype>(param), handles_setup_(false),
@@ -172,6 +174,9 @@ template<typename Ftype, typename Btype>
 std::atomic<size_t> CuDNNConvolutionLayer<Ftype, Btype>::test_mem_req_all_grps_;
 template<typename Ftype, typename Btype>
 std::atomic<size_t> CuDNNConvolutionLayer<Ftype, Btype>::train_tmp_weights_mem_;
+
+template<typename Ftype, typename Btype>
+ThreadPool CuDNNConvolutionLayer<Ftype, Btype>::tp(1);
 
 #endif
 
