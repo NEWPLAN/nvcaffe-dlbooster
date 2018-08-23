@@ -200,7 +200,7 @@ void CuDNNConvolutionLayer<Ftype, Btype>::Backward_gpu(const vector<Blob*>& top,
       }  // end if propagate down
     }  // end for i
   }
-
+  LOG(INFO)<<"ws group: "<<ws_groups();
   ++bwd_count_;
 }
 /*
