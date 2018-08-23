@@ -91,7 +91,7 @@ void CuDNNConvolutionLayer<Ftype, Btype>::Backward_gpu(const vector<Blob*>& top,
       {	
         diff_ws->safe_reserve(ws->size());	
       }	
-      LOG_EVERY_N(INFO,100)<<"in sub thread...";
+      DLOG_EVERY_N(INFO,100)<<"in sub thread...";
       //if(diff_ws->size()<100000000)diff_ws->safe_reserve(100000000);	
       // Backward propagate grad wrt bottom data dE/dX= dE/dY * W	
         const Btype *weight = this->blobs_[0]->template gpu_data<Btype>();	
