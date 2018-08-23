@@ -215,7 +215,7 @@ shared_ptr<CudaStream> Caffe::pstream(int group) {
   if (!streams_[group]) {
     streams_[group] = CudaStream::create();
   }
-  LOG(INFO)<<"stream size:">>streams_.size();
+  LOG(INFO)<<"stream size:"<<streams_.size();
   return streams_[group];
 }
 
