@@ -124,6 +124,7 @@ class CuDNNConvolutionLayer : public ConvolutionLayer<Ftype, Btype> {
   bool IsConvDescChanged(const vector<Blob*>& bottom, bool fwd_mode);
 
   bool use_v7grouping() const {
+    return true;
 #if defined(CUDNN_GROUPING2)
     return (this->channels_ == this->group_
          || this->channels_ == this->group_ * 2
