@@ -8,6 +8,8 @@
 #include "caffe/layers/conv_layer.hpp"
 #include "caffe/util/gpu_memory.hpp"
 
+#include "caffe/util/thread_pool.hpp"
+
 namespace caffe {
 
 #ifdef USE_CUDNN
