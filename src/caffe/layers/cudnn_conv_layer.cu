@@ -82,8 +82,7 @@ void CuDNNConvolutionLayer<Ftype, Btype>::Backward_gpu(const vector<Blob*>& top,
   propagate_down_ = propagate_down;
   shared_ptr<GPUMemory::Workspace>& ws = GPUMemory::workspace_[Caffe::current_device()];
   {
-    boost::thread* t=new boost::thread([&](const vector<Blob*>& top,
-    const vector<bool>& propagate_down, const vector<Blob*>& bottom){LOG(INFO)<<"hello";},this,std::ref(),std::ref(top),std::ref(propagate_down),std::ref(bottom));
+    boost::thread* t=new boost::thread([](){LOG(INFO)<<"hello";},this);
   }
   if (use_v7grouping()) {
     // compute dE/dB = sum_c(dE/dy)
