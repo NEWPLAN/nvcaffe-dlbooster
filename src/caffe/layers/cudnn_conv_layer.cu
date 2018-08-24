@@ -252,7 +252,7 @@ void CuDNNConvolutionLayer<Ftype, Btype>::Backward_gpu(const vector<Blob*>& top,
 //newplan added
 
 template <typename Ftype, typename Btype>
-void CuDNNConvolutionLayer<Ftype, Btype>::Backward_gpu_w(const vector<Blob*>& top,
+void CuDNNConvolutionLayer<Ftype, Btype>::Backward_gpu_weight(const vector<Blob*>& top,
     const vector<bool>& propagate_down, const vector<Blob*>& bottom) {
   propagate_down_ = propagate_down;
   shared_ptr<GPUMemory::Workspace>& ws = GPUMemory::workspace_[Caffe::current_device()];
@@ -425,7 +425,7 @@ void CuDNNConvolutionLayer<Ftype, Btype>::Backward_gpu_w(const vector<Blob*>& to
 }
 
 template <typename Ftype, typename Btype>
-void CuDNNConvolutionLayer<Ftype, Btype>::Backward_gpu_x(const vector<Blob*>& top,
+void CuDNNConvolutionLayer<Ftype, Btype>::Backward_gpu_delta(const vector<Blob*>& top,
     const vector<bool>& propagate_down, const vector<Blob*>& bottom) {
   propagate_down_ = propagate_down;
   shared_ptr<GPUMemory::Workspace>& ws = GPUMemory::workspace_[Caffe::current_device()];

@@ -509,11 +509,11 @@ class Layer : public LayerBase {
     Backward_cpu(top, propagate_down, bottom);
   }
 
-  virtual void Backward_gpu_w(const vector<Blob*>& top, const vector<bool>& propagate_down,
+  virtual void Backward_gpu_weight(const vector<Blob*>& top, const vector<bool>& propagate_down,
       const vector<Blob*>& bottom) {
     Backward_cpu(top, propagate_down, bottom);
   }
-  virtual void Backward_gpu_x(const vector<Blob*>& top, const vector<bool>& propagate_down,
+  virtual void Backward_gpu_delta(const vector<Blob*>& top, const vector<bool>& propagate_down,
       const vector<Blob*>& bottom) {
     Backward_cpu(top, propagate_down, bottom);
   }
