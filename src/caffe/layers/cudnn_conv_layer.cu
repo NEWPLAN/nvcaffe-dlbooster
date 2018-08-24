@@ -83,8 +83,9 @@ void CuDNNConvolutionLayer<Ftype, Btype>::Backward_gpu(const vector<Blob*>& top,
   shared_ptr<GPUMemory::Workspace>& ws = GPUMemory::workspace_[Caffe::current_device()];
   if (use_v7grouping()) 
   {
+    CPUTimer cp;
     if(1){
-      CPUTimer cp;
+      
       cp.Start();
       auto& assis_bp=GPUMemory::backward_assist_[Caffe::current_device()];
       auto& assis_ws=GPUMemory::assist_workspace_[Caffe::current_device()];
@@ -117,6 +118,7 @@ void CuDNNConvolutionLayer<Ftype, Btype>::Backward_gpu(const vector<Blob*>& top,
     }
     if(1)
     {
+      cp.Start();
       // compute dE/dB = sum_c(dE/dy)
       if (this->bias_term_ && this->param_propagate_down_[1]) {
         Btype *bias_diff = this->blobs_[1]->template mutable_gpu_diff<Btype>();
@@ -145,6 +147,8 @@ void CuDNNConvolutionLayer<Ftype, Btype>::Backward_gpu(const vector<Blob*>& top,
           CUDA_CHECK(cudaStreamSynchronize(Caffe::thread_stream(1)));
         }  // end of i
       }
+      cp.Stop();
+      LOG_EVERY_N(INFO,100)<<"out size: Cost timer: "<<cp.MicroSeconds()<<" us.";
     }
     //CPUTimer ct;
     //ct.Start();
