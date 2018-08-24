@@ -510,13 +510,9 @@ class Layer : public LayerBase {
   }
 
   virtual void Backward_gpu_weight(const vector<Blob*>& top, const vector<bool>& propagate_down,
-      const vector<Blob*>& bottom) {
-    Backward_cpu(top, propagate_down, bottom);
-  }
+      const vector<Blob*>& bottom) {}
   virtual void Backward_gpu_delta(const vector<Blob*>& top, const vector<bool>& propagate_down,
-      const vector<Blob*>& bottom) {
-    Backward_cpu(top, propagate_down, bottom);
-  }
+      const vector<Blob*>& bottom) {}
 
   /**
    * Called by SetUp to initialize the weights associated with any top blobs in
