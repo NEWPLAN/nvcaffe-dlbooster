@@ -293,7 +293,7 @@ class LayerBase {
    */
   virtual void Backward(const vector<Blob*>& top, const vector<bool>& propagate_down,
       const vector<Blob*>& bottom) = 0;
-      
+
   virtual inline bool has_Backward_w()const{return false;}
 
   /**
@@ -505,6 +505,15 @@ class Layer : public LayerBase {
    *        Fall back to Backward_cpu() if unavailable.
    */
   virtual void Backward_gpu(const vector<Blob*>& top, const vector<bool>& propagate_down,
+      const vector<Blob*>& bottom) {
+    Backward_cpu(top, propagate_down, bottom);
+  }
+
+  virtual void Backward_gpu_w(const vector<Blob*>& top, const vector<bool>& propagate_down,
+      const vector<Blob*>& bottom) {
+    Backward_cpu(top, propagate_down, bottom);
+  }
+  virtual void Backward_gpu_x(const vector<Blob*>& top, const vector<bool>& propagate_down,
       const vector<Blob*>& bottom) {
     Backward_cpu(top, propagate_down, bottom);
   }
