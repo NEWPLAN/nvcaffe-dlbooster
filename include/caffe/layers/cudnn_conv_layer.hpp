@@ -8,8 +8,6 @@
 #include "caffe/layers/conv_layer.hpp"
 #include "caffe/util/gpu_memory.hpp"
 
-#include "caffe/util/thread_pool.hpp"
-
 namespace caffe {
 
 #ifdef USE_CUDNN
@@ -48,8 +46,6 @@ class CuDNNConvolutionLayer : public ConvolutionLayer<Ftype, Btype> {
   static std::atomic<size_t> train_mem_req_all_grps_;
   static std::atomic<size_t> test_mem_req_all_grps_;
   static std::atomic<size_t> train_tmp_weights_mem_;
-
-  static ThreadPool tppp;
 
  public:
   explicit CuDNNConvolutionLayer(const LayerParameter& param)
@@ -128,7 +124,6 @@ class CuDNNConvolutionLayer : public ConvolutionLayer<Ftype, Btype> {
   bool IsConvDescChanged(const vector<Blob*>& bottom, bool fwd_mode);
 
   bool use_v7grouping() const {
-    return true;
 #if defined(CUDNN_GROUPING2)
     return (this->channels_ == this->group_
          || this->channels_ == this->group_ * 2
@@ -176,9 +171,6 @@ template<typename Ftype, typename Btype>
 std::atomic<size_t> CuDNNConvolutionLayer<Ftype, Btype>::test_mem_req_all_grps_;
 template<typename Ftype, typename Btype>
 std::atomic<size_t> CuDNNConvolutionLayer<Ftype, Btype>::train_tmp_weights_mem_;
-
-template<typename Ftype, typename Btype>
-ThreadPool CuDNNConvolutionLayer<Ftype, Btype>::tppp(1);
 
 #endif
 

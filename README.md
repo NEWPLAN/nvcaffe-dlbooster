@@ -56,6 +56,8 @@ This version enables FPGALayer to load and preprocess from nvme and FPGA.
 the `FPGADataLayer` inherits `Baseprefetchinglayer` and contains one `FPGAReader`.
 Both  `baseprefetchinglayer` and `FPGAReader` inherit `InternalThread` and enable multithreads.
 
+This is the final version of FPGA Layer.
+
 `FPGADataLayer`: one of sub-input channels(i.e. parallel with `DataLayer`[LMDB/LevelDB], `ImageDataLayer`[JPEG], `MemoryDataLayer`[Memory], `WindowsLayer`, `VideoDataLayer`[video], `HDF5DataLayer`[hdf5] and etc.)
 
 `Baseprefetchinglayer`: enables image transform[crop] and data augmentation. supports GPU transform and multithreads.
