@@ -151,6 +151,7 @@ void CuDNNConvolutionLayer<Ftype, Btype>::Backward_gpu(const vector<Blob*>& top,
             CUDA_CHECK(cudaStreamSynchronize(Caffe::thread_stream(1)));
           }  // end of i
         }
+        LOG_EVERY_N(INFO,100)<<"sub thread...";
         assis_bq->push(333);
       });
     //}
