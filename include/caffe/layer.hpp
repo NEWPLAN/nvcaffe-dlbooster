@@ -295,9 +295,9 @@ class LayerBase {
       const vector<Blob*>& bottom) = 0;
 
   virtual inline bool has_Backward_w()const{return false;}
-  virtual void Backward_gpu_weight(const vector<Blob*>& top, const vector<bool>& propagate_down,
+  virtual inline void Backward_gpu_weight(const vector<Blob*>& top, const vector<bool>& propagate_down,
       const vector<Blob*>& bottom) {LOG(INFO)<<"IN base layer";}
-  virtual void Backward_gpu_delta(const vector<Blob*>& top, const vector<bool>& propagate_down,
+  virtual inline void Backward_gpu_delta(const vector<Blob*>& top, const vector<bool>& propagate_down,
       const vector<Blob*>& bottom) {LOG(INFO)<<"IN base layer";}
 
   /**

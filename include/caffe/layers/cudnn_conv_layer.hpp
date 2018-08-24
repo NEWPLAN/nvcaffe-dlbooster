@@ -67,23 +67,24 @@ class CuDNNConvolutionLayer : public ConvolutionLayer<Ftype, Btype> {
   virtual void Reshape(const vector<Blob*>& bottom, const vector<Blob*>& top);
   virtual ~CuDNNConvolutionLayer();
   virtual inline bool has_Backward_w()const{return true;}
-
- protected:
-  virtual void Forward_gpu(const vector<Blob*>& bottom, const vector<Blob*>& top);
-  virtual void Backward_gpu(const vector<Blob*>& top, const vector<bool>& propagate_down,
-      const vector<Blob*>& bottom);
-  virtual void Backward_gpu_delta(const vector<Blob*>& top, const vector<bool>& propagate_down,
+  virtual inline void Backward_gpu_delta(const vector<Blob*>& top, const vector<bool>& propagate_down,
       const vector<Blob*>& bottom)
       {
         LOG(INFO)<<"in cudnn conv layer";
         LOG(INFO)<<"parameter: "<< this->name();
       }
-  virtual void Backward_gpu_weight(const vector<Blob*>& top, const vector<bool>& propagate_down,
+  virtual inline void Backward_gpu_weight(const vector<Blob*>& top, const vector<bool>& propagate_down,
       const vector<Blob*>& bottom)
       {
           LOG(INFO)<<"in cudnn conv layer";
           LOG(INFO)<<"parameter: "<< this->name();
       }
+
+ protected:
+  virtual void Forward_gpu(const vector<Blob*>& bottom, const vector<Blob*>& top);
+  virtual void Backward_gpu(const vector<Blob*>& top, const vector<bool>& propagate_down,
+      const vector<Blob*>& bottom);
+  
   bool handles_setup_;
 
   // algorithms for forward and backwards convolutions
