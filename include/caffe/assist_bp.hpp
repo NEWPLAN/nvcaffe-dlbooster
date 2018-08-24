@@ -24,7 +24,11 @@ class AssistBP : public InternalThread
 {
 
 public:
-  AssistBP(size_t solver_rank);
+  AssistBP(size_t solver_rank,
+            const vector<shared_ptr<LayerBase>> train_layer,
+            const vector<vector<Blob*> >&top,
+            const vector<vector<bool> >& need,
+            const vector<vector<Blob*> >& bottom);
   virtual ~AssistBP();
   shared_ptr<BlockingQueue<int>> en_queue;
   shared_ptr<BlockingQueue<int>> de_queue;
@@ -34,6 +38,10 @@ protected:
   void InternalThreadEntryN(size_t thread_id) override;
 
   const size_t  solver_rank_;
+  shared_ptr<LayerBase> _layer;
+  vector<vector<Blob*> > _top_vecs;
+  vector<vector<bool> > _bottom_need_backward;
+  vector<vector<Blob*> > _bottom_vecs;
 
   DISABLE_COPY_MOVE_AND_ASSIGN(AssistBP);
 };

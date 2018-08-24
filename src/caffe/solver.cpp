@@ -50,13 +50,7 @@ void Solver::Init() {
   if (Caffe::root_solver()) {  // P2PSync does other solvers if they exist
     Caffe::set_root_seed(static_cast<uint64_t>(param_.random_seed()));
   }
-  //newplan added
-  {
-    CHECK(thp==nullptr);
-    thp=make_shared<ThreadPool>(1);
-    CHECK(abp==nullptr);
-    abp=make_shared<AssistBP>(rank_);
-  }
+  
   // Scaffolding code
   InitTrainNet();
   InitTestNets();
@@ -64,6 +58,14 @@ void Solver::Init() {
   iter_ = 0;
   total_lapse_ = 0.F;
   current_step_ = 0;
+
+  //newplan added
+  {
+    CHECK(thp==nullptr);
+    thp=make_shared<ThreadPool>(1);
+    CHECK(abp==nullptr);
+    abp=make_shared<AssistBP>(rank_,net_->layers(),net_->top_vecs(),net->bottom_need_backward(),net->bottom_vecs());
+  }
 }
 
 void Solver::InitTrainNet() {

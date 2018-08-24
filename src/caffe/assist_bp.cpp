@@ -10,9 +10,17 @@
 namespace caffe
 {
 
-AssistBP::AssistBP(size_t solver_rank)
+AssistBP::AssistBP(size_t solver_rank,
+                  const vector<shared_ptr<LayerBase>> train_layer,
+                  const vector<vector<Blob*> >& top,
+                  const vector<vector<bool> >& need,
+                  const vector<vector<Blob*> >& bottom)
   : InternalThread(Caffe::current_device(), solver_rank, 1U, false),
-    solver_rank_(solver_rank)
+    solver_rank_(solver_rank),
+    _layer(train_layer),
+    _top_vecs(top),
+    _bottom_need_backward(need),
+    _bottom_vecs(bottom)
 {
   en_queue=make_shared<BlockingQueue<int>>();
   de_queue=make_shared<BlockingQueue<int>>();
