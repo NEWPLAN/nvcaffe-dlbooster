@@ -64,7 +64,10 @@ void Solver::Init() {
     CHECK(thp==nullptr);
     thp=make_shared<ThreadPool>(1);
     CHECK(abp==nullptr);
-    abp=make_shared<AssistBP>(rank_,net_->layers(),net_->top_vecs(),net->bottom_need_backward(),net->bottom_vecs());
+    abp=make_shared<AssistBP>(rank_,net_->layers(),
+                              net_->top_vecs(),
+                              net_->bottom_need_backward(),
+                              net_->bottom_vecs());
   }
 }
 
