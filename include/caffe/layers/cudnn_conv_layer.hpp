@@ -72,14 +72,14 @@ class CuDNNConvolutionLayer : public ConvolutionLayer<Ftype, Btype> {
       {
         LOG(INFO)<<"in cudnn conv layer";
         LOG(INFO)<<"parameter: "<< this->name();
-        bp_over_delta(top,propagate_down,bottom);
+        this->bp_over_delta(top,propagate_down,bottom);
       }
   virtual inline void Backward_gpu_weight(const vector<Blob*>& top, const vector<bool>& propagate_down,
       const vector<Blob*>& bottom)
       {
           LOG(INFO)<<"in cudnn conv layer";
           LOG(INFO)<<"parameter: "<< this->name();
-          bp_over_weight(top,propagate_down,bottom);
+          this->bp_over_weight(top,propagate_down,bottom);
       }
 
  protected:
