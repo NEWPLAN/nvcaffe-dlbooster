@@ -413,7 +413,7 @@ void Solver::Step(int iters) {
       break;
     }
     net_->update_grad_scale();
-    if(iter_%6 ==0) ++iter_;
+    if(iter_%6 ==0) {++iter_; ++iterations_last_;}
   }
   Finalize();
 }
