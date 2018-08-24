@@ -14,7 +14,7 @@
 #include "caffe/util/blocking_queue.hpp"
 #include "caffe/util/thread_pool.hpp"
 
-#define MAX_GPU_PER_MACHINE_SUPPORT 32
+//#define MAX_GPU_PER_MACHINE_SUPPORT 32
 
 namespace caffe
 {
