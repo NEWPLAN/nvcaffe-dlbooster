@@ -340,6 +340,8 @@ void CuDNNConvolutionLayer<Ftype, Btype>::bp_over_delta(const vector<Blob*>& _to
   LOG(INFO) << "IN bp over delta";
   propagate_down_ = propagate_down;
   shared_ptr<GPUMemory::Workspace>& ws = GPUMemory::assist_workspace_[Caffe::current_device()];
+  shared_ptr<GPUMemory::Workspace>& ws0 = GPUMemory::workspace_[Caffe::current_device()];
+  if (ws->size() < ws0->size())ws->safe_reserve(ws0->size());
   // Backward propagate grad wrt bottom data dE/dX= dE/dY * W
   const Btype *weight = this->blobs_[0]->template gpu_data<Btype>();
   for (int i = 0; i < top.size(); ++i)
