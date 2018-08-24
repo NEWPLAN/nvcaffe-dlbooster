@@ -726,7 +726,7 @@ float Net::ForwardBackward(bool apply_update) {
   float loss;
   Forward(&loss);
   Backward(apply_update);
-  LOG(INFO)<<"from receive queue " << parent_solver()->abp->en_queue->pop();
+  LOG(INFO)<<"from receive queue " << parent_solver()->abp->de_queue->pop();
   //auto& assis_bp=GPUMemory::backward_assist_[Caffe::current_device()];
   //assis_bp->waitWorkComplete();
   return loss;

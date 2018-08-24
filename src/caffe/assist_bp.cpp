@@ -37,7 +37,7 @@ void AssistBP::InternalThreadEntryN(size_t thread_id)
     while (!must_stop(thread_id))
     {
       int out_ = en_queue.pop();
-      LOG(INFO)<<"In device: " << Caffe::current_device() <<", receive: " << out;
+      LOG(INFO)<<"In device: " << Caffe::current_device() <<", receive: " << out_;
       boost::this_thread::sleep(boost::posix_time::seconds(2));
       de_queue.push(out_);
     }
