@@ -7,6 +7,7 @@
 
 #include "caffe/common.hpp"
 #include "caffe/util/thread_pool.hpp"
+#include "caffe/util/blocking_queue.hpp"
 
 namespace cub {
   class CachingDeviceAllocator;
