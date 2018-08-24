@@ -25,8 +25,8 @@ vector<shared_ptr<GPUMemory::Workspace>> GPUMemory::weights_workspace_(GPUMemory
 
 //newplan added
 vector<shared_ptr<GPUMemory::Workspace>> GPUMemory::assist_workspace_(GPUMemory::WS_INITIAL_SIZE);
-vector<shared_ptr<ThreadPool>> GPUMemory::backward_assist_(GPUMemory::WS_INITIAL_SIZE);
-vector<shared_ptr<BlockingQueue<int>>> GPUMemory::blockqueue_assist_(GPUMemory::WS_INITIAL_SIZE);
+//vector<shared_ptr<ThreadPool>> GPUMemory::backward_assist_(GPUMemory::WS_INITIAL_SIZE);
+//vector<shared_ptr<BlockingQueue<int>>> GPUMemory::blockqueue_assist_(GPUMemory::WS_INITIAL_SIZE);
 
 // To be called for every device
 void GPUMemory::Init() {
@@ -46,14 +46,6 @@ void GPUMemory::Init() {
   }
 
   //newplan added
-  if(device+1>blockqueue_assist_.size())
-  {
-    blockqueue_assist_.resize(device+1);
-  }
-  if (!blockqueue_assist_[device]) 
-  {
-    blockqueue_assist_[device] = make_shared<BlockingQueue<int>>();
-  }
   if(device+1>assist_workspace_.size())
   {
     assist_workspace_.resize(device+1);
@@ -61,14 +53,6 @@ void GPUMemory::Init() {
   if (!assist_workspace_[device]) 
   {
     assist_workspace_[device] = make_shared<Workspace>(0, device);
-  }
-  if(device+1>backward_assist_.size())
-  {
-    backward_assist_.resize(device+1);
-  }
-  if (!backward_assist_[device]) 
-  {
-    backward_assist_[device] = make_shared<ThreadPool>(1);
   }
 }
 
