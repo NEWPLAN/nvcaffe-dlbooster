@@ -50,8 +50,8 @@ void Solver::Init() {
   }
   //newplan added
   {
-    CHECK(tp==nullptr);
-    tp=make_shared<ThreadPool>(1);
+    CHECK(thp==nullptr);
+    thp=make_shared<ThreadPool>(1);
   }
   // Scaffolding code
   InitTrainNet();
