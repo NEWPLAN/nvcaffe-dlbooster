@@ -66,10 +66,15 @@ class CuDNNConvolutionLayer : public ConvolutionLayer<Ftype, Btype> {
   virtual void LayerSetUp(const vector<Blob*>& bottom, const vector<Blob*>& top);
   virtual void Reshape(const vector<Blob*>& bottom, const vector<Blob*>& top);
   virtual ~CuDNNConvolutionLayer();
+  virtual inline bool has_Backward_w(){return true;}const;
 
  protected:
   virtual void Forward_gpu(const vector<Blob*>& bottom, const vector<Blob*>& top);
   virtual void Backward_gpu(const vector<Blob*>& top, const vector<bool>& propagate_down,
+      const vector<Blob*>& bottom);
+  virtual void Backward_gpu_x(const vector<Blob*>& top, const vector<bool>& propagate_down,
+      const vector<Blob*>& bottom);
+  virtual void Backward_gpu_w(const vector<Blob*>& top, const vector<bool>& propagate_down,
       const vector<Blob*>& bottom);
 
   bool handles_setup_;
