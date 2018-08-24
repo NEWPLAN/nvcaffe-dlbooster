@@ -752,25 +752,44 @@ void Net::BackwardFromToAu(int start, int end, bool apply_update) {
     
     /*LOG_IF(INFO, layers_[i]->has_Backward_w())<<"Layer name: "<<layers_[i]->name();*/
     
-    if(layers_[i]->has_Backward_w())
+    //if(layers_[i]->has_Backward_w())
     {
-      layers_[i]->Backward_gpu_delta(top_vecs_[i], bottom_need_backward_[i], bottom_vecs_[i]);
+      //layers_[i]->Backward_gpu_delta(top_vecs_[i], bottom_need_backward_[i], bottom_vecs_[i]);
     }
-    else
+    //else
     {
       layers_[i]->Backward(top_vecs_[i], bottom_need_backward_[i], bottom_vecs_[i]);
     }
-    en_queue->push(i);
+    //en_queue->push(i);
 /*
     if (debug_info_) {
       BackwardDebugInfo(i);
     }
     */
-    if (!apply_update) continue;
-    
+    if (debug_info_) {
+      BackwardDebugInfo(i);
+    }
+    if (!apply_update) {
+      continue;
+    }
+    for (int j = 0; j < layers_[i]->blobs().size(); ++j) {
+      if (layers_[i]->skip_apply_update(j)) {
+        continue;
+      }
+      const int param_id = layer_index_params_[make_pair(i, j)];
+      if (param_owners_[param_id] < 0) {
+        const int lparam_id = learnable_param_ids_[param_id];
+        int t = (int)learnable_params_[lparam_id]->diff_type();
+        for (int type_id = 0; type_id < learnable_types().size(); ++type_id) {
+          if (t == learnable_types_[type_id]) {
+            reduction_queue_[type_id].push(lparam_id);
+            break;
+          }
+        }
+      }  // leave it to the owner otherwise
+    }
   }
-  if (apply_update) 
-  {
+  if (apply_update) {
     for (int type_id = 0; type_id < learnable_types_.size(); ++type_id) {
       reduction_queue_[type_id].push(END_OF_ITERATION);
     }

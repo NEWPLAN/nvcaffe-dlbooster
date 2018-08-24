@@ -45,6 +45,7 @@ void AssistBP::InternalThreadEntryN(size_t thread_id)
     while (!must_stop(thread_id))
     {
       int i = en_queue->pop();
+      /*
       if(i >= 0)
       {
         if(_layer[i]->has_Backward_w())
@@ -75,7 +76,7 @@ void AssistBP::InternalThreadEntryN(size_t thread_id)
       {
 
       }
-    }
+    }*/
   }
   catch (boost::thread_interrupted&) {}
 }
