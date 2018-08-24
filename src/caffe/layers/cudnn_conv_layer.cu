@@ -240,8 +240,8 @@ void CuDNNConvolutionLayer<Ftype, Btype>::Backward_gpu(const vector<Blob*>& top,
 
 //newplan added
 template <typename Ftype, typename Btype>
-void CuDNNConvolutionLayer<Ftype, Btype>::bp_over_weight(const vector<Blob*>& _top,
-    const vector<bool>& _propagate_down, const vector<Blob*>& _bottom)
+void CuDNNConvolutionLayer<Ftype, Btype>::bp_over_weight(const vector<Blob*>& top,
+    const vector<bool>& propagate_down, const vector<Blob*>& bottom)
 {
   LOG(INFO) << "IN bp over weight";
   propagate_down_ = propagate_down;
@@ -285,8 +285,8 @@ void CuDNNConvolutionLayer<Ftype, Btype>::bp_over_weight(const vector<Blob*>& _t
 }
 
 template <typename Ftype, typename Btype>
-void CuDNNConvolutionLayer<Ftype, Btype>::bp_over_delta(const vector<Blob*>& _top,
-    const vector<bool>& _propagate_down, const vector<Blob*>& _bottom)
+void CuDNNConvolutionLayer<Ftype, Btype>::bp_over_delta(const vector<Blob*>& top,
+    const vector<bool>& propagate_down, const vector<Blob*>& bottom)
 {
   LOG(INFO) << "IN bp over delta";
   propagate_down_ = propagate_down;
