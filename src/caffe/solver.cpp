@@ -267,6 +267,8 @@ void Solver::Step(int iters) {
       net_->ClearParamDiffs();
     }  // we clean them in ApplyUpdate otherwise
 
+    if(iter_>=2 && iter_%6 ==0) {++iter_;}
+
     bool test_and_snapshot = false;
     if (test_and_snapshot_enabled &&
         (iter_ + 1 == stop_iter || (epochs > 0. && epochs_passed + ts_epochs_remaining > epochs))) {
@@ -413,7 +415,7 @@ void Solver::Step(int iters) {
       break;
     }
     net_->update_grad_scale();
-    if(iter_%6 ==0) {++iter_; ++iterations_last_;}
+    
   }
   Finalize();
 }
