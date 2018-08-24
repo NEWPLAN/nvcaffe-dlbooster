@@ -51,6 +51,8 @@ class Solver {
   void InitTrainNet();
   void InitTestNets();
 
+  shared_ptr<ThreadPool> thp;
+
   // Client of the Solver optionally may call this in order to set the function
   // that the solver uses to see what action it should take (e.g. snapshot or
   // exit training early).
@@ -252,7 +254,6 @@ class Solver {
 
   static constexpr size_t MAX_SNAPSHOT_SCORES = 5;
 
-  shared_ptr<ThreadPool> thp;
 
   DISABLE_COPY_MOVE_AND_ASSIGN(Solver);
 };
