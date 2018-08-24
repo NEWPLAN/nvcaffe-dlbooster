@@ -727,7 +727,7 @@ float Net::ForwardBackward(bool apply_update) {
   Forward(&loss);
   Backward(apply_update);
   //newplan added
-  parent_solver()->thp->runTask([&,this](){LOG_EVERY_N(INFO,50)<<"hello in Net::ForwardBackward";});
+  parent_solver()->thp->runTask([&,this](){LOG_EVERY_N(INFO,100)<<"hello in Net::ForwardBackward";});
   return loss;
 }
 
