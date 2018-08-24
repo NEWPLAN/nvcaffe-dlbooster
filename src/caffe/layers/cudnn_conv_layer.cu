@@ -111,11 +111,15 @@ void CuDNNConvolutionLayer<Ftype, Btype>::Backward_gpu(const vector<Blob*>& top,
         }  // end for i	
       }
     );}
-    if(0)
-    {
+    //if(0)
+    //{
       auto& assis_bp=GPUMemory::backward_assist_[Caffe::current_device()];
       auto& assis_ws=GPUMemory::assist_workspace_[Caffe::current_device()];
       auto& assis_bq=GPUMemory::blockqueue_assist_[Caffe::current_device()];
+      if(assis_ws->size()<ws->size())	
+      {	
+        assis_ws->safe_reserve(ws->size());	
+      }	
       assis_bp->runTask([&,this]()
       {
         // compute dE/dB = sum_c(dE/dy)
@@ -149,7 +153,7 @@ void CuDNNConvolutionLayer<Ftype, Btype>::Backward_gpu(const vector<Blob*>& top,
         }
         assis_bq.push(333);
       });
-    }
+    //}
     //CPUTimer ct;
     //ct.Start();
     //tppp.waitWorkComplete();
