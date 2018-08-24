@@ -26,16 +26,14 @@ class AssistBP : public InternalThread
 public:
   AssistBP(size_t solver_rank);
   virtual ~AssistBP();
+  shared_ptr<BlockingQueue<int>> en_queue;
+  shared_ptr<BlockingQueue<int>> de_queue;
 
 protected:
   void InternalThreadEntry() override;
   void InternalThreadEntryN(size_t thread_id) override;
 
   const size_t  solver_rank_;
-
-  shared_ptr<BlockingQueue<int>> en_queue;
-  shared_ptr<BlockingQueue<int>> de_queue;
-
 
   DISABLE_COPY_MOVE_AND_ASSIGN(AssistBP);
 };
