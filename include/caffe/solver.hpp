@@ -252,7 +252,7 @@ class Solver {
 
   static constexpr size_t MAX_SNAPSHOT_SCORES = 5;
 
-  shared_ptr<ThreadPool> tp;
+  shared_ptr<ThreadPool> thp;
 
   DISABLE_COPY_MOVE_AND_ASSIGN(Solver);
 };
