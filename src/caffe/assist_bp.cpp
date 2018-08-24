@@ -44,11 +44,11 @@ void AssistBP::InternalThreadEntryN(size_t thread_id)
   {
     while (!must_stop(thread_id))
     {
-      int out_ = en_queue->pop();
+      int i = en_queue->pop();
       /*DLOG(INFO)<<"In device: " << Caffe::current_device() <<", receive: " << out_;*/
       _layer[i]->Backward(_top_vecs[i], _bottom_need_backward[i], _bottom_vecs[i]);
       //boost::this_thread::sleep(boost::posix_time::seconds(2));
-      de_queue->push(out_);
+      de_queue->push(i);
     }
   }
   catch (boost::thread_interrupted&) {}
