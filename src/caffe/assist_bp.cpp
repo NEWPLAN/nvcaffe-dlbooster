@@ -47,11 +47,34 @@ void AssistBP::InternalThreadEntryN(size_t thread_id)
       int i = en_queue->pop();
       if(i >= 0)
       {
-        /*DLOG(INFO)<<"In device: " << Caffe::current_device() <<", receive: " << out_;*/
-        _layer[i]->Backward_gpu_weight(_top_vecs[i], _bottom_need_backward[i], _bottom_vecs[i]);
-        //boost::this_thread::sleep(boost::posix_time::seconds(2));
+        if(_layer[i]->has_Backward_w())
+        {
+          _layer[i]->Backward_gpu_weight(_top_vecs[i], _bottom_need_backward[i], _bottom_vecs[i]);
+        }
+        for (int j = 0; j < _layer[i]->blobs().size(); ++j) 
+        {
+          if (_layer[i]->skip_apply_update(j)) continue;
+
+          const int param_id = _layer_index_params[make_pair(i, j)];
+          if (param_owners_[param_id] < 0) 
+          {
+            const int lparam_id = _learnable_param_ids[param_id];
+            int t = (int)_learnable_params[lparam_id]->diff_type();
+            for (int type_id = 0; type_id < _learnable_types.size(); ++type_id) 
+            {
+              if (t == learnable_types_[type_id]) 
+              {
+                _reduction_queue[type_id].push(lparam_id);
+                break;
+              }
+            }
+          }  // leave it to the owner otherwise
+        }
       }
-      de_queue->push(i);
+      else if(i == -1)
+      {
+
+      }
     }
   }
   catch (boost::thread_interrupted&) {}

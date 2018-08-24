@@ -445,6 +445,8 @@ class Net {
   Flag* solver_init_flag_;
   vector<Flag*> layer_inititialized_flags_;
   NetParameter net_param_;
+  shared_ptr<BlockingQueue<int>> en_queue;
+  shared_ptr<BlockingQueue<int>> de_queue;
 
   size_t infer_count_;
   std::atomic_llong wgrad_sq_;

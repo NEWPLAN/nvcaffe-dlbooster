@@ -723,6 +723,11 @@ const vector<Blob*>& Net::Forward(const vector<Blob*>& bottom, float* loss) {
 }
 
 float Net::ForwardBackward(bool apply_update) {
+  if(en_queue==nullptr || de_queue==nullptr)
+  {
+    en_queue=parent_solver()->abp->en_queue;
+    de_queue=parent_solver()->abp->de_queue;
+  }
   float loss;
   Forward(&loss);
   Backward(apply_update);
@@ -739,53 +744,33 @@ void Net::BackwardFromTo(int start, int end) {
 void Net::BackwardFromToAu(int start, int end, bool apply_update) {
   CHECK_GE(end, 0);
   CHECK_LT(start, layers_.size());
-  for (int i = start; i >= end; --i) {
-    if (!layer_need_backward_[i]) {
-      continue;
-    }
+  for (int i = start; i >= end; --i) 
+  {
+    if (!layer_need_backward_[i]) continue;
 
     //parent_solver()->abp->en_queue->push(i);
-    layers_[i]->Backward(top_vecs_[i], bottom_need_backward_[i], bottom_vecs_[i]);
+    
     /*LOG_IF(INFO, layers_[i]->has_Backward_w())<<"Layer name: "<<layers_[i]->name();*/
-    /*
+    
     if(layers_[i]->has_Backward_w())
-    layers_[i]->Backward_gpu_delta(top_vecs_[i], bottom_need_backward_[i], bottom_vecs_[i]);
-    */
-    //parent_solver()->abp->de_queue->pop();
-    
-    //newplan added
-    /*layers_[i]->Backward_x(top_vecs_[i], bottom_need_backward_[i], bottom_vecs_[i]);
-    
-    //newplan added
-    parent_solver()->thp->runTask([&,this]()
     {
-      layers_[i]->Backward_W(top_vecs_[i], bottom_need_backward_[i], bottom_vecs_[i]);
-    });*/
-
+      layers_[i]->Backward_gpu_delta(top_vecs_[i], bottom_need_backward_[i], bottom_vecs_[i]);
+    }
+    else
+    {
+      layers_[i]->Backward(top_vecs_[i], bottom_need_backward_[i], bottom_vecs_[i]);
+    }
+    en_queue->push(i);
+/*
     if (debug_info_) {
       BackwardDebugInfo(i);
     }
-    if (!apply_update) {
-      continue;
-    }
-    for (int j = 0; j < layers_[i]->blobs().size(); ++j) {
-      if (layers_[i]->skip_apply_update(j)) {
-        continue;
-      }
-      const int param_id = layer_index_params_[make_pair(i, j)];
-      if (param_owners_[param_id] < 0) {
-        const int lparam_id = learnable_param_ids_[param_id];
-        int t = (int)learnable_params_[lparam_id]->diff_type();
-        for (int type_id = 0; type_id < learnable_types().size(); ++type_id) {
-          if (t == learnable_types_[type_id]) {
-            reduction_queue_[type_id].push(lparam_id);
-            break;
-          }
-        }
-      }  // leave it to the owner otherwise
-    }
+    */
+    if (!apply_update) continue;
+    
   }
-  if (apply_update) {
+  if (apply_update) 
+  {
     for (int type_id = 0; type_id < learnable_types_.size(); ++type_id) {
       reduction_queue_[type_id].push(END_OF_ITERATION);
     }
