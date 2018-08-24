@@ -48,6 +48,11 @@ void Solver::Init() {
   if (Caffe::root_solver()) {  // P2PSync does other solvers if they exist
     Caffe::set_root_seed(static_cast<uint64_t>(param_.random_seed()));
   }
+  //newplan added
+  {
+    CHECK(tp==nullptr);
+    tp=make_shared<ThreadPool>(1);
+  }
   // Scaffolding code
   InitTrainNet();
   InitTestNets();

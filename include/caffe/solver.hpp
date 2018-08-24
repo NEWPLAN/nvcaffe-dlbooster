@@ -10,6 +10,9 @@
 #include "caffe/solver_factory.hpp"
 #include "caffe/util/benchmark.hpp"
 
+//newplan added
+#include "caffe/util/thread_pool.hpp"
+
 namespace caffe {
 
 /**
@@ -248,6 +251,8 @@ class Solver {
   int iterations_restored_;
 
   static constexpr size_t MAX_SNAPSHOT_SCORES = 5;
+
+  shared_ptr<ThreadPool> tp;
 
   DISABLE_COPY_MOVE_AND_ASSIGN(Solver);
 };
