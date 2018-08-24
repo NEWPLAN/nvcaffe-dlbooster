@@ -26,7 +26,7 @@ vector<shared_ptr<GPUMemory::Workspace>> GPUMemory::weights_workspace_(GPUMemory
 //newplan added
 vector<shared_ptr<GPUMemory::Workspace>> GPUMemory::assist_workspace_(GPUMemory::WS_INITIAL_SIZE);
 vector<shared_ptr<ThreadPool>> GPUMemory::backward_assist_(GPUMemory::WS_INITIAL_SIZE);
-vector<shared_ptr<BlockingQueue>> GPUMemory::blockqueue_assist_(GPUMemory::WS_INITIAL_SIZE);
+vector<shared_ptr<BlockingQueue<int>>> GPUMemory::blockqueue_assist_(GPUMemory::WS_INITIAL_SIZE);
 
 // To be called for every device
 void GPUMemory::Init() {
