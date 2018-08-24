@@ -29,7 +29,7 @@ void AssistBP::InternalThreadEntry()
   InternalThreadEntryN(0U);
 }
 
-AssistBP::InternalThreadEntryN(size_t thread_id)
+void AssistBP::InternalThreadEntryN(size_t thread_id)
 {
   try
   {
