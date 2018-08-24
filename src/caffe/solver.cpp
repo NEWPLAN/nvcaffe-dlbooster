@@ -54,7 +54,7 @@ void Solver::Init() {
   {
     CHECK(thp==nullptr);
     thp=make_shared<ThreadPool>(1);
-    CHECK(abp==nullptr)
+    CHECK(abp==nullptr);
     abp=make_shared<AssistBP>(rank_);
   }
   // Scaffolding code
