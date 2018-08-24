@@ -295,9 +295,9 @@ class LayerBase {
       const vector<Blob*>& bottom) = 0;
 
   virtual void Backward_x(const vector<Blob*>& top, const vector<bool>& propagate_down,
-      const vector<Blob*>& bottom) = 0;
+      const vector<Blob*>& bottom){};
   virtual void Backward_w(const vector<Blob*>& top, const vector<bool>& propagate_down,
-      const vector<Blob*>& bottom) = 0;
+      const vector<Blob*>& bottom){};
   virtual inline bool has_Backward_w()const{return false;}
 
   /**
