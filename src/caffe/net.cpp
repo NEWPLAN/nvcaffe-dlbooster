@@ -748,7 +748,7 @@ void Net::BackwardFromToAu(int start, int end, bool apply_update) {
     layers_[i]->Backward(top_vecs_[i], bottom_need_backward_[i], bottom_vecs_[i]);
     /*LOG_IF(INFO, layers_[i]->has_Backward_w())<<"Layer name: "<<layers_[i]->name();*/
     if(layers_[i]->has_Backward_w())
-    layers_[i]->Backward_gpu_delta();
+    layers_[i]->Backward_gpu_delta(top_vecs_[i], bottom_need_backward_[i], bottom_vecs_[i]);
     //parent_solver()->abp->de_queue->pop();
     
     //newplan added
