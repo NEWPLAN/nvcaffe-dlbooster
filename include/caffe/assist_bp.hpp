@@ -33,8 +33,8 @@ protected:
 
   const size_t  solver_rank_;
 
-  std::shared_ptr<BlockingQueue<int>> en_queue;
-  std::shared_ptr<BlockingQueue<int>> de_queue;
+  shared_ptr<BlockingQueue<int>> en_queue;
+  shared_ptr<BlockingQueue<int>> de_queue;
 
 
   DISABLE_COPY_MOVE_AND_ASSIGN(AssistBP);
