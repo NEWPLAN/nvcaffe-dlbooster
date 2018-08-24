@@ -34,7 +34,9 @@ Solver::Solver(const SolverParameter& param, size_t rank, const Solver* root_sol
 Solver::Solver(const string& param_file, size_t rank, const Solver* root_solver)
     : Solver(ReadSolverParamsFromTextFileOrDie(param_file), rank, root_solver) {}
 
-Solver::~Solver() {}
+Solver::~Solver() {
+  abp->StopInternalThread();
+}
 
 void Solver::Init() {
   LOG(INFO) << "Solver data type: " << Type_Name(data_type_);
@@ -52,6 +54,8 @@ void Solver::Init() {
   {
     CHECK(thp==nullptr);
     thp=make_shared<ThreadPool>(1);
+    CHECK(abp==nullptr)
+    abp=make_shared<AssistBP>(rank_);
   }
   // Scaffolding code
   InitTrainNet();

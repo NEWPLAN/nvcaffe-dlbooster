@@ -114,7 +114,7 @@ void CuDNNConvolutionLayer<Ftype, Btype>::Backward_gpu(const vector<Blob*>& top,
           assis_bq->push(2323);
       });
       cp.Stop();
-      LOG_EVERY_N(INFO,100)<<"Cost timer: "<<cp.MicroSeconds()<<" us.";
+      DLOG_EVERY_N(INFO,100)<<"Cost timer: "<<cp.MicroSeconds()<<" us.";
     }
     if(1)
     {
@@ -148,7 +148,7 @@ void CuDNNConvolutionLayer<Ftype, Btype>::Backward_gpu(const vector<Blob*>& top,
         }  // end of i
       }
       cp.Stop();
-      LOG_EVERY_N(INFO,100)<<"out size: Cost timer: "<<cp.MicroSeconds()<<" us.";
+      DLOG_EVERY_N(INFO,100)<<"out size: Cost timer: "<<cp.MicroSeconds()<<" us.";
     }
     //CPUTimer ct;
     //ct.Start();
