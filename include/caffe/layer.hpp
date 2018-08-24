@@ -298,7 +298,7 @@ class LayerBase {
       const vector<Blob*>& bottom) = 0;
   virtual void Backward_w(const vector<Blob*>& top, const vector<bool>& propagate_down,
       const vector<Blob*>& bottom) = 0;
-  virtual inline bool has_Backward_w(){return false;}const;
+  virtual inline bool has_Backward_w()const{return false;}
 
   /**
    * @brief Specifies whether the layer should compute gradients w.r.t. a
