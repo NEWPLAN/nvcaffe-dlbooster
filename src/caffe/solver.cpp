@@ -267,7 +267,7 @@ void Solver::Step(int iters) {
       net_->ClearParamDiffs();
     }  // we clean them in ApplyUpdate otherwise
 
-    if(iter_>=2 && iter_%6 ==0 && !display()) {++iter_;}
+    //if(iter_>=2 && iter_%6 ==0 && !display()) {++iter_;}
 
     bool test_and_snapshot = false;
     if (test_and_snapshot_enabled &&
