@@ -726,6 +726,8 @@ float Net::ForwardBackward(bool apply_update) {
   float loss;
   Forward(&loss);
   Backward(apply_update);
+  auto& assis_bp=GPUMemory::backward_assist_[Caffe::current_device()];
+  assis_bp->waitWorkComplete();
   return loss;
 }
 
