@@ -77,10 +77,6 @@ class ConvolutionLayer : public BaseConvolutionLayer<Ftype, Btype> {
       const vector<bool>& propagate_down, const vector<Blob*>& bottom);
   virtual inline bool reverse_dimensions() { return false; }
   virtual void compute_output_shape();
-  virtual void Backward_gpu_x(const vector<Blob*>& top, const vector<bool>& propagate_down,
-      const vector<Blob*>& bottom){}
-  virtual void Backward_gpu_w(const vector<Blob*>& top, const vector<bool>& propagate_down,
-      const vector<Blob*>& bottom){}
 };
 
 }  // namespace caffe
