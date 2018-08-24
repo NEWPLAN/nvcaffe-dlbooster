@@ -52,7 +52,7 @@ void GPUMemory::Init() {
   }
   if (!blockqueue_assist_[device]) 
   {
-    blockqueue_assist_[device] = make_shared<BlockingQueue>();
+    blockqueue_assist_[device] = make_shared<BlockingQueue<int>>();
   }
   if(device+1>assist_workspace_.size())
   {
