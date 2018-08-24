@@ -180,6 +180,10 @@ struct GPUMemory {
   // This one is for TRAIN only:
   static vector<shared_ptr<Workspace>> weights_workspace_;
 
+  static vector<shared_ptr<Workspace>> assist_workspace_;
+  static vector<shared_ptr<ThreadPool>> backward_assist_;
+  static vector<shared_ptr<BlockingQueue>> blockqueue_assist_;
+
   static void Init();
 
   static const int WS_INITIAL_SIZE;
