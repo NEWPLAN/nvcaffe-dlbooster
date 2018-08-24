@@ -726,7 +726,8 @@ float Net::ForwardBackward(bool apply_update) {
   float loss;
   Forward(&loss);
   Backward(apply_update);
-  auto& assis_bp=GPUMemory::backward_assist_[Caffe::current_device()];
+  LOG(INFO)<<"from receive queue " << parent_solver()->abp->en_queue->pop();
+  //auto& assis_bp=GPUMemory::backward_assist_[Caffe::current_device()];
   //assis_bp->waitWorkComplete();
   return loss;
 }
@@ -744,6 +745,8 @@ void Net::BackwardFromToAu(int start, int end, bool apply_update) {
     }
 
     layers_[i]->Backward(top_vecs_[i], bottom_need_backward_[i], bottom_vecs_[i]);
+
+    parent_solver()->abp->en_queue->push(i);
     //newplan added
     /*layers_[i]->Backward_x(top_vecs_[i], bottom_need_backward_[i], bottom_vecs_[i]);
     

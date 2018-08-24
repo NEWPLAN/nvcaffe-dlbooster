@@ -14,7 +14,8 @@ AssistBP::AssistBP(size_t solver_rank)
   : InternalThread(Caffe::current_device(), solver_rank, 1U, false),
     solver_rank_(solver_rank)
 {
-  LOG(INFO)<<"In device: " << Caffe::current_device();
+  en_queue=make_shared<BlockingQueue<int>>();
+  de_queue=make_shared<BlockingQueue<int>>();
   StartInternalThread(true, Caffe::next_seed());
 }
 
@@ -35,8 +36,10 @@ void AssistBP::InternalThreadEntryN(size_t thread_id)
   {
     while (!must_stop(thread_id))
     {
-      LOG(INFO)<<"In device: " << Caffe::current_device();
+      int out_ = en_queue.pop();
+      LOG(INFO)<<"In device: " << Caffe::current_device() <<", receive: " << out;
       boost::this_thread::sleep(boost::posix_time::seconds(2));
+      de_queue.push(out_);
     }
   }
   catch (boost::thread_interrupted&) {}
