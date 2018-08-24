@@ -72,15 +72,17 @@ class CuDNNConvolutionLayer : public ConvolutionLayer<Ftype, Btype> {
   virtual void Forward_gpu(const vector<Blob*>& bottom, const vector<Blob*>& top);
   virtual void Backward_gpu(const vector<Blob*>& top, const vector<bool>& propagate_down,
       const vector<Blob*>& bottom);
-  void Backward_gpu_delta(const vector<Blob*>& top, const vector<bool>& propagate_down,
+  virtual void Backward_gpu_delta(const vector<Blob*>& top, const vector<bool>& propagate_down,
       const vector<Blob*>& bottom)
       {
+        LOG(INFO)<<"in cudnn conv layer";
         LOG(INFO)<<"parameter: "<< this->name();
       }
-  void Backward_gpu_weight(const vector<Blob*>& top, const vector<bool>& propagate_down,
+  virtual void Backward_gpu_weight(const vector<Blob*>& top, const vector<bool>& propagate_down,
       const vector<Blob*>& bottom)
       {
-
+          LOG(INFO)<<"in cudnn conv layer";
+          LOG(INFO)<<"parameter: "<< this->name();
       }
   bool handles_setup_;
 

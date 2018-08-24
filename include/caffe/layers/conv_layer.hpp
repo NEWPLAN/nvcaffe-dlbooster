@@ -79,10 +79,10 @@ class ConvolutionLayer : public BaseConvolutionLayer<Ftype, Btype> {
   virtual void compute_output_shape();
 
 //newplan added
-  virtual void Backward_gpu_delta(const vector<Blob*>& top, const vector<bool>& propagate_down,
-      const vector<Blob*>& bottom){}
-  virtual void Backward_gpu_weight(const vector<Blob*>& top, const vector<bool>& propagate_down,
-      const vector<Blob*>& bottom){}
+ // virtual void Backward_gpu_delta(const vector<Blob*>& top, const vector<bool>& propagate_down,
+  //    const vector<Blob*>& bottom){}
+  //virtual void Backward_gpu_weight(const vector<Blob*>& top, const vector<bool>& propagate_down,
+  //    const vector<Blob*>& bottom){}
 };
 
 }  // namespace caffe

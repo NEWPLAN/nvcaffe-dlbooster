@@ -295,6 +295,10 @@ class LayerBase {
       const vector<Blob*>& bottom) = 0;
 
   virtual inline bool has_Backward_w()const{return false;}
+  virtual void Backward_gpu_weight(const vector<Blob*>& top, const vector<bool>& propagate_down,
+      const vector<Blob*>& bottom) {LOG(INFO)<<"IN base layer";}
+  virtual void Backward_gpu_delta(const vector<Blob*>& top, const vector<bool>& propagate_down,
+      const vector<Blob*>& bottom) {LOG(INFO)<<"IN base layer";}
 
   /**
    * @brief Specifies whether the layer should compute gradients w.r.t. a
@@ -509,10 +513,7 @@ class Layer : public LayerBase {
     Backward_cpu(top, propagate_down, bottom);
   }
 
-  virtual void Backward_gpu_weight(const vector<Blob*>& top, const vector<bool>& propagate_down,
-      const vector<Blob*>& bottom) {}
-  virtual void Backward_gpu_delta(const vector<Blob*>& top, const vector<bool>& propagate_down,
-      const vector<Blob*>& bottom) {}
+  
 
   /**
    * Called by SetUp to initialize the weights associated with any top blobs in
