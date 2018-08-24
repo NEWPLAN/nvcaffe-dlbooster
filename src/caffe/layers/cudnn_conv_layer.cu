@@ -75,7 +75,7 @@ void CuDNNConvolutionLayer<Ftype, Btype>::Forward_gpu(const vector<Blob*>& botto
 
   ++fwd_count_;
 }
-
+int iii=0;
 template <typename Ftype, typename Btype>
 void CuDNNConvolutionLayer<Ftype, Btype>::Backward_gpu(const vector<Blob*>& top,
     const vector<bool>& propagate_down, const vector<Blob*>& bottom) {
@@ -83,14 +83,14 @@ void CuDNNConvolutionLayer<Ftype, Btype>::Backward_gpu(const vector<Blob*>& top,
   shared_ptr<GPUMemory::Workspace>& ws = GPUMemory::workspace_[Caffe::current_device()];
   if (use_v7grouping()) 
   {
-    if(1){
+    if(iii==0){
       auto& assis_bp=GPUMemory::backward_assist_[Caffe::current_device()];
       auto& assis_ws=GPUMemory::assist_workspace_[Caffe::current_device()];
       auto& assis_bq=GPUMemory::blockqueue_assist_[Caffe::current_device()];
       if(assis_ws->size()<ws->size())assis_ws->safe_reserve(ws->size());	
       assis_bp->runTask([&]()
       {	
-        
+        while(1){
         LOG_EVERY_N(INFO,100)<<"in sub thread...";
 
         // Backward propagate grad wrt bottom data dE/dX= dE/dY * W	
@@ -108,9 +108,10 @@ void CuDNNConvolutionLayer<Ftype, Btype>::Backward_gpu(const vector<Blob*>& top,
               CUDA_CHECK(cudaStreamSynchronize(Caffe::thread_stream(1)));	
             }  // end if propagate down	
           }  // end for i	
-          assis_bq->push(2323);
+          assis_bq->push(2323);}
       });
     }
+    iii=1;
     if(1)
     {
       // compute dE/dB = sum_c(dE/dy)
