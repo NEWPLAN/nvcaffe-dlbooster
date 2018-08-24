@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "caffe/common.hpp"
+#include "caffe/util/thread_pool.hpp"
 
 namespace cub {
   class CachingDeviceAllocator;
