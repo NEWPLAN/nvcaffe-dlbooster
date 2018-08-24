@@ -184,7 +184,7 @@ struct GPUMemory {
 
   static vector<shared_ptr<Workspace>> assist_workspace_;
   static vector<shared_ptr<ThreadPool>> backward_assist_;
-  static vector<shared_ptr<BlockingQueue>> blockqueue_assist_;
+  static vector<shared_ptr<BlockingQueue<int>>> blockqueue_assist_;
 
   static void Init();
 
