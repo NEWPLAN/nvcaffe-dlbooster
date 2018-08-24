@@ -250,17 +250,21 @@ void CuDNNConvolutionLayer<Ftype, Btype>::Backward_gpu(const vector<Blob*>& top,
 }
 
 //newplan added
-/*
-template <typename Ftype, typename Btype>
-void CuDNNConvolutionLayer<Ftype, Btype>::Backward_gpu_weight(const vector<Blob*>& top,
-    const vector<bool>& propagate_down, const vector<Blob*>& bottom) 
-    {}
 
 template <typename Ftype, typename Btype>
-void CuDNNConvolutionLayer<Ftype, Btype>::Backward_gpu_delta(const vector<Blob*>& top,
+void CuDNNConvolutionLayer<Ftype, Btype>::bp_over_weight(const vector<Blob*>& top,
     const vector<bool>& propagate_down, const vector<Blob*>& bottom) 
-    {}
-*/
+    {
+      LOG(INFO)<< "IN bp over weight";
+    }
+
+template <typename Ftype, typename Btype>
+void CuDNNConvolutionLayer<Ftype, Btype>::bp_over_delta(const vector<Blob*>& top,
+    const vector<bool>& propagate_down, const vector<Blob*>& bottom) 
+    {
+      LOG(INFO)<< "IN bp over delta";
+    }
+
 INSTANTIATE_LAYER_GPU_FUNCS_FB(CuDNNConvolutionLayer);
 
 }  // namespace caffe
