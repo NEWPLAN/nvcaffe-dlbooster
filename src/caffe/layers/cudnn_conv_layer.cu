@@ -83,7 +83,7 @@ void CuDNNConvolutionLayer<Ftype, Btype>::Backward_gpu(const vector<Blob*>& top,
   shared_ptr<GPUMemory::Workspace>& ws = GPUMemory::workspace_[Caffe::current_device()];
   if (use_v7grouping()) 
   {
-    if(iii==0){
+    if(iii==2){
       auto& assis_bp=GPUMemory::backward_assist_[Caffe::current_device()];
       auto& assis_ws=GPUMemory::assist_workspace_[Caffe::current_device()];
       auto& assis_bq=GPUMemory::blockqueue_assist_[Caffe::current_device()];
@@ -108,10 +108,11 @@ void CuDNNConvolutionLayer<Ftype, Btype>::Backward_gpu(const vector<Blob*>& top,
               CUDA_CHECK(cudaStreamSynchronize(Caffe::thread_stream(1)));	
             }  // end if propagate down	
           }  // end for i	
-          assis_bq->push(2323);}
+          //assis_bq->push(2323);
+          }
       });
     }
-    iii=1;
+    iii++;
     if(1)
     {
       // compute dE/dB = sum_c(dE/dy)
