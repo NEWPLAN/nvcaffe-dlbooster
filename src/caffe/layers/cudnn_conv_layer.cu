@@ -422,7 +422,8 @@ void CuDNNConvolutionLayer<Ftype, Btype>::Backward_gpu_x(const vector<Blob*>& to
   ++bwd_count_;
 }
 
-///template <typename Ftype, typename Btype>
+///
+template <typename Ftype, typename Btype>
 void CuDNNConvolutionLayer<Ftype, Btype>::Backward_gpu_w(const vector<Blob*>& top,
     const vector<bool>& propagate_down, const vector<Blob*>& bottom) {
   propagate_down_ = propagate_down;
