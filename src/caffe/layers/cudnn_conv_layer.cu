@@ -308,6 +308,8 @@ namespace caffe
 
 INSTANTIATE_LAYER_GPU_FUNCS_FB(CuDNNConvolutionLayer);
 INSTANTIATE_LAYER_GPU_BACKWARD_FB(CuDNNConvolutionLayer, bp_over_weight);
+INSTANTIATE_LAYER_GPU_BACKWARD_F16_FB(CuDNNConvolutionLayer, bp_over_weight);
+INSTANTIATE_LAYER_GPU_BACKWARD_FB(CuDNNConvolutionLayer, bp_over_delta);
 INSTANTIATE_LAYER_GPU_BACKWARD_F16_FB(CuDNNConvolutionLayer, bp_over_delta);
 
 
