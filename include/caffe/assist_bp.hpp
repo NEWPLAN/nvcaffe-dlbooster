@@ -38,7 +38,7 @@ protected:
   void InternalThreadEntryN(size_t thread_id) override;
 
   const size_t  solver_rank_;
-  shared_ptr<LayerBase> _layer;
+  vector<shared_ptr<LayerBase>> _layer;
   vector<vector<Blob*> > _top_vecs;
   vector<vector<bool> > _bottom_need_backward;
   vector<vector<Blob*> > _bottom_vecs;
