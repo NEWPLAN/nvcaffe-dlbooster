@@ -75,8 +75,8 @@ void AssistBP::InternalThreadEntryN(size_t thread_id)
       else if(i == -1)
       {
 
-      }
-    }*/
+      }*/
+    }
   }
   catch (boost::thread_interrupted&) {}
 }
