@@ -296,6 +296,11 @@ class LayerBase {
 
   virtual inline bool has_Backward_w()const{return false;}
 
+  virtual void Backward_gpu_weight(const vector<Blob*>& top, const vector<bool>& propagate_down,
+      const vector<Blob*>& bottom) { }
+  virtual void Backward_gpu_delta(const vector<Blob*>& top, const vector<bool>& propagate_down,
+      const vector<Blob*>& bottom) { }
+
   /**
    * @brief Specifies whether the layer should compute gradients w.r.t. a
    *        parameter at a particular index given by param_id.
