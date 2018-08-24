@@ -744,9 +744,9 @@ void Net::BackwardFromToAu(int start, int end, bool apply_update) {
       continue;
     }
 
-    parent_solver()->abp->en_queue->push(i);
-    //layers_[i]->Backward(top_vecs_[i], bottom_need_backward_[i], bottom_vecs_[i]);
-    parent_solver()->abp->de_queue->pop();
+    //parent_solver()->abp->en_queue->push(i);
+    layers_[i]->Backward(top_vecs_[i], bottom_need_backward_[i], bottom_vecs_[i]);
+    //parent_solver()->abp->de_queue->pop();
     
     //newplan added
     /*layers_[i]->Backward_x(top_vecs_[i], bottom_need_backward_[i], bottom_vecs_[i]);
