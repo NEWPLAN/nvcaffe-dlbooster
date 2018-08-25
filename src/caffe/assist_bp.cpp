@@ -61,24 +61,24 @@ void AssistBP::InternalThreadEntryN(size_t thread_id)
 
       if(i >= 0)
       {
-        if(_layer[i]->has_Backward_w())
+        if((*_layer)[i]->has_Backward_w())
         {
-          _layer[i]->Backward_gpu_weight(_top_vecs[i], _bottom_need_backward[i], _bottom_vecs[i]);
+          (*_layer)[i]->Backward_gpu_weight((*_top_vecs)[i], (*_bottom_need_backward)[i], (*_bottom_vecs)[i]);
         }
-        for (int j = 0; j < _layer[i]->blobs().size(); ++j) 
+        for (int j = 0; j < (*_layer)[i]->blobs().size(); ++j) 
         {
-          if (_layer[i]->skip_apply_update(j)) continue;
+          if ((*_layer)[i]->skip_apply_update(j)) continue;
 
-          const int param_id = _layer_index_params[make_pair(i, j)];
-          if (_param_owners[param_id] < 0) 
+          const int param_id = (*_layer_index_params)[make_pair(i, j)];
+          if ((*_param_owners)[param_id] < 0) 
           {
-            const int lparam_id = _learnable_param_ids[param_id];
-            int t = (int)_learnable_params[lparam_id]->diff_type();
-            for (int type_id = 0; type_id < _learnable_types.size(); ++type_id) 
+            const int lparam_id = (*_learnable_param_ids)[param_id];
+            int t = (int)(*_learnable_params)[lparam_id]->diff_type();
+            for (int type_id = 0; type_id < (*_learnable_types).size(); ++type_id) 
             {
-              if (t == _learnable_types[type_id]) 
+              if (t == (*_learnable_types)[type_id]) 
               {
-                _reduction_queue[type_id]->push(lparam_id);
+                (*_reduction_queue)[type_id]->push(lparam_id);
                 break;
               }
             }
@@ -87,9 +87,9 @@ void AssistBP::InternalThreadEntryN(size_t thread_id)
       }
       else if(i == -1)
       {
-        for (int type_id = 0; type_id < _learnable_types.size(); ++type_id) 
+        for (int type_id = 0; type_id < (*_learnable_types).size(); ++type_id) 
         {
-          _reduction_queue[type_id]->push(-1);
+          (*_reduction_queue)[type_id]->push(-1);
         }
       }
     }
