@@ -25,16 +25,16 @@ class AssistBP : public InternalThread
 
 public:
   AssistBP(size_t solver_rank,
-            const vector<shared_ptr<LayerBase>> train_layer,
-            const vector<vector<Blob*> >&top,
-            const vector<vector<bool> >& need,
-            const vector<vector<Blob*> >& bottom,
-            const vector<int>& param_owners,
-            const map<pair<int, int>, int>& layer_index_params,            
-            const vector<int>& learnable_param_ids,
-            const vector<shared_ptr<Blob>>& learnable_params,
-            const vector<Type>& learnable_types,
-            const vector<shared_ptr<BlockingQueue<int>>>& reduction_queue
+                  const vector<shared_ptr<LayerBase>> train_layer,
+                  const vector<vector<Blob*> >&top,
+                  const vector<vector<bool> >& need,
+                  const vector<vector<Blob*> >& bottom,
+                  const vector<int>& param_owners,
+                  const map<pair<int, int>, int>& layer_index_params,            
+                  const vector<int>& learnable_param_ids,
+                  const vector<shared_ptr<Blob>>& learnable_params,
+                  const vector<Type>& learnable_types,
+                  const vector<shared_ptr<BlockingQueue<int>>>& reduction_queue
             );
   virtual ~AssistBP();
   shared_ptr<BlockingQueue<int>> en_queue;
