@@ -237,7 +237,7 @@ void CuDNNConvolutionLayer<Ftype, Btype>::Backward_gpu(const vector<Blob*>& top,
         }*/
       }  // end if propagate down
     }  // end for i
-    LOG_EVERY_N(INGO,100)<<"grop size:"<< groups();
+    LOG_EVERY_N(INFO,100)<<"grop size:"<< groups();
     //sync all thread_stream
     for (int g = 0; g < ws_groups(); ++g)
     {
