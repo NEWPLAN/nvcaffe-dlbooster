@@ -20,7 +20,7 @@ AssistBP::AssistBP(size_t solver_rank,
                   const vector<int>& learnable_param_ids,
                   const vector<shared_ptr<Blob>>& learnable_params,
                   const vector<Type>& learnable_types,
-                  const vector<BlockingQueue<int>>& reduction_queue
+                  const vector<shared_ptr<BlockingQueue<int>>>& reduction_queue
                   )
   : InternalThread(Caffe::current_device(), solver_rank, 1U, false),
     solver_rank_(solver_rank),
@@ -78,7 +78,7 @@ void AssistBP::InternalThreadEntryN(size_t thread_id)
             {
               if (t == _learnable_types[type_id]) 
               {
-                _reduction_queue[type_id].push(lparam_id);
+                _reduction_queue[type_id]->push(lparam_id);
                 break;
               }
             }
@@ -89,7 +89,7 @@ void AssistBP::InternalThreadEntryN(size_t thread_id)
       {
         for (int type_id = 0; type_id < _learnable_types.size(); ++type_id) 
         {
-          _reduction_queue[type_id].push(-1);
+          _reduction_queue[type_id]->push(-1);
         }
       }
     }

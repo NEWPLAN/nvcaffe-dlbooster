@@ -218,7 +218,7 @@ class Net {
   const map<pair<int, int>, int>&  layer_index_params() const { return layer_index_params_; }
   const vector<int>& learnable_param_ids() const { return learnable_param_ids_; } 
   const vector<Type>& learnable_types() const { return learnable_types_; } 
-  const vector<BlockingQueue<int>>& reduction_queue()const {return reduction_queue_;}
+  const vector<shared_ptr<BlockingQueue<int>>>& reduction_queue()const {return reduction_queue_;}
    
 
   const pair<int, int>& param_layer_indices(int param_id) {
@@ -446,7 +446,7 @@ class Net {
   /// Pointer to the solver being used with this net
   Solver* solver_;
   size_t solver_rank_;
-  vector<BlockingQueue<int>> reduction_queue_;
+  vector<shared_ptr<BlockingQueue<int>>> reduction_queue_;
   Flag* solver_init_flag_;
   vector<Flag*> layer_inititialized_flags_;
   NetParameter net_param_;

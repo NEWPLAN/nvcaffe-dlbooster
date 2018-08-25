@@ -66,7 +66,14 @@ Net::~Net() {
 }
 
 void Net::Init(const NetParameter& in_param) {
-  reduction_queue_.resize(2);
+  if(reduction_queue_.size()!=2)
+  {
+    reduction_queue_.resize(2);
+    for(int index =0;index<2;index++)
+    {
+      reduction_queue_[index]=make_shared<BlockingQueue<int>>();
+    }
+  }
   CHECK(inner_net_ || Caffe::root_solver() || root_net_)
       << "root_net_ needs to be set for all non-root solvers";
   // Set phase from the state.
@@ -783,7 +790,7 @@ void Net::BackwardFromToAu(int start, int end, bool apply_update) {
         int t = (int)learnable_params_[lparam_id]->diff_type();
         for (int type_id = 0; type_id < learnable_types().size(); ++type_id) {
           if (t == learnable_types_[type_id]) {
-            reduction_queue_[type_id].push(lparam_id);
+            reduction_queue_[type_id]->push(lparam_id);
             break;
           }
         }
@@ -792,7 +799,7 @@ void Net::BackwardFromToAu(int start, int end, bool apply_update) {
   }
   if (apply_update) {
     for (int type_id = 0; type_id < learnable_types_.size(); ++type_id) {
-      reduction_queue_[type_id].push(END_OF_ITERATION);
+      reduction_queue_[type_id]->push(END_OF_ITERATION);
     }
   }
 }
@@ -822,7 +829,7 @@ void Net::BackwardFromToAu(int start, int end, bool apply_update) {
         int t = (int)learnable_params_[lparam_id]->diff_type();
         for (int type_id = 0; type_id < learnable_types().size(); ++type_id) {
           if (t == learnable_types_[type_id]) {
-            reduction_queue_[type_id].push(lparam_id);
+            reduction_queue_[type_id]->push(lparam_id);
             break;
           }
         }
@@ -831,7 +838,7 @@ void Net::BackwardFromToAu(int start, int end, bool apply_update) {
   }
   if (apply_update) {
     for (int type_id = 0; type_id < learnable_types_.size(); ++type_id) {
-      reduction_queue_[type_id].push(END_OF_ITERATION);
+      reduction_queue_[type_id]->push(END_OF_ITERATION);
     }
   }
 }
@@ -839,7 +846,7 @@ void Net::BackwardFromToAu(int start, int end, bool apply_update) {
 
 void Net::Finalize() {
   for (int type_id = 0; type_id < learnable_types_.size(); ++type_id) {
-    reduction_queue_[type_id].push(END_OF_TRAIN);
+    reduction_queue_[type_id]->push(END_OF_TRAIN);
   }
 }
 
@@ -893,7 +900,7 @@ void Net::ReduceAndUpdate(int type_id) {
   const bool use_buckets = reduce_buckets_ > 0;
   float rate = -1.F;
   while (!solver_->stop_reducing_requested(type_id)) {
-    const int param_id = reduction_queue_[type_id].pop();
+    const int param_id = reduction_queue_[type_id]->pop();
     SolverAction::Enum request = solver_->GetRequestedAction();
     if (SolverAction::STOP == request) {
       solver_->request_early_exit();
