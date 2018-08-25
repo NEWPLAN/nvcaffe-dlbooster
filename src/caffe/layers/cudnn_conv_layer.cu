@@ -394,7 +394,7 @@ void CuDNNConvolutionLayer<Ftype, Btype>::Backward_gpu(const vector<Blob*>& top,
       }  // end if propagate down
     }  // end for i
   }
-
+  LOG_EVERY_N(INFO,10)<<"group size: "<<groups();
   ++bwd_count_;
 }
 */
