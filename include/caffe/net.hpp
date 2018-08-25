@@ -218,7 +218,7 @@ class Net {
   const map<pair<int, int>, int>&  layer_index_params() const { return layer_index_params_; }
   const vector<int>& learnable_param_ids() const { return learnable_param_ids_; } 
   const vector<Type>& learnable_types() const { return learnable_types_; } 
-  const vector<BlockingQueue<int>*& reduction_queue() {return reduction_queue_;}
+  const BlockingQueue<int>*& reduction_queue()const {return reduction_queue_;}
    
 
   const pair<int, int>& param_layer_indices(int param_id) {
