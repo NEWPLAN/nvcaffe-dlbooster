@@ -25,17 +25,7 @@ class AssistBP : public InternalThread
 
 public:
   explicit AssistBP(size_t solver_rank,
-                   vector<shared_ptr<LayerBase>>*& train_layer,
-                   vector<vector<Blob*>>*& top,
-                   vector<vector<bool>>*& need,
-                   vector<vector<Blob*>>*& bottom,
-                   vector<int>*& param_owners,
-                   map<pair<int, int>, int>*& layer_index_params,            
-                   vector<int>*& learnable_param_ids,
-                   vector<shared_ptr<Blob>>*& learnable_params,
-                   vector<Type>*& learnable_types,
-                   vector<shared_ptr<BlockingQueue<int> > >*& reduction_queue
-            );
+                    shared_ptr<Net> net);
   virtual ~AssistBP();
   shared_ptr<BlockingQueue<int>> en_queue;
   shared_ptr<BlockingQueue<int>> de_queue;
@@ -56,6 +46,7 @@ protected:
   vector<shared_ptr<Blob> >* _learnable_params;
   vector<Type>* _learnable_types;
   vector<shared_ptr<BlockingQueue<int> > >* _reduction_queue;
+  shared_ptr<Net> _net;
 
   DISABLE_COPY_MOVE_AND_ASSIGN(AssistBP);
 };

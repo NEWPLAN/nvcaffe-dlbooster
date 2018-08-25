@@ -10,33 +10,26 @@
 namespace caffe
 {
 
-AssistBP::AssistBP(size_t solver_rank,
-                   vector<shared_ptr<LayerBase>>*& train_layer,
-                   vector<vector<Blob*>>*& top,
-                   vector<vector<bool>>*& need,
-                   vector<vector<Blob*>>*& bottom,
-                   vector<int>*& param_owners,
-                   map<pair<int, int>, int>*& layer_index_params,            
-                   vector<int>*& learnable_param_ids,
-                   vector<shared_ptr<Blob>>*& learnable_params,
-                   vector<Type>*& learnable_types,
-                   vector<shared_ptr<BlockingQueue<int> > >*& reduction_queue
-                  )
+AssistBP::AssistBP(size_t solver_rank, shared_ptr<Net> net)
   : InternalThread(Caffe::current_device(), solver_rank, 1U, false),
     solver_rank_(solver_rank),
-    _layer(train_layer),
-    _top_vecs(top),
-    _bottom_need_backward(need),
-    _bottom_vecs(bottom),
-    _param_owners(param_owners),
-    _layer_index_params(layer_index_params),
-    _learnable_param_ids(learnable_param_ids),
-    _learnable_params(learnable_params),
-    _learnable_types(learnable_types),
-    _reduction_queue(reduction_queue)
+    _net(net)
 {
-  en_queue=make_shared<BlockingQueue<int>>();
-  de_queue=make_shared<BlockingQueue<int>>();
+  {
+    _layer = &(net_->layers());
+    _top_vecs = &(net_->top_vecs());
+    _bottom_need_backward = &(net_->bottom_need_backward());
+    _bottom_vecs = &(net_->bottom_vecs());
+    _param_owners = &(net_->param_owners());
+    _layer_index_params = &(net_->layer_index_params());
+    _learnable_param_ids = &(net_->learnable_param_ids());
+    _learnable_params = &(net_->learnable_params());
+    _learnable_types = &(net_->learnable_types());
+    _reduction_queue = &(net_->reduction_queue());
+  }
+
+  en_queue = make_shared<BlockingQueue<int>>();
+  de_queue = make_shared<BlockingQueue<int>>();
   StartInternalThread(true, Caffe::next_seed());
 }
 
@@ -59,41 +52,44 @@ void AssistBP::InternalThreadEntryN(size_t thread_id)
     {
       int i = en_queue->pop();
 
-      if(i >= 0)
+      if (i >= 0)
       {
-        if((*_layer)[i]->has_Backward_w())
+        if ((*_layer)[i]->has_Backward_w())
         {
           (*_layer)[i]->Backward_gpu_weight((*_top_vecs)[i], (*_bottom_need_backward)[i], (*_bottom_vecs)[i]);
         }
-        for (int j = 0; j < (*_layer)[i]->blobs().size(); ++j) 
+        for (int j = 0; j < (*_layer)[i]->blobs().size(); ++j)
         {
-          if ((*_layer)[i]->skip_apply_update(j)) continue;
+          if ((*_layer)[i]->skip_apply_update(j))
+            continue;
 
           const int param_id = (*_layer_index_params)[make_pair(i, j)];
-          if ((*_param_owners)[param_id] < 0) 
+          if ((*_param_owners)[param_id] < 0)
           {
             const int lparam_id = (*_learnable_param_ids)[param_id];
             int t = (int)(*_learnable_params)[lparam_id]->diff_type();
-            for (int type_id = 0; type_id < (*_learnable_types).size(); ++type_id) 
+            for (int type_id = 0; type_id < (*_learnable_types).size(); ++type_id)
             {
-              if (t == (*_learnable_types)[type_id]) 
+              if (t == (*_learnable_types)[type_id])
               {
                 (*_reduction_queue)[type_id]->push(lparam_id);
                 break;
               }
             }
-          }  // leave it to the owner otherwise
+          } // leave it to the owner otherwise
         }
       }
-      else if(i == -1)
+      else if (i == -1)
       {
-        for (int type_id = 0; type_id < (*_learnable_types).size(); ++type_id) 
+        for (int type_id = 0; type_id < (*_learnable_types).size(); ++type_id)
         {
           (*_reduction_queue)[type_id]->push(-1);
         }
       }
     }
   }
-  catch (boost::thread_interrupted&) {}
+  catch (boost::thread_interrupted &)
+  {
+  }
 }
-}  // namespace caffe
+} // namespace caffe
