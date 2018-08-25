@@ -34,7 +34,7 @@ public:
             const vector<int>& learnable_param_ids,
             const vector<shared_ptr<Blob>>& learnable_params,
             const vector<Type>& learnable_types,
-            const BlockingQueue<int>& reduction_queue
+            const BlockingQueue<int>*& reduction_queue
             );
   virtual ~AssistBP();
   shared_ptr<BlockingQueue<int>> en_queue;

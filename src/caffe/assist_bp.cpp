@@ -20,7 +20,7 @@ AssistBP::AssistBP(size_t solver_rank,
                   const vector<int>& learnable_param_ids,
                   const vector<shared_ptr<Blob>>& learnable_params,
                   const vector<Type>& learnable_types,
-                  const BlockingQueue<int>& reduction_queue
+                  const BlockingQueue<int>*& reduction_queue
                   )
   : InternalThread(Caffe::current_device(), solver_rank, 1U, false),
     solver_rank_(solver_rank),
