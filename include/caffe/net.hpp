@@ -230,6 +230,7 @@ class Net {
   vector<vector<bool> >* bottom_need_backward_ptr() { return &bottom_need_backward_;}
   vector<vector<Blob*> >* bottom_vecs_ptr() { return &bottom_vecs_;}
   vector<shared_ptr<Blob>>* learnable_params_ptr() { return &learnable_params_;}
+  vector<vector<Blob*> >* top_vecs() { return &top_vecs_;}
    
 
   const pair<int, int>& param_layer_indices(int param_id) {
