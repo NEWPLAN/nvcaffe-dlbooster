@@ -149,7 +149,7 @@ void CuDNNConvolutionLayer<Ftype, Btype>::Backward_gpu(const vector<Blob*>& top,
       }  // end if propagate down
     }  // end for i
     CUDA_CHECK(cudaStreamSynchronize(Caffe::thread_stream(0)));
-    CUDA_CHECK(cudaStreamSynchronize(Caffe::thread_stream(1)));
+    /*CUDA_CHECK(cudaStreamSynchronize(Caffe::thread_stream(1)));*/
   }
   else
   {
@@ -257,7 +257,7 @@ void CuDNNConvolutionLayer<Ftype, Btype>::Backward_gpu(const vector<Blob*>& top,
           Btype* top_diff = top[i]->mutable_gpu_diff<Btype>();
           // in parallel over thread 1
           
-            CUDNN_CHECK(cudnnConvolutionBackwardBias(Caffe::cudnn_handle(1),
+            CUDNN_CHECK(cudnnConvolutionBackwardBias(Caffe::cudnn_handle(0),
                                                     cudnn::dataType<Btype>::one, 
                                                     bwd_top_descs_[i], 
                                                     top_diff,
@@ -278,7 +278,7 @@ void CuDNNConvolutionLayer<Ftype, Btype>::Backward_gpu(const vector<Blob*>& top,
           // Backward through cuDNN  over thread 0 and gradients.
           
             // Gradient w.r.t. weights.
-            CUDNN_CHECK(cudnnConvolutionBackwardFilter(Caffe::cudnn_handle(0),
+            CUDNN_CHECK(cudnnConvolutionBackwardFilter(Caffe::cudnn_handle(1),
                         cudnn::dataType<Btype>::one,
                         bwd_bottom_descs_[i], bottom_data,
                         bwd_top_descs_[i], top_diff,
@@ -297,11 +297,11 @@ void CuDNNConvolutionLayer<Ftype, Btype>::Backward_gpu(const vector<Blob*>& top,
       {
         if (propagate_down[i])
         {
-          // Backward in parallel over thread 1
+          // Backward in parallel over thread 0
           
             Btype* top_diff = top[i]->mutable_gpu_diff<Btype>();
             Btype* bottom_diff = bottom[i]->mutable_gpu_diff<Btype>();
-            CUDNN_CHECK(cudnnConvolutionBackwardData(Caffe::cudnn_handle(1),
+            CUDNN_CHECK(cudnnConvolutionBackwardData(Caffe::cudnn_handle(0),
                         cudnn::dataType<Btype>::one,
                         bwd_filter_desc_, weight,
                         bwd_top_descs_[i], top_diff,
@@ -315,7 +315,7 @@ void CuDNNConvolutionLayer<Ftype, Btype>::Backward_gpu(const vector<Blob*>& top,
 
       //sync all thread_stream
       CUDA_CHECK(cudaStreamSynchronize(Caffe::thread_stream(0)));
-      CUDA_CHECK(cudaStreamSynchronize(Caffe::thread_stream(1)));
+      /*CUDA_CHECK(cudaStreamSynchronize(Caffe::thread_stream(1)));*/
     }
   }
   /*LOG_EVERY_N(INFO,10)<<"group size: "<<groups();*/
