@@ -222,10 +222,14 @@ class Net {
 
   //get_ptr
   vector<int>* param_owners_ptr()  { return &param_owners_; }
-   map<pair<int, int>, int>*  layer_index_params_ptr()  { return &layer_index_params_; }
-   vector<int>* learnable_param_ids_ptr()  { return &learnable_param_ids_; } 
-   vector<Type>* learnable_types_ptr()  { return &learnable_types_; } 
-   vector<shared_ptr<BlockingQueue<int> > >* reduction_queue_ptr() {return &reduction_queue_;}
+  map<pair<int, int>, int>*  layer_index_params_ptr()  { return &layer_index_params_; }
+  vector<int>* learnable_param_ids_ptr()  { return &learnable_param_ids_; } 
+  vector<Type>* learnable_types_ptr()  { return &learnable_types_; } 
+  vector<shared_ptr<BlockingQueue<int> > >* reduction_queue_ptr() {return &reduction_queue_;}
+  vector<shared_ptr<LayerBase>>* layers_ptr() { return &layers_;}
+  vector<vector<bool> >* bottom_need_backward_ptr() { return &bottom_need_backward_;}
+  vector<vector<Blob*> >* bottom_vecs() { return &bottom_vecs_;}
+  vector<shared_ptr<Blob>>* learnable_params() { return &learnable_params_;}
    
 
   const pair<int, int>& param_layer_indices(int param_id) {
