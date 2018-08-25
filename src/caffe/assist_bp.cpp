@@ -24,7 +24,7 @@ AssistBP::AssistBP(size_t solver_rank,
                   )
   : InternalThread(Caffe::current_device(), solver_rank, 1U, false),
     solver_rank_(solver_rank),
-    _reduction_queue(reduction_queue),
+    _layer(train_layer),
     _top_vecs(top),
     _bottom_need_backward(need),
     _bottom_vecs(bottom),
@@ -33,7 +33,7 @@ AssistBP::AssistBP(size_t solver_rank,
     _learnable_param_ids(learnable_param_ids),
     _learnable_params(learnable_params),
     _learnable_types(learnable_types),
-    _layer(train_layer)
+    _reduction_queue(reduction_queue)
 {
   en_queue=make_shared<BlockingQueue<int>>();
   de_queue=make_shared<BlockingQueue<int>>();

@@ -45,17 +45,17 @@ protected:
   void InternalThreadEntryN(size_t thread_id) override;
 
   const size_t  solver_rank_;
-  vector<shared_ptr<LayerBase> >& _layer;
-  vector<vector<Blob*> >& _top_vecs;
-  vector<vector<bool> >& _bottom_need_backward;
-  vector<vector<Blob*> >& _bottom_vecs;
+  vector<shared_ptr<LayerBase> > _layer;
+  vector<vector<Blob*> > _top_vecs;
+  vector<vector<bool> > _bottom_need_backward;
+  vector<vector<Blob*> > _bottom_vecs;
 
-  vector<int>& _param_owners;
-  map<pair<int, int>, int>& _layer_index_params;
-  vector<int>& _learnable_param_ids;
-  vector<shared_ptr<Blob> >& _learnable_params;
-  vector<Type>& _learnable_types;
-  vector<shared_ptr<BlockingQueue<int> > >& _reduction_queue;
+  vector<int> _param_owners;
+  map<pair<int, int>, int> _layer_index_params;
+  vector<int> _learnable_param_ids;
+  vector<shared_ptr<Blob> > _learnable_params;
+  vector<Type> _learnable_types;
+  vector<shared_ptr<BlockingQueue<int> > > _reduction_queue;
 
   DISABLE_COPY_MOVE_AND_ASSIGN(AssistBP);
 };
