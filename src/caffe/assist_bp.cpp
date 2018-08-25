@@ -45,7 +45,7 @@ void AssistBP::InternalThreadEntryN(size_t thread_id)
     while (!must_stop(thread_id))
     {
       int i = en_queue->pop();
-      /*
+      
       if(i >= 0)
       {
         if(_layer[i]->has_Backward_w())
@@ -74,8 +74,11 @@ void AssistBP::InternalThreadEntryN(size_t thread_id)
       }
       else if(i == -1)
       {
-
-      }*/
+        for (int type_id = 0; type_id < _learnable_types.size(); ++type_id) 
+        {
+          _reduction_queue[type_id].push(END_OF_ITERATION);
+        }
+      }
     }
   }
   catch (boost::thread_interrupted&) {}
