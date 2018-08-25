@@ -219,6 +219,13 @@ class Net {
   const vector<int>& learnable_param_ids() const { return learnable_param_ids_; } 
   const vector<Type>& learnable_types() const { return learnable_types_; } 
   const vector<shared_ptr<BlockingQueue<int> > >& reduction_queue()const {return reduction_queue_;}
+
+  //get_ptr
+  vector<int>* param_owners_ptr() const { return &param_owners_; }
+   map<pair<int, int>, int>*  layer_index_params_ptr() const { return &layer_index_params_; }
+   vector<int>* learnable_param_ids_ptr() const { return &learnable_param_ids_; } 
+   vector<Type>* learnable_types_ptr() const { return &learnable_types_; } 
+   vector<shared_ptr<BlockingQueue<int> > >* reduction_queue_ptr()const {return &reduction_queue_;}
    
 
   const pair<int, int>& param_layer_indices(int param_id) {

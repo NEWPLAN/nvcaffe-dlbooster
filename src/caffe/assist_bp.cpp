@@ -16,16 +16,16 @@ AssistBP::AssistBP(size_t solver_rank, shared_ptr<Net> net)
     _net(net)
 {
   {
-    _layer = &(_net->layers());
-    _top_vecs = &(_net->top_vecs());
-    _bottom_need_backward = &(_net->bottom_need_backward());
-    _bottom_vecs = &(_net->bottom_vecs());
-    _param_owners = &(_net->param_owners());
-    _layer_index_params = &(_net->layer_index_params());
-    _learnable_param_ids = &(_net->learnable_param_ids());
-    _learnable_params = &(_net->learnable_params());
-    _learnable_types = &(_net->learnable_types());
-    _reduction_queue = &(_net->reduction_queue());
+    _layer = _net->layers_ptr();
+    _top_vecs = _net->top_vecs_ptr();
+    _bottom_need_backward = _net->bottom_need_backward_ptr();
+    _bottom_vecs = _net->bottom_vecs_ptr();
+    _param_owners = _net->param_owners_ptr();
+    _layer_index_params = _net->layer_index_params_ptr();
+    _learnable_param_ids = _net->learnable_param_ids_ptr();
+    _learnable_params = _net->learnable_params_ptr();
+    _learnable_types = _net->learnable_types_ptr();
+    _reduction_queue = _net->reduction_queue_ptr();
   }
 
   en_queue = make_shared<BlockingQueue<int>>();
