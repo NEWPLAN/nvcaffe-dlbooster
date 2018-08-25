@@ -50,8 +50,8 @@ protected:
   vector<vector<bool> >& _bottom_need_backward;
   vector<vector<Blob*> >& _bottom_vecs;
 
+  vector<int>& _param_owners;
   map<pair<int, int>, int>& _layer_index_params;
-  const vector<int>& _param_owners;
   vector<int>& _learnable_param_ids;
   vector<shared_ptr<Blob> >& _learnable_params;
   vector<Type>& _learnable_types;
