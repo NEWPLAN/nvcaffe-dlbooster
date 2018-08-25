@@ -34,7 +34,7 @@ public:
             const vector<int>& learnable_param_ids,
             const vector<shared_ptr<Blob>>& learnable_params,
             const vector<Type>& learnable_types,
-            const BlockingQueue<int>*& reduction_queue
+            const vector<BlockingQueue<int>>& reduction_queue
             );
   virtual ~AssistBP();
   shared_ptr<BlockingQueue<int>> en_queue;
@@ -55,7 +55,7 @@ protected:
   vector<int>& _learnable_param_ids;
   vector<shared_ptr<Blob>>& _learnable_params;
   vector<Type>& _learnable_types;
-  BlockingQueue<int>* _reduction_queue;
+  vector<BlockingQueue<int>>& _reduction_queue;
 
   DISABLE_COPY_MOVE_AND_ASSIGN(AssistBP);
 };

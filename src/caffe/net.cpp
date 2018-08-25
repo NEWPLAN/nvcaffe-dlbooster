@@ -66,6 +66,7 @@ Net::~Net() {
 }
 
 void Net::Init(const NetParameter& in_param) {
+  reduction_queue_.resize(2);
   CHECK(inner_net_ || Caffe::root_solver() || root_net_)
       << "root_net_ needs to be set for all non-root solvers";
   // Set phase from the state.
