@@ -212,9 +212,14 @@ class Net {
     return param_names_index_;
   }
   const vector<int>& param_owners() const { return param_owners_; }
-  const vector<string>& param_display_names() const {
-    return param_display_names_;
-  }
+  const vector<string>& param_display_names() const { return param_display_names_;}
+
+//newplan added
+  const map<pair<int, int>, int>&  layer_index_params() const { return layer_index_params_; }
+  const vector<int>& learnable_param_ids() const { return learnable_param_ids_; } 
+  const vector<Type>& learnable_types() const { return learnable_types_; } 
+  const BlockingQueue<int>& reduction_queue()const {return reduction_queue_;}
+   
 
   const pair<int, int>& param_layer_indices(int param_id) {
     return param_layer_indices_[param_id];
