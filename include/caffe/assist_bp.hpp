@@ -24,7 +24,7 @@ class AssistBP : public InternalThread
 {
 
 public:
-  AssistBP(size_t solver_rank,
+  explicit AssistBP(size_t solver_rank,
                   const vector<shared_ptr<LayerBase>>& train_layer,
                   const vector<vector<Blob*>>&top,
                   const vector<vector<bool>>& need,
