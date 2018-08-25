@@ -55,7 +55,7 @@ protected:
   vector<int>& _learnable_param_ids;
   vector<shared_ptr<Blob>>& _learnable_params;
   vector<Type>& _learnable_types;
-  BlockingQueue<int>& _reduction_queue;
+  BlockingQueue<int>* _reduction_queue;
 
   DISABLE_COPY_MOVE_AND_ASSIGN(AssistBP);
 };
