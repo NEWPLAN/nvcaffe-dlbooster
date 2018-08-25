@@ -106,10 +106,10 @@ void CuDNNConvolutionLayer<Ftype, Btype>::Backward_gpu(const vector<Blob*>& top,
       {
         Btype *top_diff = top[i]->mutable_gpu_diff<Btype>();
         // in parallel over groups
-        CUDNN_CHECK(cudnnConvolutionBackwardBias(Caffe::cudnn_handle(1),
+        CUDNN_CHECK(cudnnConvolutionBackwardBias(Caffe::cudnn_handle(0),
                     cudnn::dataType<Btype>::one, bwd_top_descs_[i], top_diff,
                     cudnn::dataType<Btype>::one, bwd_bias_desc_, bias_diff));
-        /*CUDA_CHECK(cudaStreamSynchronize(Caffe::thread_stream(1)));*/
+        /*CUDA_CHECK(cudaStreamSynchronize(Caffe::thread_stream(0)));*/
       }  // end of i
     }  // end of dB
 
@@ -122,12 +122,12 @@ void CuDNNConvolutionLayer<Ftype, Btype>::Backward_gpu(const vector<Blob*>& top,
         Btype *top_diff = top[i]->mutable_gpu_diff<Btype>();
         const Btype *bottom_data = bottom[i]->gpu_data<Btype>();
         // Gradient w.r.t. weights.
-        CUDNN_CHECK(cudnnConvolutionBackwardFilter(Caffe::cudnn_handle(0),
+        CUDNN_CHECK(cudnnConvolutionBackwardFilter(Caffe::cudnn_handle(1),
                     cudnn::dataType<Btype>::one, bwd_bottom_descs_[i], bottom_data,
                     bwd_top_descs_[i], top_diff,
                     bwd_conv_filter_descs_[i], bwd_filter_algo_[i], ws->data(), ws->size(),
                     cudnn::dataType<Btype>::one, bwd_filter_desc_, weight_diff));
-        /*CUDA_CHECK(cudaStreamSynchronize(Caffe::thread_stream(0)));*/
+        /*CUDA_CHECK(cudaStreamSynchronize(Caffe::thread_stream(1)));*/
       }  // end of i
     }
 
@@ -139,7 +139,7 @@ void CuDNNConvolutionLayer<Ftype, Btype>::Backward_gpu(const vector<Blob*>& top,
       {
         Btype *top_diff = top[i]->mutable_gpu_diff<Btype>();
         Btype *bottom_diff = bottom[i]->mutable_gpu_diff<Btype>();
-        CUDNN_CHECK(cudnnConvolutionBackwardData(Caffe::cudnn_handle(1),
+        CUDNN_CHECK(cudnnConvolutionBackwardData(Caffe::cudnn_handle(0),
                     cudnn::dataType<Btype>::one, bwd_filter_desc_, weight,
                     bwd_top_descs_[i], top_diff,
                     bwd_conv_data_descs_[i],
