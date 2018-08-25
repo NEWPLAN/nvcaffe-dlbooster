@@ -314,16 +314,15 @@ void CuDNNConvolutionLayer<Ftype, Btype>::Backward_gpu(const vector<Blob*>& top,
       }  // end for i
 
       //sync all thread_stream
-      /*CUDA_CHECK(cudaStreamSynchronize(Caffe::thread_stream(0)));
+      CUDA_CHECK(cudaStreamSynchronize(Caffe::thread_stream(0)));
       CUDA_CHECK(cudaStreamSynchronize(Caffe::thread_stream(1)));
-      */
     }
   }
   /*LOG_EVERY_N(INFO,10)<<"group size: "<<groups();*/
   ++bwd_count_;
 }
 
-/*Backward
+/*Backup
 template <typename Ftype, typename Btype>
 void CuDNNConvolutionLayer<Ftype, Btype>::Backward_gpu(const vector<Blob*>& top,
     const vector<bool>& propagate_down, const vector<Blob*>& bottom)
