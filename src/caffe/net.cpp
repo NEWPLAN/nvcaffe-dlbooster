@@ -760,15 +760,15 @@ void Net::BackwardFromToAu(int start, int end, bool apply_update) {
     
     /*LOG_IF(INFO, layers_[i]->has_Backward_w())<<"Layer name: "<<layers_[i]->name();*/
     
-    if(layers_[i]->has_Backward_w())
+    /*if(layers_[i]->has_Backward_w())
     {
       layers_[i]->Backward_gpu_delta(top_vecs_[i], bottom_need_backward_[i], bottom_vecs_[i]);
     }
-    else
+    else*/
     {
       layers_[i]->Backward(top_vecs_[i], bottom_need_backward_[i], bottom_vecs_[i]);
     }
-    en_queue->push(i);
+    //en_queue->push(i);
 /*
     if (debug_info_) {
       BackwardDebugInfo(i);
