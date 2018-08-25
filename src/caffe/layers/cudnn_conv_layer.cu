@@ -523,7 +523,7 @@ void CuDNNConvolutionLayer<Ftype, Btype>::bp_over_weight(const vector<Blob*>& to
   }
   else
   {
-    if(group_ > 1)
+    if(groups() > 1)
     {
       CHECK(1==0);
       LOG(FATAL)<<"group should be one by default for performance consideration";
@@ -588,8 +588,7 @@ void CuDNNConvolutionLayer<Ftype, Btype>::bp_over_delta(const vector<Blob*>& top
   LOG(INFO) << "IN bp over delta";
   propagate_down_ = propagate_down;
   shared_ptr<GPUMemory::Workspace>& ws = GPUMemory::workspace_[Caffe::current_device()];
-
-  if(aws->size()<ws->size())aws->safe_reserve(ws->size());
+  
   if (use_v7grouping())
   {
     // Backward propagate grad wrt bottom data dE/dX= dE/dY * W
@@ -615,7 +614,7 @@ void CuDNNConvolutionLayer<Ftype, Btype>::bp_over_delta(const vector<Blob*>& top
   }
   else
   {
-    if(group_ > 1)
+    if(groups() > 1)
     {
        CHECK(1==0);
       LOG(FATAL)<<"group should be one by default for performance consideration";
