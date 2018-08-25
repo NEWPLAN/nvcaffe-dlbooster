@@ -11,10 +11,10 @@ namespace caffe
 {
 
 AssistBP::AssistBP(size_t solver_rank,
-                  const vector<shared_ptr<LayerBase>> train_layer,
-                  const vector<vector<Blob*> >&top,
-                  const vector<vector<bool> >& need,
-                  const vector<vector<Blob*> >& bottom,
+                  const vector<shared_ptr<LayerBase>>& train_layer,
+                  const vector<vector<Blob*>>& top,
+                  const vector<vector<bool>>& need,
+                  const vector<vector<Blob*>>& bottom,
                   const vector<int>& param_owners,
                   const map<pair<int, int>, int>& layer_index_params,            
                   const vector<int>& learnable_param_ids,
@@ -22,7 +22,8 @@ AssistBP::AssistBP(size_t solver_rank,
                   const vector<Type>& learnable_types,
                   const vector<shared_ptr<BlockingQueue<int>>>& reduction_queue
                   )
-  : solver_rank_(solver_rank),
+  : InternalThread(Caffe::current_device(), solver_rank, 1U, false),
+    solver_rank_(solver_rank),
     _layer(train_layer),
     _top_vecs(top),
     _bottom_need_backward(need),
@@ -32,8 +33,7 @@ AssistBP::AssistBP(size_t solver_rank,
     _learnable_param_ids(learnable_param_ids),
     _learnable_params(learnable_params),
     _learnable_types(learnable_types),
-    _reduction_queue(reduction_queue),
-    InternalThread(Caffe::current_device(), solver_rank, 1U, false)
+    _reduction_queue(reduction_queue)
 {
   en_queue=make_shared<BlockingQueue<int>>();
   de_queue=make_shared<BlockingQueue<int>>();
