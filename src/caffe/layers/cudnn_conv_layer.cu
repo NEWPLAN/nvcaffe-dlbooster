@@ -519,7 +519,7 @@ void CuDNNConvolutionLayer<Ftype, Btype>::bp_over_weight(const vector<Blob*>& to
     }
 
     CUDA_CHECK(cudaStreamSynchronize(Caffe::thread_stream(2)));
-    CUDA_CHECK(cudaStreamSynchronize(Caffe::thread_stream(1)));
+    CUDA_CHECK(cudaStreamSynchronize(Caffe::thread_stream(0)));
   }
   else
   {
@@ -575,7 +575,7 @@ void CuDNNConvolutionLayer<Ftype, Btype>::bp_over_weight(const vector<Blob*>& to
       }
       //sync all thread_stream
       CUDA_CHECK(cudaStreamSynchronize(Caffe::thread_stream(2)));
-      CUDA_CHECK(cudaStreamSynchronize(Caffe::thread_stream(1)));
+      CUDA_CHECK(cudaStreamSynchronize(Caffe::thread_stream(0)));
     }
   }
   ++bwd_count_;

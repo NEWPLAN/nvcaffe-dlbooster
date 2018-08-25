@@ -11,16 +11,16 @@ namespace caffe
 {
 
 AssistBP::AssistBP(size_t solver_rank,
-                  const vector<shared_ptr<LayerBase> >& train_layer,
-                  const vector<vector<Blob*> >& top,
-                  const vector<vector<bool> >& need,
-                  const vector<vector<Blob*> >& bottom,
-                  const vector<int>& param_owners,
-                  const map<pair<int, int>, int>& layer_index_params,            
-                  const vector<int>& learnable_param_ids,
-                  const vector<shared_ptr<Blob> >& learnable_params,
-                  const vector<Type>& learnable_types,
-                  const vector<shared_ptr<BlockingQueue<int> > >& reduction_queue
+                  const vector<shared_ptr<LayerBase>>*& train_layer,
+                  const vector<vector<Blob*>>*& top,
+                  const vector<vector<bool>>*& need,
+                  const vector<vector<Blob*>>*& bottom,
+                  const vector<int>*& param_owners,
+                  const map<pair<int, int>, int>*& layer_index_params,            
+                  const vector<int>*& learnable_param_ids,
+                  const vector<shared_ptr<Blob>>*& learnable_params,
+                  const vector<Type>*& learnable_types,
+                  const vector<shared_ptr<BlockingQueue<int> > >*& reduction_queue
                   )
   : InternalThread(Caffe::current_device(), solver_rank, 1U, false),
     solver_rank_(solver_rank),
