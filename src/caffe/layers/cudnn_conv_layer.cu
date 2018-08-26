@@ -617,7 +617,8 @@ void CuDNNConvolutionLayer<Ftype, Btype>::bp_over_delta(const vector<Blob*>& top
   {
     if(groups() > 1)
     {
-       CHECK(1==0);
+      LOG(INFO)<<"groups is: "<< groups() << " from layer: "<< name();
+      CHECK(1==0);
       LOG(FATAL)<<"group should be one by default for performance consideration";
     }
     else //group_ == 1
