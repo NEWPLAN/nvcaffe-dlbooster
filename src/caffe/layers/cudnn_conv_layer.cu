@@ -8,7 +8,7 @@
 
 namespace caffe
 {
-  #define GPU_ASSIS_BP_WEIGHT 1
+  #define GPU_ASSIS_BP_WEIGHT 4
 template<typename Ftype, typename Btype>
 void CuDNNConvolutionLayer<Ftype, Btype>::Forward_gpu(const vector<Blob*>& bottom,
     const vector<Blob*>& top)
