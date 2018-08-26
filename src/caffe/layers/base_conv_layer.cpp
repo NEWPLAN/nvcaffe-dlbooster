@@ -106,7 +106,6 @@ void BaseConvolutionLayer<Ftype, Btype>::LayerSetUp(const vector<Blob*>& bottom,
   num_output_ = this->layer_param_.convolution_param().num_output();
   CHECK_GT(num_output_, 0);
   group_ = this->layer_param_.convolution_param().group();
-  group_ = 1;
   //if(group_ == 1)group_=std::__gcd(channels_, num_output_);
   CHECK_EQ(channels_ % group_, 0);
   CHECK_EQ(num_output_ % group_, 0) << "Number of output should be multiples of group.";
