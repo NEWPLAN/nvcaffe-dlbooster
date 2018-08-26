@@ -51,7 +51,8 @@ void AssistBP::InternalThreadEntryN(size_t thread_id)
     while (!must_stop(thread_id))
     {
       int i = en_queue->pop();
-
+      LOG_EVERY_N(INFO,100)<<"recv from solver "<< rank_ <<" ->: "<<(*_layer)[i]->name();
+/*
       if (i >= 0)
       {
         if ((*_layer)[i]->has_Backward_w())
@@ -79,6 +80,7 @@ void AssistBP::InternalThreadEntryN(size_t thread_id)
           } // leave it to the owner otherwise
         }
       }
+      
       else if (i == -1)
       {
         for (int type_id = 0; type_id < (*_learnable_types).size(); ++type_id)
@@ -86,6 +88,7 @@ void AssistBP::InternalThreadEntryN(size_t thread_id)
           (*_reduction_queue)[type_id]->push(-1);
         }
       }
+      */
     }
   }
   catch (boost::thread_interrupted &)
