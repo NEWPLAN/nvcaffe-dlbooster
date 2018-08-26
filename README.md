@@ -68,3 +68,8 @@ Both  `baseprefetchinglayer` and `FPGAReader` inherit `InternalThread` and enabl
 <div align=center>
 <img width="80%" src="arch.jpg"/ alt="Architecture of NVCaffe IO module.">
 </div>
+
+### end2end accelerating
+achieve great progress@ 
+AlexNet: batch size = 256, 2813/2446.
+ResNet50: batch size = 32, 167/139.
