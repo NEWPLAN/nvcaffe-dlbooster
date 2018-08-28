@@ -749,7 +749,7 @@ void Net::BackwardFromTo(int start, int end) {
   BackwardFromToAu(start, end, true);
 }
 
-//#define __DEBUG_BP
+#define __DEBUG_BP
 #define _ASSIS__BACKWORD_GPU
 #ifdef _ASSIS__BACKWORD_GPU
 void Net::BackwardFromToAu(int start, int end, bool apply_update) 
