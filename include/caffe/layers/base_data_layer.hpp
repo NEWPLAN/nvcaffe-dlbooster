@@ -40,7 +40,7 @@ class BaseDataLayer : public Layer<Ftype, Btype> {
   void Backward_cpu(const vector<Blob*>& top, const vector<bool>& propagate_down,
       const vector<Blob*>& bottom) override {}
   void Backward_gpu(const vector<Blob*>& top, const vector<bool>& propagate_down,
-      const vector<Blob*>& bottom) override { }
+      const vector<Blob*>& bottom) override {}
 
   virtual bool is_gpu_transform() const { return false; }
 
@@ -56,7 +56,6 @@ class BasePrefetchingDataLayer : public BaseDataLayer<Ftype, Btype>, public Inte
   virtual ~BasePrefetchingDataLayer();
   // LayerSetUp: implements common data layer setup functionality, and calls
   // DataLayerSetUp to do special data layer setup for individual layer types.
-  size_t base_solver;
   // This method may not be overridden.
   void LayerSetUp(const vector<Blob*>& bottom, const vector<Blob*>& top) override;
   void Forward_cpu(const vector<Blob*>& bottom, const vector<Blob*>& top) override;

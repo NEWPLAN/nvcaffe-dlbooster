@@ -18,6 +18,10 @@
 #include "caffe/layers/data_layer.hpp"
 #include "caffe/layers/annotated_data_layer.hpp"
 
+//newplan added
+#include "caffe/layers/fpga_data_layer.hpp"
+
+
 namespace caffe {
 
 class Solver;
@@ -208,9 +212,26 @@ class Net {
     return param_names_index_;
   }
   const vector<int>& param_owners() const { return param_owners_; }
-  const vector<string>& param_display_names() const {
-    return param_display_names_;
-  }
+  const vector<string>& param_display_names() const { return param_display_names_;}
+
+//newplan added
+  const map<pair<int, int>, int>&  layer_index_params() const { return layer_index_params_; }
+  const vector<int>& learnable_param_ids() const { return learnable_param_ids_; } 
+  const vector<Type>& learnable_types() const { return learnable_types_; } 
+  const vector<shared_ptr<BlockingQueue<int> > >& reduction_queue()const {return reduction_queue_;}
+
+  //get_ptr
+  vector<int>* param_owners_ptr()  { return &param_owners_; }
+  map<pair<int, int>, int>*  layer_index_params_ptr()  { return &layer_index_params_; }
+  vector<int>* learnable_param_ids_ptr()  { return &learnable_param_ids_; } 
+  vector<Type>* learnable_types_ptr()  { return &learnable_types_; } 
+  vector<shared_ptr<BlockingQueue<int> > >* reduction_queue_ptr() {return &reduction_queue_;}
+  vector<shared_ptr<LayerBase>>* layers_ptr() { return &layers_;}
+  vector<vector<bool> >* bottom_need_backward_ptr() { return &bottom_need_backward_;}
+  vector<vector<Blob*> >* bottom_vecs_ptr() { return &bottom_vecs_;}
+  vector<shared_ptr<Blob>>* learnable_params_ptr() { return &learnable_params_;}
+  vector<vector<Blob*> >* top_vecs_ptr() { return &top_vecs_;}
+   
 
   const pair<int, int>& param_layer_indices(int param_id) {
     return param_layer_indices_[param_id];
@@ -309,6 +330,11 @@ class Net {
       if (typeid(*layer) == typeid(DataLayer<Ftype, Btype>) ||
           typeid(*layer) == typeid(AnnotatedDataLayer<Ftype, Btype>)) {
         bytes += reinterpret_cast<DataLayer<Ftype, Btype>*>(layer.get())->prefetch_bytes();
+      }
+      //newplan added
+      if(typeid(*layer) == typeid(FPGADataLayer<Ftype, Btype>))
+      {
+        bytes += reinterpret_cast<FPGADataLayer<Ftype, Btype>*>(layer.get())->prefetch_bytes();
       }
     }
     return bytes;
@@ -432,10 +458,12 @@ class Net {
   /// Pointer to the solver being used with this net
   Solver* solver_;
   size_t solver_rank_;
-  BlockingQueue<int> reduction_queue_[2];
+  vector<shared_ptr<BlockingQueue<int>>> reduction_queue_;
   Flag* solver_init_flag_;
   vector<Flag*> layer_inititialized_flags_;
   NetParameter net_param_;
+  shared_ptr<BlockingQueue<int>> en_queue;
+  shared_ptr<BlockingQueue<int>> de_queue;
 
   size_t infer_count_;
   std::atomic_llong wgrad_sq_;

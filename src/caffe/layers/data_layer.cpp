@@ -55,8 +55,7 @@ DataLayer<Ftype, Btype>::InitializePrefetch() {
     const size_t batches_fit = gpu_bytes / batch_bytes;
     size_t parsers_num = this->parsers_num_;
     size_t transf_num = this->threads_num();
-    if (this->is_gpu_transform()) 
-    {
+    if (this->is_gpu_transform()) {
       // in this mode memory demand is O(n) high
       size_t max_parsers_num = 2;
       const size_t max_transf_num = 4;
@@ -80,8 +79,7 @@ DataLayer<Ftype, Btype>::InitializePrefetch() {
         parsers_num = 1;
         transf_num = max_transf_num;
       }
-    } else 
-    {
+    } else {
       // in this mode memory demand is O(1)
       if (batches_fit > 0) {
         parsers_num = cache_ ? 1 : 3;
@@ -183,8 +181,7 @@ DataLayer<Ftype, Btype>::DataLayerSetUp(const vector<Blob*>& bottom, const vecto
   top_shape[0] = batch_size;
   top[0]->Reshape(top_shape);
 
-  if (this->is_gpu_transform()) 
-  {
+  if (this->is_gpu_transform()) {
     CHECK(Caffe::mode() == Caffe::GPU);
     LOG(INFO) << this->print_current_device() << " Transform on GPU enabled";
     tmp_gpu_buffer_.resize(this->threads_num());
@@ -205,17 +202,9 @@ DataLayer<Ftype, Btype>::DataLayerSetUp(const vector<Blob*>& bottom, const vecto
       << top[0]->height() << ", "
       << top[0]->width();
 }
-#include <sys/time.h>
-static uint64_t current_time(void)
-{
-	struct timeval tv;
-    gettimeofday(&tv,NULL);
-	return tv.tv_sec*1000000 + tv.tv_usec;
-}
 
 template<typename Ftype, typename Btype>
-void DataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t queue_id) 
-{
+void DataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t queue_id) {
   const bool sample_only = sample_only_.load();
   // Reshape according to the first datum of each batch
   // on single input batches allows for inputs of varying dimension.
@@ -245,8 +234,7 @@ void DataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t que
   const char *src_ptr = nullptr;
   vector<char> src_buf;
   cv::Mat img;
-  if (use_gpu_transform) 
-  {
+  if (use_gpu_transform) {
     if (init_datum->encoded()) {
       DecodeDatumToCVMat(*init_datum, color_mode, img, false, false);
       datum_len = img.channels() * img.rows * img.cols;
@@ -280,8 +268,7 @@ void DataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t que
 
   void* dst_gptr = nullptr;
   Btype* dst_cptr = nullptr;
-  if (use_gpu_transform) 
-  {
+  if (use_gpu_transform) {
     size_t buffer_size = top_shape[0] * top_shape[1] * init_datum_height * init_datum_width;
     tmp_gpu_buffer_[thread_id]->safe_reserve(buffer_size);
     dst_gptr = tmp_gpu_buffer_[thread_id]->data();
@@ -291,8 +278,7 @@ void DataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t que
 
   size_t current_batch_id = 0UL;
   const size_t buf_len = batch->data_->offset(1);
-  for (size_t entry = 0; entry < batch_size; ++entry) 
-  {
+  for (size_t entry = 0; entry < batch_size; ++entry) {
     shared_ptr<Datum> datum = reader->full_pop(qid, "Waiting for datum");
     size_t item_id = datum->record_id() % batch_size;
     if (item_id == 0UL) {
@@ -303,14 +289,11 @@ void DataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t que
       top_label[item_id] = datum->label();
     }
 
-    if (use_gpu_transform) 
-    {
+    if (use_gpu_transform) {
       cudaStream_t stream = Caffe::thread_stream(Caffe::GPU_TRANSF_GROUP);
-      if (datum->encoded()) 
-      {
+      if (datum->encoded()) {
         DecodeDatumToSignedBuf(*datum, color_mode, src_buf.data(), datum_size, false);
-      } else 
-      {
+      } else {
         CHECK_EQ(datum_len, datum->channels() * datum->height() * datum->width())
           << "Datum size can't vary in the same batch";
         src_ptr = datum->data().size() > 0 ?
@@ -324,8 +307,7 @@ void DataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t que
       CUDA_CHECK(cudaStreamSynchronize(stream));
       this->bdt(thread_id)->Fill3Randoms(&random_vectors_[thread_id]->
           mutable_cpu_data()[item_id * 3]);
-    } else 
-    {
+    } else {
       // Get data offset for this datum to hand off to transform thread
       const size_t offset = batch->data_->offset(item_id);
       CHECK_EQ(0, offset % buf_len);
@@ -351,9 +333,8 @@ void DataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t que
     }
     reader->free_push(qid, datum);
   }
-  uint64_t before=current_time();
-  if (use_gpu_transform) 
-  {
+
+  if (use_gpu_transform) {
     this->fdt(thread_id)->TransformGPU(top_shape[0], top_shape[1],
         init_datum_height,  // non-crop
         init_datum_width,  // non-crop
@@ -367,10 +348,6 @@ void DataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t que
   batch->set_data_packing(packing);
   batch->set_id(current_batch_id);
   sample_only_.store(false);
-  if(0)
-  {
-    LOG_EVERY_N(INFO, 10) << "in loading batch transform, " << lwp_id() << " cost "<< (current_time()-before)/1000.0 << " ms";//gettid();
-  }
 }
 
 INSTANTIATE_CLASS_FB(DataLayer);

@@ -205,6 +205,12 @@ class BaseConvolutionLayer : public Layer<Ftype, Btype> {
   bool is_1x1_;
   bool force_nd_im2col_;
 
+  //newplan added
+  //virtual void Backward_gpu_delta(const vector<Blob*>& top, const vector<bool>& propagate_down,
+  //    const vector<Blob*>& bottom){}
+  //virtual void Backward_gpu_weight(const vector<Blob*>& top, const vector<bool>& propagate_down,
+  //    const vector<Blob*>& bottom){}
+
  private:
   // wrap im2col/col2im so we don't have to remember the (long) argument lists
   template <typename Dtype>

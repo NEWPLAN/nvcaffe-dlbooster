@@ -35,53 +35,7 @@ class LMDBCursor : public Cursor {
     return string(static_cast<const char*>(mdb_value_.mv_data),
         mdb_value_.mv_size);
   }
-  #include <stdio.h>
-  #include <stdlib.h>
   bool parse(Datum* datum) const override {
-    //newplan
-    static bool nncc=true;
-    static int index=0;
-    if(false)
-    {
-      if(nncc==true)
-      {
-        FILE* fp = fopen("/mnt/dc_p3700/imagenet/abc.c","wb");
-        if(fp==NULL)
-        {
-          printf("error in write file...\n");
-          exit(-1);
-        }
-        fwrite(mdb_value_.mv_data,sizeof(char),mdb_value_.mv_size, fp);
-        fclose(fp);
-        nncc=false;
-      }else
-      {
-        int read_nums=0;
-        int mem_size=256 * 256 * 3 *2;
-        char* mem_buf=(char*)malloc(sizeof(char) * mem_size);
-        memset(mem_buf,0,mem_size);
-        string filename="/mnt/dc_p3700/imagenet/file/abc.c_";
-        index%=(867620-10);
-        filename+=boost::to_string(index);
-        index+=1;
-        FILE* fp = fopen(filename.c_str(),"rb");
-        ///mnt/dc_p3700/imagenet/
-        if(fp==NULL)
-        {
-          printf("error in read file %s...\n",filename.c_str());
-          exit(-1);
-        }
-        read_nums=fread(mem_buf,sizeof(char),mem_size, fp);
-        fclose(fp);
-        //LOG(INFO) << "read nums "<< read_nums;
-        
-        bool res=datum->ParseFromArray(mem_buf, read_nums);
-        free(mem_buf);
-        return res;
-      }
-      LOG_EVERY_N(INFO,1)<<"buffer_size:"<<mdb_value_.mv_size;
-    }
-
     return datum->ParseFromArray(mdb_value_.mv_data, mdb_value_.mv_size);
   }
   bool parse(AnnotatedDatum* adatum) const override {

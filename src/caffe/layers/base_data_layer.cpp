@@ -18,8 +18,15 @@ size_t BasePrefetchingDataLayer<Ftype, Btype>::threads(const LayerParameter& par
   }
   // Check user's override in prototxt file
   size_t threads = param.data_param().threads();
-  if (!auto_mode(param) && threads == 0U) {
+  if (!auto_mode(param) && threads == 0U) 
+  {
     threads = 1U;  // input error fix
+  }
+
+  if (param.type().compare("FPGAData") == 0)
+  {
+    if(threads == 0U) threads = 1U;
+    return threads;
   }
   // 1 thread for test net
   return (auto_mode(param) || param.phase() == TEST || threads == 0U) ? 1U : threads;
@@ -72,7 +79,6 @@ BasePrefetchingDataLayer<Ftype, Btype>::BasePrefetchingDataLayer(const LayerPara
   batch_size_ = param.data_param().batch_size();
   // We begin with minimum required
   ResizeQueues();
-  base_solver=solver_rank;
 }
 
 template<typename Ftype, typename Btype>
@@ -119,10 +125,8 @@ void BasePrefetchingDataLayer<Ftype, Btype>::InternalThreadEntryN(size_t thread_
   InitializePrefetch();
   start_reading();
 
-  
   try {
-    while (!must_stop(thread_id)) 
-    {
+    while (!must_stop(thread_id)) {
       const size_t qid = this->queue_id(thread_id);
       shared_ptr<Batch> batch = batch_transformer_->prefetched_pop_free(qid);
       CHECK_EQ((size_t) -1L, batch->id());
@@ -135,12 +139,6 @@ void BasePrefetchingDataLayer<Ftype, Btype>::InternalThreadEntryN(size_t thread_
       if (auto_mode) {
         iter0_.set();
         break;
-      }
-      
-      //newplan
-      if(0)
-      {
-        LOG_EVERY_N(INFO, 10) << "in dating read thread " << thread_id << " and QID " << qid << " @ rank " << base_solver;//gettid();
       }
     }
   } catch (boost::thread_interrupted&) {

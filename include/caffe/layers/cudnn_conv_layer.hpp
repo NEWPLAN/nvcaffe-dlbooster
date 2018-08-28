@@ -8,6 +8,8 @@
 #include "caffe/layers/conv_layer.hpp"
 #include "caffe/util/gpu_memory.hpp"
 
+#include "caffe/util/thread_pool.hpp"
+
 namespace caffe {
 
 #ifdef USE_CUDNN
@@ -47,6 +49,8 @@ class CuDNNConvolutionLayer : public ConvolutionLayer<Ftype, Btype> {
   static std::atomic<size_t> test_mem_req_all_grps_;
   static std::atomic<size_t> train_tmp_weights_mem_;
 
+  //static ThreadPool tppp;
+
  public:
   explicit CuDNNConvolutionLayer(const LayerParameter& param)
       : ConvolutionLayer<Ftype, Btype>(param), handles_setup_(false),
@@ -62,12 +66,27 @@ class CuDNNConvolutionLayer : public ConvolutionLayer<Ftype, Btype> {
   virtual void LayerSetUp(const vector<Blob*>& bottom, const vector<Blob*>& top);
   virtual void Reshape(const vector<Blob*>& bottom, const vector<Blob*>& top);
   virtual ~CuDNNConvolutionLayer();
+  virtual inline bool has_Backward_w()const{return true;}
+  virtual inline void Backward_gpu_delta(const vector<Blob*>& top, const vector<bool>& propagate_down,
+      const vector<Blob*>& bottom)
+      {
+        /*LOG(INFO)<<"in cudnn conv layer";
+        LOG(INFO)<<"parameter: "<< this->name();*/
+        this->bp_over_delta(top,propagate_down,bottom);
+      }
+  virtual inline void Backward_gpu_weight(const vector<Blob*>& top, const vector<bool>& propagate_down,
+      const vector<Blob*>& bottom, int rank = 0)
+      {
+          /*LOG(INFO)<<"in cudnn conv layer";
+          LOG(INFO)<<"parameter: "<< this->name();*/
+          this->bp_over_weight(top, propagate_down, bottom, rank);
+      }
 
  protected:
   virtual void Forward_gpu(const vector<Blob*>& bottom, const vector<Blob*>& top);
   virtual void Backward_gpu(const vector<Blob*>& top, const vector<bool>& propagate_down,
       const vector<Blob*>& bottom);
-
+  
   bool handles_setup_;
 
   // algorithms for forward and backwards convolutions
@@ -109,6 +128,9 @@ class CuDNNConvolutionLayer : public ConvolutionLayer<Ftype, Btype> {
   bool ok_to_release() const {
     return bwd_count_ == REALLOC_COUNT;
   }
+
+  void bp_over_delta(const vector<Blob*>& top, const vector<bool>& propagate_down, const vector<Blob*>& bottom);
+  void bp_over_weight(const vector<Blob*>& top, const vector<bool>& propagate_down, const vector<Blob*>& bottom, int rank);
 
   void FindExConvAlgo(const vector<Blob*>& bottom, const vector<Blob*>& top);
   void GetConvAlgo(const vector<Blob*>& bottom, const vector<Blob*>& top,
@@ -171,6 +193,7 @@ template<typename Ftype, typename Btype>
 std::atomic<size_t> CuDNNConvolutionLayer<Ftype, Btype>::test_mem_req_all_grps_;
 template<typename Ftype, typename Btype>
 std::atomic<size_t> CuDNNConvolutionLayer<Ftype, Btype>::train_tmp_weights_mem_;
+
 
 #endif
 

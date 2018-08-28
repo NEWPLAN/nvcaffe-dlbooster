@@ -36,12 +36,8 @@ bool BlockingQueue<T>::try_pop(T* t) {
 template<typename T>
 T BlockingQueue<T>::pop(const char* log_on_wait) {
   boost::mutex::scoped_lock lock(mutex_);
-  while (queue_.empty()) 
-  {
-    //LOG_EVERY_N(INFO, 1000) << log_on_wait << ", in thread: "<<boost::this_thread::get_id();
-    {
-    //LOG_EVERY_N(INFO, 100) << log_on_wait <<" , " << lwp_id();//gettid();
-    }
+  while (queue_.empty()) {
+    LOG_EVERY_N(INFO, 10000) << log_on_wait;
     condition_.wait(lock);
   }
   T t = queue_.front();
@@ -52,9 +48,7 @@ T BlockingQueue<T>::pop(const char* log_on_wait) {
 template<typename T>
 T BlockingQueue<T>::pop() {
   boost::mutex::scoped_lock lock(mutex_);
-  while (queue_.empty()) 
-  {
-    //LOG_EVERY_N(INFO,100) << "pop thread thread, " << lwp_id();
+  while (queue_.empty()) {
     condition_.wait(lock);
   }
   T t(queue_.front());
@@ -97,6 +91,7 @@ bool BlockingQueue<T>::nonblocking_size(size_t* size) const {
   return false;
 }
 
+template class BlockingQueue<PackedData*>;
 template class BlockingQueue<int>;
 template class BlockingQueue<shared_ptr<Batch>>;
 template class BlockingQueue<shared_ptr<Datum>>;

@@ -6,6 +6,8 @@
 #include <vector>
 
 #include "caffe/common.hpp"
+#include "caffe/util/thread_pool.hpp"
+#include "caffe/util/blocking_queue.hpp"
 
 namespace cub {
   class CachingDeviceAllocator;
@@ -179,6 +181,8 @@ struct GPUMemory {
   static vector<shared_ptr<Workspace>> workspace_;
   // This one is for TRAIN only:
   static vector<shared_ptr<Workspace>> weights_workspace_;
+
+  static vector<shared_ptr<Workspace>> assist_workspace_;
 
   static void Init();
 

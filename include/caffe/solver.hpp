@@ -10,6 +10,10 @@
 #include "caffe/solver_factory.hpp"
 #include "caffe/util/benchmark.hpp"
 
+//newplan added
+#include "caffe/util/thread_pool.hpp"
+#include "caffe/assist_bp.hpp"
+
 namespace caffe {
 
 /**
@@ -47,6 +51,9 @@ class Solver {
   void Init();
   void InitTrainNet();
   void InitTestNets();
+
+  //shared_ptr<ThreadPool> thp;
+  shared_ptr<AssistBP> abp;
 
   // Client of the Solver optionally may call this in order to set the function
   // that the solver uses to see what action it should take (e.g. snapshot or
@@ -248,6 +255,7 @@ class Solver {
   int iterations_restored_;
 
   static constexpr size_t MAX_SNAPSHOT_SCORES = 5;
+
 
   DISABLE_COPY_MOVE_AND_ASSIGN(Solver);
 };

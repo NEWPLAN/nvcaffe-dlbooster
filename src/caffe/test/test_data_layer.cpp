@@ -14,6 +14,8 @@
 #include "caffe/util/db.hpp"
 #include "caffe/util/io.hpp"
 
+//newplan added
+#include "caffe/layers/fpga_data_layer.hpp"
 
 namespace caffe {
 
