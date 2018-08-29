@@ -212,7 +212,11 @@ void FPGADataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t
       for (size_t label_index = 0; label_index < batch_size; label_index++)
         top_label[label_index] = abc->label_[label_index];
     }
-    DLOG_EVERY_N(INFO,100) << "running time error..."<< top_label[0];
+    else
+    {
+      LOG(INFO)<<"top label is empty...";
+    }
+    DLOG_EVERY_N(INFO,100) << "top_label"<< top_label[0];
 
     if (use_gpu_transform)
     {
