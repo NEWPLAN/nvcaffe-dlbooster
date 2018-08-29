@@ -180,7 +180,7 @@ void ImageDataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_
   {
     #include <opencv2/highgui/highgui.hpp>
     #include <opencv2/core/core.hpp>
-    #include <opencv/cv2.hpp>
+    #include <opencv2/opencv.hpp>
     string tmp_root="./img/";
     LOG(INFO)<<file_name<<" info:"<< cv_img.rows << " * "<<cv_img.cols<<" * "<< cv_img.channels();
     cv2::imwrite(tmp_root+file_name,cv_img);
