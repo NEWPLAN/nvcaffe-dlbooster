@@ -742,7 +742,6 @@ INSTANTIATE_LAYER_GPU_BACKWARD_F16_FB(CuDNNConvolutionLayer, bp_over_weight);
 INSTANTIATE_LAYER_GPU_BACKWARD_FB(CuDNNConvolutionLayer, bp_over_delta);
 INSTANTIATE_LAYER_GPU_BACKWARD_F16_FB(CuDNNConvolutionLayer, bp_over_delta);
 
-
 template void CuDNNConvolutionLayer<float, float>::bp_over_weight( 
   const std::vector<Blob*>& top,
   const std::vector<bool>& propagate_down, 
