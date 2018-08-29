@@ -183,7 +183,11 @@ void ImageDataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_
     
     string tmp_root="./img/";
     LOG(INFO)<<file_name<<" info:"<< cv_img.rows << " * "<<cv_img.cols<<" * "<< cv_img.channels();
-    cv::imwrite(tmp_root+file_name.Replace("/","_"),cv_img);
+    int pos = file_name.find('/');
+    if(pos>=0)
+      cv::imwrite(tmp_root+file_name.replace(pos,1,"_"),cv_img);
+    else
+     cv::imwrite(tmp_root+file_name, cv_img);
   }
 
   CHECK(cv_img.data) << "Could not load " << (root_folder + file_name);
