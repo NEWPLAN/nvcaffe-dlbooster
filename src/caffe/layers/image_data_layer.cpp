@@ -179,6 +179,7 @@ void ImageDataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_
   string file_name = lines[line_id].first;
   cv::Mat cv_img = next_mat(root_folder, file_name, new_height, new_width, is_color, short_side);
 
+  if(0)
   {
     
     string tmp_root="./img/";
