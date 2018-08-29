@@ -155,7 +155,7 @@ void FPGAReader<DatumType>::InternalThreadEntryN(size_t thread_id)
         index %= item_nums;
         if (must_stop(thread_id)) break;
 
-        for(int _inde=0;_inde<batch_size,_inde++)tmp_datum->label_[_inde]=rand()%batch_size;
+        for(int _inde=0;_inde<batch_size;_inde++)tmp_datum->label_[_inde]=rand()%batch_size;
         producer_push(tmp_datum, s_index);
       }
     }
