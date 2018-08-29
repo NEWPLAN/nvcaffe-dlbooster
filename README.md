@@ -68,3 +68,6 @@ Both  `baseprefetchinglayer` and `FPGAReader` inherit `InternalThread` and enabl
 <div align=center>
 <img width="80%" src="arch.jpg"/ alt="Architecture of NVCaffe IO module.">
 </div>
+
+## progress
+achieve alexnet in 96ms for each iteration while setting batch size as 256/gpu with group = 2
