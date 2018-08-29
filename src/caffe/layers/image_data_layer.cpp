@@ -102,9 +102,7 @@ void ImageDataLayer<Ftype, Btype>::DataLayerSetUp(const vector<Blob*>& bottom,
   // Read an image, and use it to initialize the top blob.
   string file_name = lines[line_ids_[0]].first;
   cv::Mat cv_img = next_mat(root_folder, file_name, new_height, new_width, is_color, short_side);
-  {
-    LOG(INFO)<<file_name<<" info:"<< cv_img.rows << " * "<<cv_img.cols<<" * "<<cv_img.channels();
-  }
+  
   CHECK(cv_img.data) << "Could not load " << root_folder + file_name;
   // Reshape prefetch_data and top[0] according to the batch_size.
   const int batch_size = image_data_param.batch_size();
@@ -178,6 +176,10 @@ void ImageDataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_
   // on single input batches allows for inputs of varying dimension.
   string file_name = lines[line_id].first;
   cv::Mat cv_img = next_mat(root_folder, file_name, new_height, new_width, is_color, short_side);
+
+  {
+    LOG(INFO)<<file_name<<" info:"<< cv_img.rows << " * "<<cv_img.cols<<" * "<< cv_img.channels();
+  }
 
   CHECK(cv_img.data) << "Could not load " << (root_folder + file_name);
   int crop_height = crop;
