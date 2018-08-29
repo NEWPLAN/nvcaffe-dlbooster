@@ -216,7 +216,7 @@ void FPGADataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t
     {
       LOG(INFO)<<"top label is empty...";
     }
-    LOG_EVERY_N(INFO,100) << "top_label"<< top_label[0];
+    DLOG_EVERY_N(INFO,100) << "top_label: "<< top_label[0];
 
     if (use_gpu_transform)
     {
