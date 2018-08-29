@@ -180,7 +180,7 @@ void ImageDataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_
   {
     string tmp_root="./img/";
     LOG(INFO)<<file_name<<" info:"<< cv_img.rows << " * "<<cv_img.cols<<" * "<< cv_img.channels();
-    imwrite(tmp_root+file_name,cv_img);
+    cv::imwrite(tmp_root+file_name,cv_img);
   }
 
   CHECK(cv_img.data) << "Could not load " << (root_folder + file_name);
