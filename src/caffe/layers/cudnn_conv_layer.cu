@@ -746,41 +746,41 @@ INSTANTIATE_LAYER_GPU_BACKWARD_F16_FB(CuDNNConvolutionLayer, bp_over_delta);
 template void CuDNNConvolutionLayer<float, float>::bp_over_weight( 
   const std::vector<Blob*>& top,
   const std::vector<bool>& propagate_down, 
-  const std::vector<Blob*>& bottom, int rank=0); 
+  const std::vector<Blob*>& bottom, int rank); 
 template void CuDNNConvolutionLayer<float, double>::bp_over_weight( 
   const std::vector<Blob*>& top,
   const std::vector<bool>& propagate_down, 
-  const std::vector<Blob*>& bottom, int rank=0); 
+  const std::vector<Blob*>& bottom, int rank); 
 template void CuDNNConvolutionLayer<double, float>::bp_over_weight( 
   const std::vector<Blob*>& top,
   const std::vector<bool>& propagate_down, 
-  const std::vector<Blob*>& bottom, int rank=0); 
+  const std::vector<Blob*>& bottom, int rank); 
 template void CuDNNConvolutionLayer<double, double>::bp_over_weight( 
   const std::vector<Blob*>& top,
   const std::vector<bool>& propagate_down, 
-  const std::vector<Blob*>& bottom, int rank=0); 
+  const std::vector<Blob*>& bottom, int rank); 
 
 
 template void CuDNNConvolutionLayer<float16, float>::bp_over_weight( 
   const std::vector<Blob*>& top,
   const std::vector<bool>& propagate_down, 
-  const std::vector<Blob*>& bottom, int rank=0); 
+  const std::vector<Blob*>& bottom, int rank); 
 template void CuDNNConvolutionLayer<float, float16>::bp_over_weight( 
   const std::vector<Blob*>& top,
   const std::vector<bool>& propagate_down, 
-  const std::vector<Blob*>& bottom, int rank=0); 
+  const std::vector<Blob*>& bottom, int rank); 
 template void CuDNNConvolutionLayer<float16, double>::bp_over_weight( 
   const std::vector<Blob*>& top,
   const std::vector<bool>& propagate_down, 
-  const std::vector<Blob*>& bottom, int rank=0); 
+  const std::vector<Blob*>& bottom, int rank); 
 template void CuDNNConvolutionLayer<double, float16>::bp_over_weight( 
   const std::vector<Blob*>& top,
   const std::vector<bool>& propagate_down, 
-  const std::vector<Blob*>& bottom, int rank=0); 
+  const std::vector<Blob*>& bottom, int rank); 
 template void CuDNNConvolutionLayer<float16, float16>::bp_over_weight( 
   const std::vector<Blob*>& top,
   const std::vector<bool>& propagate_down, 
-  const std::vector<Blob*>& bottom, int rank=0); 
+  const std::vector<Blob*>& bottom, int rank); 
 
 
 }  // namespace caffe
