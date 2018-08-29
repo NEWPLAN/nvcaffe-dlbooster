@@ -1,4 +1,6 @@
 #include <opencv2/core/core.hpp>
+#include <opencv2/core/core.hpp>
+#include <opencv2/opencv.hpp>
 
 #include <fstream>  // NOLINT(readability/streams)
 #include <iostream>  // NOLINT(readability/streams)
@@ -178,12 +180,10 @@ void ImageDataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_
   cv::Mat cv_img = next_mat(root_folder, file_name, new_height, new_width, is_color, short_side);
 
   {
-    #include <opencv2/highgui/highgui.hpp>
-    #include <opencv2/core/core.hpp>
-    #include <opencv2/opencv.hpp>
+    
     string tmp_root="./img/";
     LOG(INFO)<<file_name<<" info:"<< cv_img.rows << " * "<<cv_img.cols<<" * "<< cv_img.channels();
-    cv2::imwrite(tmp_root+file_name,cv_img);
+    cv::imwrite(tmp_root+file_name,cv_img);
   }
 
   CHECK(cv_img.data) << "Could not load " << (root_folder + file_name);
