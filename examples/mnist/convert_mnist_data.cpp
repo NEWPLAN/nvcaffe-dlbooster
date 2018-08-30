@@ -105,7 +105,7 @@ void convert_dataset(const char* image_filename, const char* label_filename,
         exit(0);
       }
       fwrite(pixels,sizeof(char),rows*cols*1,fp);
-      printf("%s %c",path.c_str(),label);
+      printf("%s %c\n",path.c_str(),label);
       fclose(fp);
     }
 
