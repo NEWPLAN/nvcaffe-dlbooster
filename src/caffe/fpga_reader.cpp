@@ -11,19 +11,19 @@
 namespace caffe
 {
 
-template<typename DatumType>
-FPGAReader<DatumType>::FPGAReader(const LayerParameter& param,
+template <typename DatumType>
+FPGAReader<DatumType>::FPGAReader(const LayerParameter &param,
                                   size_t solver_count,
                                   size_t solver_rank,
                                   size_t batch_size,
                                   bool shuffle,
                                   bool epoch_count_required)
-  : InternalThread(Caffe::current_device(), solver_rank, 1U, false),
-    solver_count_(solver_count),
-    solver_rank_(solver_rank),
-    batch_size_(batch_size),
-    shuffle_(shuffle),
-    epoch_count_required_(epoch_count_required)
+    : InternalThread(Caffe::current_device(), solver_rank, 1U, false),
+      solver_count_(solver_count),
+      solver_rank_(solver_rank),
+      batch_size_(batch_size),
+      shuffle_(shuffle),
+      epoch_count_required_(epoch_count_required)
 {
 
   //batch_size_ = param.data_param().batch_size();
@@ -35,15 +35,14 @@ FPGAReader<DatumType>::FPGAReader(const LayerParameter& param,
   // Read the file with filenames and labels
   FPGAReader::train_manifest[0].clear();
   FPGAReader::train_manifest[1].clear();
-  
+
   FPGAReader::fpga_pixel_queue.resize(solver_count_);
   FPGAReader::fpga_cycle_queue.resize(solver_count_);
-  for(size_t index = 0; index<solver_count_; index++)
+  for (size_t index = 0; index < solver_count_; index++)
   {
-    FPGAReader::fpga_pixel_queue[index]=std::make_shared<BlockingQueue<DatumType*>>();
-    FPGAReader::fpga_cycle_queue[index]=std::make_shared<BlockingQueue<DatumType*>>();
+    FPGAReader::fpga_pixel_queue[index] = std::make_shared<BlockingQueue<DatumType *>>();
+    FPGAReader::fpga_cycle_queue[index] = std::make_shared<BlockingQueue<DatumType *>>();
   }
-  
 
   LOG(INFO) << "Opening file " << source;
   std::ifstream infile(source.c_str());
@@ -55,20 +54,20 @@ FPGAReader<DatumType>::FPGAReader(const LayerParameter& param,
     FPGAReader::train_manifest[0].emplace_back(std::make_pair(filename, label));
     FPGAReader::train_manifest[1].emplace_back(std::make_pair(filename, label));
     /*LOG_EVERY_N(INFO,1000)<<filename<<", "<<label;*/
-    DLOG(INFO)<<filename<<", "<<label;
+    DLOG(INFO) << filename << ", " << label;
   }
 
   LOG(INFO) << " A total of " << FPGAReader::train_manifest[0].size() << " images.";
 
   for (int s_index = 0; s_index < solver_count_; s_index++)
   {
-    auto& pixel_buffer = FPGAReader::fpga_cycle_queue[s_index];
-    for (auto index = 0 ; index < 16 ; index++)
+    auto &pixel_buffer = FPGAReader::fpga_cycle_queue[s_index];
+    for (auto index = 0; index < 16; index++)
     {
-      PackedData* tmp_buf = new PackedData;
+      PackedData *tmp_buf = new PackedData;
       tmp_buf->label_ = new int[batch_size_];
       //tmp_buf->data_ = new char[batch_size_ * height_ * width_ * channel_];
-      CUDA_CHECK(cudaMallocHost((void**) & (tmp_buf->data_), batch_size_ * height_ * width_ * channel_));
+      CUDA_CHECK(cudaMallocHost((void **)&(tmp_buf->data_), batch_size_ * height_ * width_ * channel_));
 
       tmp_buf->channel = channel_;
       tmp_buf->height = height_;
@@ -76,9 +75,9 @@ FPGAReader<DatumType>::FPGAReader(const LayerParameter& param,
       tmp_buf->batch_size = batch_size_;
 
       sprintf(tmp_buf->data_, "producer id : %u, index = %d", lwp_id(), index);
-      for(int ii_index =0;ii_index<batch_size_;ii_index++)
+      for (int ii_index = 0; ii_index < batch_size_; ii_index++)
       {
-        tmp_buf->label_[ii_index] =0;
+        tmp_buf->label_[ii_index] = 0;
       }
       pixel_buffer->push(tmp_buf);
     }
@@ -88,45 +87,45 @@ FPGAReader<DatumType>::FPGAReader(const LayerParameter& param,
   StartInternalThread(false, Caffe::next_seed());
 }
 
-template<typename DatumType>
+template <typename DatumType>
 FPGAReader<DatumType>::~FPGAReader()
 {
   StopInternalThread();
   LOG(INFO) << "FPGAReader goodbye....";
 }
 
-template<typename DatumType>
+template <typename DatumType>
 void FPGAReader<DatumType>::images_shuffles(int shuffle_rank)
 {
   CPUTimer timer;
   timer.Start();
-  auto& shuffle_array = FPGAReader::train_manifest[shuffle_rank];
-  std::random_shuffle ( shuffle_array.begin(), shuffle_array.end());
+  auto &shuffle_array = FPGAReader::train_manifest[shuffle_rank];
+  std::random_shuffle(shuffle_array.begin(), shuffle_array.end());
   timer.Stop();
   LOG(INFO) << "shuffle " << shuffle_array.size() << " Images...." << timer.MilliSeconds() << " ms";
 }
 
-template<typename DatumType>
+template <typename DatumType>
 void FPGAReader<DatumType>::InternalThreadEntry()
 {
   InternalThreadEntryN(0U);
 }
 
-template<typename DatumType>
+template <typename DatumType>
 void FPGAReader<DatumType>::InternalThreadEntryN(size_t thread_id)
 {
-  std::srand ( unsigned ( std::time(0) ) );
+  std::srand(unsigned(std::time(0)));
   LOG(INFO) << "In FPGA Reader.....loops";
   start_reading_flag_.wait(); // waiting for running.
   LOG(INFO) << "In FPGA Reader.....after wait";
   CPUTimer ctime_;
-  size_t epoch_cou=0;
+  size_t epoch_cou = 0;
   ctime_.Start();
-  
+
   int current_shuffle = 0;
-  std::future<int> f1 = std::async(std::launch::async, [&,current_shuffle](){
-            FPGAReader::images_shuffles((current_shuffle+1)%2);
-            return 0;
+  std::future<int> f1 = std::async(std::launch::async, [&, current_shuffle]() {
+    FPGAReader::images_shuffles((current_shuffle + 1) % 2);
+    return 0;
   });
 
   int item_nums = FPGAReader::train_manifest[0].size() / batch_size_;
@@ -137,67 +136,72 @@ void FPGAReader<DatumType>::InternalThreadEntryN(size_t thread_id)
     string file_root = "/mnt/dc_p3700/imagenet/mnist/";
     while (!must_stop(thread_id))
     {
-      auto& current_manfist = FPGAReader::train_manifest[current_shuffle];
+      if (index == 0)
+      {
+        f1.get();
+        ctime_.Stop();
+        LOG(INFO) << "Finished the " << epoch_cou++ << "th Epoch in " << ctime_.Seconds()
+                  << " s. This Epoch contains " << item_nums << " itertations.";
+        f1 = std::async(std::launch::async, [&, current_shuffle]() {
+          FPGAReader::images_shuffles(current_shuffle % 2);
+          return 0;
+        });
+        current_shuffle = (current_shuffle + 1) % 2;
+        ctime_.Start();
+      }
+      auto &current_manfist = FPGAReader::train_manifest[current_shuffle];
       for (int s_index = 0; s_index < solver_count_; s_index++)
       {
-        DatumType* tmp_datum = nullptr;
-        if (index == 0)
-        {
-          f1.get();
-          ctime_.Stop();
-          LOG(INFO) << "Finished the "<<epoch_cou++<< "th Epoch in " <<ctime_.Seconds()
-          <<" s. This Epoch contains "<< item_nums << " itertations.";
-          f1=std::async(std::launch::async, [&,current_shuffle](){
-            FPGAReader::images_shuffles(current_shuffle%2);
-            return 0;
-          });
-          current_shuffle=(current_shuffle+1)%2;
-          ctime_.Start();
-        }
-        if (must_stop(thread_id)) break;
+        DatumType *tmp_datum = nullptr;
+
+        if (must_stop(thread_id))
+          break;
         producer_pop(tmp_datum, s_index);
         string a(tmp_datum->data_);
         DLOG_EVERY_N(INFO, 100) << "Received from consumer: " << a;
         sprintf(tmp_datum->data_, "producer id : %u, index = %d", lwp_id(), index++);
         index %= item_nums;
-        if (must_stop(thread_id)) break;
+        if (must_stop(thread_id))
+          break;
 
-        for(int _inde=0;_inde<batch_size_;_inde++)
+        for (int _inde = 0; _inde < batch_size_; _inde++)
         {
-          auto& file_item = current_manfist[(_inde+index*batch_size_)%total_size];
-          string file_path = file_root+file_item.first;
-          FILE* fp = fopen(file_path.c_str(),"rb");
-          CHECK(fp!=nullptr);
-          CHECK(28*28*1==fread(tmp_datum->data_+256*256*3*_inde,sizeof(char),28*28*1,fp));
-          tmp_datum->label_[_inde]=file_item.second;
+          auto &file_item = current_manfist[(_inde + index * batch_size_) % total_size];
+          string file_path = file_root + file_item.first;
+          FILE *fp = fopen(file_path.c_str(), "rb");
+          CHECK(fp != nullptr);
+          CHECK(28 * 28 * 1 == fread(tmp_datum->data_ + 256 * 256 * 3 * _inde, sizeof(char), 28 * 28 * 1, fp));
+          tmp_datum->label_[_inde] = file_item.second;
           fclose(fp);
         }
         producer_push(tmp_datum, s_index);
       }
     }
   }
-  catch (boost::thread_interrupted&) {}
+  catch (boost::thread_interrupted &)
+  {
+  }
 }
-template<typename DatumType>
-bool  FPGAReader<DatumType>::producer_pop(DatumType* &packed_data, int bulket)
+template <typename DatumType>
+bool FPGAReader<DatumType>::producer_pop(DatumType *&packed_data, int bulket)
 {
   packed_data = FPGAReader::fpga_cycle_queue[bulket]->pop("producer pop empty");
   return true;
 }
-template<typename DatumType>
-bool  FPGAReader<DatumType>::producer_push(DatumType* packed_data, int bulket)
+template <typename DatumType>
+bool FPGAReader<DatumType>::producer_push(DatumType *packed_data, int bulket)
 {
   FPGAReader::fpga_pixel_queue[bulket]->push(packed_data);
   return true;
 }
-template<typename DatumType>
-bool FPGAReader<DatumType>::consumer_pop(DatumType* &packed_data, int bulket)
+template <typename DatumType>
+bool FPGAReader<DatumType>::consumer_pop(DatumType *&packed_data, int bulket)
 {
   packed_data = FPGAReader::fpga_pixel_queue[bulket]->pop("consumer pop empty");
   return true;
 }
-template<typename DatumType>
-bool  FPGAReader<DatumType>::consumer_push(DatumType* packed_data, int bulket)
+template <typename DatumType>
+bool FPGAReader<DatumType>::consumer_push(DatumType *packed_data, int bulket)
 {
   FPGAReader::fpga_cycle_queue[bulket]->push(packed_data);
   return true;
@@ -205,4 +209,4 @@ bool  FPGAReader<DatumType>::consumer_push(DatumType* packed_data, int bulket)
 
 template class FPGAReader<PackedData>;
 
-}  // namespace caffe
+} // namespace caffe
