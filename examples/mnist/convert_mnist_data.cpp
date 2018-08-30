@@ -92,15 +92,20 @@ void convert_dataset(const char* image_filename, const char* label_filename,
     image_file.read(pixels, rows * cols);
     label_file.read(&label, 1);
     {
+      printf("abc_%d %c\n",item_id,label);
       string path="/home/yang/mnist/abc_"+std::to_string(item_id);
       FILE* fp =fopen(path.c_str(),"wb+");
       if(fp == 0)
       {
-        std::cout<<"error in open file: "<<path<<std::endl;
+        printf("error in open file: %s\n",path.c_str());
         exit(0);
       }
-      fwrite(pixels,sizeof(char),rows*cols*1,fp);
-      printf("%s %c\n",path.c_str(),label);
+      if(fwrite(pixels,sizeof(char),rows*cols*1,fp)!=rows*cols*1)
+      {
+        printf("error in write file: %s\n",path.c_str());
+         exit(0);
+      }
+      
       fclose(fp);
     }
     datum.set_data(pixels, rows*cols);
