@@ -164,7 +164,7 @@ void FPGAReader<DatumType>::InternalThreadEntryN(size_t thread_id)
 
         for(int _inde=0;_inde<batch_size_;_inde++)
         {
-          auto& file_item = current_manfist[(_inde+index)%total_size];
+          auto& file_item = current_manfist[(_inde+index*batch_size_)%total_size];
           string file_path = file_root+file_item.first;
           FILE* fp = fopen(file_path.c_str(),"rb");
           CHECK(fp!=nullptr);
