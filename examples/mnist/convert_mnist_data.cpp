@@ -97,7 +97,7 @@ void convert_dataset(const char* image_filename, const char* label_filename,
 
     {
       string path="/home/yang/mnist/abc_"+std::to_string(item_id);
-      FILF* fp =fopen(path.c_str(),"wb+");
+      FILE* fp =fopen(path.c_str(),"wb+");
       if(fp == 0)
       {
         std:cerr<<"error in open file: "<<path;
