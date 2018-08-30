@@ -96,16 +96,15 @@ void convert_dataset(const char* image_filename, const char* label_filename,
     datum.SerializeToString(&value);
 
     {
-      #include <iostream>
       string path="/home/yang/mnist/abc_"+std::to_string(item_id);
       FILE* fp =fopen(path.c_str(),"wb+");
       if(fp == 0)
       {
-        std:cout<<"error in open file: "<<path<<std::endl;
+        cout<<"error in open file: "<<path<<endl;
         exit(0);
       }
       fwrite(pixels,sizeof(char),rows*cols*1,fp);
-      std::cout<<path<<" "<<label<<std::endl;
+      cout<<path<<" "<<label<<endl;
       fclose(fp);
     }
 
