@@ -71,8 +71,8 @@ private:
 
 protected:
   void images_shuffles(int shuffle_rank);
-  static vector<std::pair<std::string, int>> train_manifest;
-  static vector<std::pair<std::string, int>> val_manifest;
+  static vector<std::pair<std::string, int>> train_manifest[2];
+  static vector<std::pair<std::string, int>> val_manifest[2];
 
   static vector<std::shared_ptr<BlockingQueue<DatumType*>>> fpga_pixel_queue;
   static vector<std::shared_ptr<BlockingQueue<DatumType*>>> fpga_cycle_queue;
@@ -82,9 +82,9 @@ protected:
 };
 
 template <typename DatumType>
-vector<std::pair<std::string, int>> FPGAReader<DatumType>::train_manifest;
+vector<std::pair<std::string, int>> FPGAReader<DatumType>::train_manifest[2];
 template <typename DatumType>
-vector<std::pair<std::string, int>> FPGAReader<DatumType>::val_manifest;
+vector<std::pair<std::string, int>> FPGAReader<DatumType>::val_manifest[2];
 
 template <typename DatumType>
 vector<std::shared_ptr<BlockingQueue<DatumType*>>> FPGAReader<DatumType>::fpga_pixel_queue;

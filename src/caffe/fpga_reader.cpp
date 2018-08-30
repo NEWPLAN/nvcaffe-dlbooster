@@ -33,7 +33,8 @@ FPGAReader<DatumType>::FPGAReader(const LayerParameter& param,
 
   string source = param.data_param().manifest();
   // Read the file with filenames and labels
-  FPGAReader::train_manifest.clear();
+  FPGAReader::train_manifest[0].clear();
+  FPGAReader::train_manifest[1].clear();
   
   FPGAReader::fpga_pixel_queue.resize(solver_count_);
   FPGAReader::fpga_cycle_queue.resize(solver_count_);
@@ -51,12 +52,13 @@ FPGAReader<DatumType>::FPGAReader(const LayerParameter& param,
   int label;
   while (infile >> filename >> label)
   {
-    FPGAReader::train_manifest.emplace_back(std::make_pair(filename, label));
+    FPGAReader::train_manifest[0].emplace_back(std::make_pair(filename, label));
+    FPGAReader::train_manifest[1].emplace_back(std::make_pair(filename, label));
     /*LOG_EVERY_N(INFO,1000)<<filename<<", "<<label;*/
     LOG(INFO)<<filename<<", "<<label;
   }
 
-  LOG(INFO) << " A total of " << FPGAReader::train_manifest.size() << " images.";
+  LOG(INFO) << " A total of " << FPGAReader::train_manifest[0].size() << " images.";
 
   for (int s_index = 0; s_index < solver_count_; s_index++)
   {
@@ -98,7 +100,7 @@ void FPGAReader<DatumType>::images_shuffles(int shuffle_rank)
 {
   CPUTimer timer;
   timer.Start();
-  auto& shuffle_array = FPGAReader::train_manifest;
+  auto& shuffle_array = FPGAReader::train_manifest[shuffle_rank];
   std::random_shuffle ( shuffle_array.begin(), shuffle_array.end());
   timer.Stop();
   LOG(INFO) << "shuffle " << shuffle_array.size() << " Images...." << timer.MilliSeconds() << " ms";
@@ -121,20 +123,21 @@ void FPGAReader<DatumType>::InternalThreadEntryN(size_t thread_id)
   size_t epoch_cou=0;
   ctime_.Start();
   
-  int current_shuffle = 1;
+  int current_shuffle = 0;
   std::future<int> f1 = std::async(std::launch::async, [&,current_shuffle](){
-            FPGAReader::images_shuffles(current_shuffle%2);
+            FPGAReader::images_shuffles((current_shuffle+1)%2);
             return 0;
   });
 
-  int item_nums = FPGAReader::train_manifest.size() / batch_size_;
-  int total_size = FPGAReader::train_manifest.size();
+  int item_nums = FPGAReader::train_manifest[0].size() / batch_size_;
+  int total_size = FPGAReader::train_manifest[0].size();
   try
   {
     int index = 100;
     string file_root = "/home/yang/mnist/";
     while (!must_stop(thread_id))
     {
+      auto& current_manfist = FPGAReader::train_manifest[current_shuffle];
       for (int s_index = 0; s_index < solver_count_; s_index++)
       {
         DatumType* tmp_datum = nullptr;
@@ -148,7 +151,7 @@ void FPGAReader<DatumType>::InternalThreadEntryN(size_t thread_id)
             FPGAReader::images_shuffles(current_shuffle%2);
             return 0;
           });
-          current_shuffle++;
+          current_shuffle=(current_shuffle+1)%2;
           ctime_.Start();
         }
         if (must_stop(thread_id)) break;
@@ -161,7 +164,7 @@ void FPGAReader<DatumType>::InternalThreadEntryN(size_t thread_id)
 
         for(int _inde=0;_inde<batch_size_;_inde++)
         {
-          auto& file_item = train_manifest[(_inde+index)%total_size];
+          auto& file_item = current_manfist[(_inde+index)%total_size];
           string file_path = file_root+file_item.first;
           FILE* fp = fopen(file_path.c_str(),"rb");
           CHECK(fp!=nullptr);
