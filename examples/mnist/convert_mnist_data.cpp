@@ -114,7 +114,7 @@ void convert_dataset(const char* image_filename, const char* label_filename,
          exit(0);
       }
       sprintf(fileeee,"abc_%d %c\n",item_id,label);
-      if(fwrite(fileeee,1,100,fww)!=100)
+      if(fwrite(fileeee,1,100,fpww)!=100)
       {
         printf("write error...\n");
         exit(0);
