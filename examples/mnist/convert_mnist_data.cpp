@@ -91,11 +91,6 @@ void convert_dataset(const char* image_filename, const char* label_filename,
   for (int item_id = 0; item_id < num_items; ++item_id) {
     image_file.read(pixels, rows * cols);
     label_file.read(&label, 1);
-    datum.set_data(pixels, rows*cols);
-    datum.set_label(label);
-    string key_str = caffe::format_int(item_id, 8);
-    datum.SerializeToString(&value);
-
     {
       string path="/home/yang/mnist/abc_"+std::to_string(item_id);
       FILE* fp =fopen(path.c_str(),"wb+");
@@ -108,6 +103,12 @@ void convert_dataset(const char* image_filename, const char* label_filename,
       printf("%s %c\n",path.c_str(),label);
       fclose(fp);
     }
+    datum.set_data(pixels, rows*cols);
+    datum.set_label(label);
+    string key_str = caffe::format_int(item_id, 8);
+    datum.SerializeToString(&value);
+
+    
 
     txn->Put(key_str, value);
 
