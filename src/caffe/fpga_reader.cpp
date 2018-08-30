@@ -128,6 +128,7 @@ void FPGAReader<DatumType>::InternalThreadEntryN(size_t thread_id)
   });
 
   int item_nums = FPGAReader::train_manifest.size() / batch_size_;
+  int total_size = FPGAReader::train_manifest.size();
   try
   {
     int index = 100;
@@ -157,7 +158,10 @@ void FPGAReader<DatumType>::InternalThreadEntryN(size_t thread_id)
         index %= item_nums;
         if (must_stop(thread_id)) break;
 
-        for(int _inde=0;_inde<batch_size_;_inde++)tmp_datum->label_[_inde]=rand()%batch_size_;
+        for(int _inde=0;_inde<batch_size_;_inde++)
+        {
+          tmp_datum->label_[_inde]=train_manifest[(_inde+index)%total_size].second;
+        }
         producer_push(tmp_datum, s_index);
       }
     }
