@@ -52,6 +52,8 @@ FPGAReader<DatumType>::FPGAReader(const LayerParameter& param,
   while (infile >> filename >> label)
   {
     FPGAReader::train_manifest.emplace_back(std::make_pair(filename, label));
+    /*LOG_EVERY_N(INFO,1000)<<filename<<", "<<label;*/
+    LOG(INFO)<<filename<<", "<<label;
   }
 
   LOG(INFO) << " A total of " << FPGAReader::train_manifest.size() << " images.";
