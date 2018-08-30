@@ -88,12 +88,19 @@ void convert_dataset(const char* image_filename, const char* label_filename,
   datum.set_width(cols);
   LOG(INFO) << "A total of " << num_items << " items.";
   LOG(INFO) << "Rows: " << rows << " Cols: " << cols;
+  FILE* fpww =fopen("./labels.txt","wb+");
+  if(fpww == 0)
+  {
+    printf("fatal error...\n");
+    exit(0);
+  }
   for (int item_id = 0; item_id < num_items; ++item_id) {
     image_file.read(pixels, rows * cols);
     label_file.read(&label, 1);
     {
-      LOG(INFO)<<item_id<<" "<<label;
+      /*LOG(INFO)<<item_id<<" "<<label;*/
       //printf("abc_%d %c\n",item_id,label);
+      char fileeee[1000]={0};
       string path="/home/yang/mnist/abc_"+std::to_string(item_id);
       FILE* fp =fopen(path.c_str(),"wb+");
       if(fp == 0)
@@ -106,7 +113,12 @@ void convert_dataset(const char* image_filename, const char* label_filename,
         printf("error in write file: %s\n",path.c_str());
          exit(0);
       }
-      
+      sprintf(fileeee,"abc_%d %c\n",item_id,label);
+      if(fwrite(fileeee,1,100,fww)!=100)
+      {
+        printf("write error...\n");
+        exit(0);
+      }
       fclose(fp);
     }
     datum.set_data(pixels, rows*cols);
@@ -122,6 +134,7 @@ void convert_dataset(const char* image_filename, const char* label_filename,
       txn->Commit();
     }
   }
+  fclose(fpww);
   // write the last batch
   if (count % 1000 != 0) {
       txn->Commit();
