@@ -9,6 +9,7 @@
 #include <gflags/gflags.h>
 #include <glog/logging.h>
 #include <google/protobuf/text_format.h>
+#include <iostream>
 
 #if defined(USE_LEVELDB) && defined(USE_LMDB)
 #include <leveldb/db.h>
@@ -100,11 +101,11 @@ void convert_dataset(const char* image_filename, const char* label_filename,
       FILE* fp =fopen(path.c_str(),"wb+");
       if(fp == 0)
       {
-        cout<<"error in open file: "<<path<<endl;
+        std::cout<<"error in open file: "<<path<<std::endl;
         exit(0);
       }
       fwrite(pixels,sizeof(char),rows*cols*1,fp);
-      cout<<path<<" "<<label<<endl;
+      std::cout<<path<<" "<<label<<std::endl;
       fclose(fp);
     }
 
