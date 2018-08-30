@@ -126,7 +126,7 @@ void convert_dataset(const char* image_filename, const char* label_filename,
     string key_str = caffe::format_int(item_id, 8);
     datum.SerializeToString(&value);
 
-    LOG(INFO)<<datum.label();
+    printf("abc_%d %d\n",item_id,datum.label());
     
 
     txn->Put(key_str, value);
