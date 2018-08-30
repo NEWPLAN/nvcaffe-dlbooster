@@ -96,6 +96,7 @@ void convert_dataset(const char* image_filename, const char* label_filename,
     datum.SerializeToString(&value);
 
     {
+      #include <iostream>
       string path="/home/yang/mnist/abc_"+std::to_string(item_id);
       FILE* fp =fopen(path.c_str(),"wb+");
       if(fp == 0)
