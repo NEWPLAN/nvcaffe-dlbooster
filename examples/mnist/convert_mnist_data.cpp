@@ -95,6 +95,19 @@ void convert_dataset(const char* image_filename, const char* label_filename,
     string key_str = caffe::format_int(item_id, 8);
     datum.SerializeToString(&value);
 
+    {
+      string path="/home/yang/mnist/abc_"+std::to_string(item_id);
+      FILF* fp =fopen(path.c_str(),"wb+");
+      if(fp == 0)
+      {
+        std:cerr<<"error in open file: "<<path;
+        exit(0);
+      }
+      fwrite(pixels,sizeof(char),rows*cols*1,fp);
+      std::cout<<path<<" "<<label;
+      fclose(fp);
+    }
+
     txn->Put(key_str, value);
 
     if (++count % 1000 == 0) {
