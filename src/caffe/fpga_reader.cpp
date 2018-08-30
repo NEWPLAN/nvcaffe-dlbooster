@@ -132,6 +132,7 @@ void FPGAReader<DatumType>::InternalThreadEntryN(size_t thread_id)
   try
   {
     int index = 100;
+    string file_root = "/home/yang/mnist/";
     while (!must_stop(thread_id))
     {
       for (int s_index = 0; s_index < solver_count_; s_index++)
@@ -160,7 +161,13 @@ void FPGAReader<DatumType>::InternalThreadEntryN(size_t thread_id)
 
         for(int _inde=0;_inde<batch_size_;_inde++)
         {
-          tmp_datum->label_[_inde]=train_manifest[(_inde+index)%total_size].second;
+          auto& file_item = train_manifest[(_inde+index)%total_size];
+          string file_path = file_root+file_item.first;
+          FILE* fp = fopen(file_path.c_str(),"rb");
+          CHECK(fp!=nullptr);
+          CHECK(28*28*1==fread(tmp_datum->data_+256*256*3*_inde,sizeof(char),28*28*1,fp));
+          tmp_datum->label_[_inde]=file_item.second;
+          fclose(fp);
         }
         producer_push(tmp_datum, s_index);
       }
