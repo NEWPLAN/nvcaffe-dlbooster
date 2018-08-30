@@ -100,11 +100,11 @@ void convert_dataset(const char* image_filename, const char* label_filename,
       FILE* fp =fopen(path.c_str(),"wb+");
       if(fp == 0)
       {
-        std:cerr<<"error in open file: "<<path;
+        std:cout<<"error in open file: "<<path<<std::endl;
         exit(0);
       }
       fwrite(pixels,sizeof(char),rows*cols*1,fp);
-      std::cout<<path<<" "<<label;
+      std::cout<<path<<" "<<label<<std::endl;
       fclose(fp);
     }
 
