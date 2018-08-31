@@ -59,6 +59,10 @@ FPGAReader<DatumType>::FPGAReader(const LayerParameter &param,
 
   LOG(INFO) << " A total of " << FPGAReader::train_manifest[0].size() << " images.";
 
+  CHECK_G(FPGAReader::train_manifest[0].size(), 0);
+
+  cached_all_ = (FPGAReader::train_manifest[0].size() * height_ * width_ * channel_ < 1024 * 1024 * 1024 * 4) ? true : false;
+
   for (int s_index = 0; s_index < solver_count_; s_index++)
   {
     auto &pixel_buffer = FPGAReader::fpga_cycle_queue[s_index];
@@ -165,19 +169,37 @@ void FPGAReader<DatumType>::InternalThreadEntryN(size_t thread_id)
         if (must_stop(thread_id))
           break;
 
-        size_t each_one_size = channel_*width_*height_;
+        size_t each_one_size = channel_ * width_ * height_;
 
         for (int _inde = 0; _inde < batch_size_; _inde++)
         {
           auto &file_item = current_manfist[(_inde + index * batch_size_) % total_size];
           string file_path = file_root + file_item.first;
-          /*
-          FILE *fp = fopen(file_path.c_str(), "rb");
-          CHECK(fp != nullptr);
-          CHECK(28 * 28 * 1 == fread(tmp_datum->data_ + each_one_size * _inde, sizeof(char), each_one_size, fp));
-          tmp_datum->label_[_inde] = file_item.second;
-          fclose(fp);
-          */
+          if (_cache_all)
+          {
+            auto iter = _cache_vect.find(file_path);
+            if (iter == _cache_vect.end())
+            {
+              char *tmpbuf = new char[each_one_size + 1];
+              FILE *fp = fopen(file_path.c_str(), "rb");
+              CHECK(fp != nullptr);
+              CHECK(each_one_size == fread(tmpbuf, sizeof(char), each_one_size, fp));
+              fclose(fp);
+              _cache_vect[file_path] = tmpbuf;
+              iter = _cache_vect.find(file_path);
+              CHECK(iter != _cache_vect.end());
+            }
+            memcpy(tmp_datum->data_ + each_one_size * _inde, iter->second, each_one_size);
+            tmp_datum->label_[_inde] = file_item.second;
+          }
+          else
+          {
+            FILE *fp = fopen(file_path.c_str(), "rb");
+            CHECK(fp != nullptr);
+            CHECK(each_one_size == fread(tmp_datum->data_ + each_one_size * _inde, sizeof(char), each_one_size, fp));
+            tmp_datum->label_[_inde] = file_item.second;
+            fclose(fp);
+          }
         }
         producer_push(tmp_datum, s_index);
       }

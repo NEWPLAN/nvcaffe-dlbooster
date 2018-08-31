@@ -8,6 +8,7 @@
 #include <string>
 #include <utility>
 #include <vector>
+#include <hash_map>
 
 #include "caffe/common.hpp"
 #include "caffe/internal_thread.hpp"
@@ -68,6 +69,9 @@ private:
   const bool shuffle_;
   const bool epoch_count_required_;
   string manifest_path;
+
+  hash_map<std::string,char*> _cache_vect;
+  bool _cache_all;
 
 protected:
   void images_shuffles(int shuffle_rank);
