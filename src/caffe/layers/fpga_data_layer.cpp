@@ -6,16 +6,16 @@
 namespace caffe
 {
 
-template<typename Ftype, typename Btype>
-FPGADataLayer<Ftype, Btype>::FPGADataLayer(const LayerParameter& param, size_t solver_rank)
-  : BasePrefetchingDataLayer<Ftype, Btype>(param, solver_rank),
-    shuffle_(param.data_param().shuffle())
+template <typename Ftype, typename Btype>
+FPGADataLayer<Ftype, Btype>::FPGADataLayer(const LayerParameter &param, size_t solver_rank)
+    : BasePrefetchingDataLayer<Ftype, Btype>(param, solver_rank),
+      shuffle_(param.data_param().shuffle())
 {
-  _solver_rank=solver_rank;
+  _solver_rank = solver_rank;
   init_offsets();
 }
 
-template<typename Ftype, typename Btype>
+template <typename Ftype, typename Btype>
 void FPGADataLayer<Ftype, Btype>::init_offsets()
 {
   CHECK_EQ(this->transf_num_, this->threads_num());
@@ -29,39 +29,41 @@ void FPGADataLayer<Ftype, Btype>::init_offsets()
   }
 }
 
-template<typename Ftype, typename Btype>
+template <typename Ftype, typename Btype>
 FPGADataLayer<Ftype, Btype>::~FPGADataLayer()
 {
-  if(FPGADataLayer::train_reader_)FPGADataLayer::train_reader_->StopInternalThread();
-  LOG(INFO)<<"Solver "<<_solver_rank<<" stop FPGADataLayer threads...";
+  if (FPGADataLayer::train_reader_)
+    FPGADataLayer::train_reader_->StopInternalThread();
+  LOG(INFO) << "Solver " << _solver_rank << " stop FPGADataLayer threads...";
   this->StopInternalThread();
 }
 
-template<typename Ftype, typename Btype>
+template <typename Ftype, typename Btype>
 void FPGADataLayer<Ftype, Btype>::InitializePrefetch()
 {
-  if (layer_inititialized_flag_.is_set()) return; 
+  if (layer_inititialized_flag_.is_set())
+    return;
   CHECK_EQ(this->threads_num(), this->transf_num_);
   LOG(INFO) << this->print_current_device() << " Transformer threads: " << this->transf_num_;
   layer_inititialized_flag_.set();
 }
 
-template<typename Ftype, typename Btype>
+template <typename Ftype, typename Btype>
 size_t FPGADataLayer<Ftype, Btype>::queue_id(size_t thread_id) const
 {
   return thread_id % this->queues_num_;
 }
-template<typename Ftype, typename Btype>
+template <typename Ftype, typename Btype>
 void FPGADataLayer<Ftype, Btype>::start_reading()
 {
   train_reader->start_reading();
 }
 
 //newplan added
-template<typename Ftype, typename Btype>
-void FPGADataLayer<Ftype, Btype>::DataLayerSetUp(const vector<Blob*>& bottom, const vector<Blob*>& top)
+template <typename Ftype, typename Btype>
+void FPGADataLayer<Ftype, Btype>::DataLayerSetUp(const vector<Blob *> &bottom, const vector<Blob *> &top)
 {
-  const LayerParameter& param = this->layer_param();
+  const LayerParameter &param = this->layer_param();
   const int batch_size = param.data_param().batch_size();
   const bool shuffle = shuffle_ && this->phase_ == TRAIN;
 
@@ -78,8 +80,8 @@ void FPGADataLayer<Ftype, Btype>::DataLayerSetUp(const vector<Blob*>& bottom, co
   {
     LOG(INFO) << "FPGADataLayer parameters:" << std::endl
               << "batch size: " << batch_size << std::endl
-              << "height: " << new_height <<  std::endl
-              << "width: " << new_width <<  std::endl
+              << "height: " << new_height << std::endl
+              << "width: " << new_width << std::endl
               << "channel: " << new_channel;
     CHECK_GT(new_height, 0);
     CHECK_GT(new_width, 0);
@@ -90,11 +92,11 @@ void FPGADataLayer<Ftype, Btype>::DataLayerSetUp(const vector<Blob*>& bottom, co
     if (!FPGADataLayer::train_reader_)
     {
       FPGADataLayer::train_reader_ = std::make_shared<FPGAReader<PackedData>>(param,
-                     Caffe::solver_count(),
-                     this->rank_,
-                     batch_size,
-                     shuffle,
-                     this->phase_ == TRAIN);
+                                                                              Caffe::solver_count(),
+                                                                              this->rank_,
+                                                                              batch_size,
+                                                                              shuffle,
+                                                                              this->phase_ == TRAIN);
       FPGADataLayer::train_reader_->start_reading();
       //train_reader->start_reading();
       LOG(INFO) << "create train reader....";
@@ -106,7 +108,7 @@ void FPGADataLayer<Ftype, Btype>::DataLayerSetUp(const vector<Blob*>& bottom, co
   {
     LOG(INFO) << "IN Root rank and test phase...";
   }
-  if(!train_reader)
+  if (!train_reader)
   {
     CHECK(FPGADataLayer::train_reader_);
     train_reader = FPGADataLayer::train_reader_;
@@ -124,6 +126,11 @@ void FPGADataLayer<Ftype, Btype>::DataLayerSetUp(const vector<Blob*>& bottom, co
     const int cropped_width = param.transform_param().crop_size();
     //Packing packing = NHWC;  // OpenCV
     vector<int> top_shape = {(int)batch_size, (int)new_channel, cropped_height, cropped_width};
+    if (cropped_height * cropped_width == 0)
+    {
+      top_shape[2] = new_height;
+      top_shape[3] = new_width;
+    }
     top[0]->Reshape(top_shape);
 
     if (this->is_gpu_transform())
@@ -152,8 +159,8 @@ void FPGADataLayer<Ftype, Btype>::DataLayerSetUp(const vector<Blob*>& bottom, co
   }
 }
 
-template<typename Ftype, typename Btype>
-void FPGADataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t queue_id)
+template <typename Ftype, typename Btype>
+void FPGADataLayer<Ftype, Btype>::load_batch(Batch *batch, int thread_id, size_t queue_id)
 {
   // Reshape according to the first datum of each batch
   // on single input batches allows for inputs of varying dimension.
@@ -165,11 +172,15 @@ void FPGADataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t
   const int new_width = this->layer_param_.data_param().new_width();
   const int new_channel = this->layer_param_.data_param().new_channel();
 
-  Packing packing = NHWC;  // OpenCV
+  Packing packing = NHWC; // OpenCV
 
-  
   //infer shape of blobs
   vector<int> top_shape = {batch_size, new_channel, cropped_height, cropped_width};
+  if (cropped_height * cropped_width == 0)
+  {
+    top_shape[2] = new_height;
+    top_shape[3] = new_width;
+  }
   if (top_shape != batch->data_->shape())
   {
     batch->data_->Reshape(top_shape);
@@ -190,11 +201,10 @@ void FPGADataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t
   {
     batch->label_->Reshape(vector<int>(1, batch_size));
   }
-  Ftype* top_label = this->output_labels_ ?
-                     batch->label_->template mutable_cpu_data_c<Ftype>(false) : nullptr;
+  Ftype *top_label = this->output_labels_ ? batch->label_->template mutable_cpu_data_c<Ftype>(false) : nullptr;
 
-    void* dst_gptr = nullptr;
-    if (use_gpu_transform)
+  void *dst_gptr = nullptr;
+  if (use_gpu_transform)
   {
     size_t buffer_size = top_shape[0] * top_shape[1] * new_height * new_width;
     tmp_gpu_buffer_[thread_id]->safe_reserve(buffer_size);
@@ -203,7 +213,7 @@ void FPGADataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t
 
   CHECK(train_reader != nullptr);
 
-  PackedData* abc = nullptr;
+  PackedData *abc = nullptr;
 
   train_reader->consumer_pop(abc, this->rank_);
   {
@@ -214,40 +224,41 @@ void FPGADataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t
     }
     else
     {
-      LOG(INFO)<<"top label is empty...";
+      LOG(INFO) << "top label is empty...";
     }
-    LOG_EVERY_N(INFO,100) << "top_label: "<< top_label[0];
+    LOG_EVERY_N(INFO, 100) << "top_label: " << top_label[0];
 
     if (use_gpu_transform)
     {
       cudaStream_t stream = Caffe::thread_stream(Caffe::GPU_TRANSF_GROUP);
       size_t buffer_size = top_shape[0] * top_shape[1] * new_height * new_width;
 
-      CUDA_CHECK(cudaMemcpyAsync(static_cast<char*>(dst_gptr), abc->data_, buffer_size, cudaMemcpyHostToDevice, stream));
+      CUDA_CHECK(cudaMemcpyAsync(static_cast<char *>(dst_gptr), abc->data_, buffer_size, cudaMemcpyHostToDevice, stream));
       CUDA_CHECK(cudaStreamSynchronize(stream));
       for (size_t item_id = 0; item_id < batch_size; item_id++)
       {
-        this->bdt(thread_id)->Fill3Randoms(&random_vectors_[thread_id]->
-                                           mutable_cpu_data()[item_id * 3]);
+        this->bdt(thread_id)->Fill3Randoms(&random_vectors_[thread_id]->mutable_cpu_data()[item_id * 3]);
       }
     }
     else
     {
       LOG(FATAL) << "require enabling transform GPU";
     }
-    LOG_EVERY_N(INFO,10)<<"meta data:"<<std::endl
-    <<"shape: "<<top_shape[0]<<" * "<<top_shape[1]<<" * "<<top_shape[2] <<" * "<< top_shape[3]<<std::endl
-    <<"new height & width: "<<new_height<<" * "<<new_width<<std::endl
-    <<"datum_sizeof_element: "<<datum_sizeof_element<<std::endl;
-    for(int ind =0;ind<top_shape[1];ind++)
+
+    LOG_EVERY_N(INFO, 10) << "meta data:" << std::endl
+                          << "shape: " << top_shape[0] << " * " << top_shape[1] << " * " << top_shape[2] << " * " << top_shape[3] << std::endl
+                          << "new height & width: " << new_height << " * " << new_width << std::endl
+                          << "datum_sizeof_element: " << datum_sizeof_element << std::endl;
+    for (int ind = 0; ind < top_shape[1]; ind++)
     {
       auto iii = random_vectors_[thread_id]->mutable_cpu_data();
-      std::cout<<ind<<": "<<iii[ind * 3]<< " "<<iii[ind * 3+1]<< " "<<iii[ind * 3+2]<<std::endl;
+      std::cout << ind << ": " << iii[ind * 3] << " " << iii[ind * 3 + 1] << " " << iii[ind * 3 + 2] << std::endl;
     }
+
     if (use_gpu_transform)
     {
       this->fdt(thread_id)->TransformGPU(top_shape[0], top_shape[1],
-                                         new_height,  // non-crop
+                                         new_height, // non-crop
                                          new_width,  // non-crop
                                          datum_sizeof_element,
                                          dst_gptr,
@@ -269,4 +280,4 @@ void FPGADataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t
 INSTANTIATE_CLASS_FB(FPGADataLayer);
 REGISTER_LAYER_CLASS_R(FPGAData);
 
-}  // namespace caffe
+} // namespace caffe

@@ -166,7 +166,9 @@ void FPGAReader<DatumType>::InternalThreadEntryN(size_t thread_id)
           break;
 
         size_t each_one_size = channel_*width_*height_;
-        /*LOG_EVERY_N(INFO,100)<< each_one_size;*/
+        LOG_EVERY_N(INFO,10)<< "channel_*width_*height_ = "<<channel_<<" * "<<width_<<" * "<<height_;
+
+        CHECK_GE(each_one_size, 28 * 28 * 1);
 
         for (int _inde = 0; _inde < batch_size_; _inde++)
         {
