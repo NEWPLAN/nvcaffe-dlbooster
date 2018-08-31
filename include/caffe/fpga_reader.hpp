@@ -8,7 +8,7 @@
 #include <string>
 #include <utility>
 #include <vector>
-#include <hash_map>
+#include <unordered_map>
 
 #include "caffe/common.hpp"
 #include "caffe/internal_thread.hpp"
@@ -70,7 +70,7 @@ private:
   const bool epoch_count_required_;
   string manifest_path;
 
-  std::hash_map<std::string,char*> _cache_vect;
+  unordered_map<std::string,char*> _cache_vect;
   bool _cache_all;
 
 protected:
