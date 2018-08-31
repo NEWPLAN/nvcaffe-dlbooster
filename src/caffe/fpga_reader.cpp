@@ -61,7 +61,7 @@ FPGAReader<DatumType>::FPGAReader(const LayerParameter &param,
 
   CHECK_GT(FPGAReader::train_manifest[0].size(), 0);
 
-  cached_all_ = (FPGAReader::train_manifest[0].size() * height_ * width_ * channel_ < 1024 * 1024 * 1024 * 4) ? true : false;
+  _cache_all = (FPGAReader::train_manifest[0].size() * height_ * width_ * channel_ < 1024 * 1024 * 1024 * 4) ? true : false;
 
   for (int s_index = 0; s_index < solver_count_; s_index++)
   {
