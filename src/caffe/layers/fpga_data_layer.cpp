@@ -238,11 +238,11 @@ void FPGADataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t
     LOG_EVERY_N(INFO,10)<<"meta data:"<<std::endl
     <<"shape: "<<top_shape[0]<<" * "<<top_shape[1]<<" * "<<top_shape[2] <<" * "<< top_shape[3]<<std::endl
     <<"datum_sizeof_element: "<<datum_sizeof_element<<std::endl;
-    for(auto& index: random_vectors_[thread_id]->cpu_data())
+    for(int ind =0 ind>top_shape[1];ind++)
     {
-      std::cout<<index<< " ";
+      auto& iii = random_vectors_[thread_id]->mutable_cpu_data();
+      std::cout<<ind<<": "<<iii[ind * 3]<< " "<<iii[ind * 3+1]<< " "<<iii[ind * 3+2]<<std::endl;
     }
-    std::cout<<"done for this batch..."<<std::endl;
     if (use_gpu_transform)
     {
       this->fdt(thread_id)->TransformGPU(top_shape[0], top_shape[1],
