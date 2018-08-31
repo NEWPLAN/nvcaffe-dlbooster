@@ -235,6 +235,14 @@ void FPGADataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t
     {
       LOG(FATAL) << "require enabling transform GPU";
     }
+    LOG(INFO,10)<<"meta data:"<<std::endl
+    <<"shape: "<<top_shape[0]<<" * "<<top_shape[1]<<" * "<<top_shape[2] <<" * "<< top_shape[3]<<std::endl
+    <<"datum_sizeof_element: "<<datum_sizeof_element<<std::endl;
+    for(auto& index: random_vectors_[thread_id]->cpu_data())
+    {
+      std::cout<<index<< " ";
+    }
+    std::cout<<"done for this batch..."<<std::endl;
     if (use_gpu_transform)
     {
       this->fdt(thread_id)->TransformGPU(top_shape[0], top_shape[1],

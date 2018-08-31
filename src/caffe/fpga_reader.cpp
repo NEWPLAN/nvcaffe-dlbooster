@@ -166,7 +166,7 @@ void FPGAReader<DatumType>::InternalThreadEntryN(size_t thread_id)
           break;
 
         size_t each_one_size = channel_*width_*height_;
-        LOG_EVERY_N(INFO,100)<< each_one_size;
+        /*LOG_EVERY_N(INFO,100)<< each_one_size;*/
 
         for (int _inde = 0; _inde < batch_size_; _inde++)
         {
@@ -174,7 +174,7 @@ void FPGAReader<DatumType>::InternalThreadEntryN(size_t thread_id)
           string file_path = file_root + file_item.first;
           FILE *fp = fopen(file_path.c_str(), "rb");
           CHECK(fp != nullptr);
-          CHECK(28 * 28 * 1 == fread(tmp_datum->data_ + 256 * 256 * 3 * _inde, sizeof(char), 28 * 28 * 1, fp));
+          CHECK(28 * 28 * 1 == fread(tmp_datum->data_ + each_one_size * _inde, sizeof(char), 28 * 28 * 1, fp));
           tmp_datum->label_[_inde] = file_item.second;
           fclose(fp);
         }
