@@ -237,7 +237,7 @@ void FPGADataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t
     }
     LOG_EVERY_N(INFO,10)<<"meta data:"<<std::endl
     <<"shape: "<<top_shape[0]<<" * "<<top_shape[1]<<" * "<<top_shape[2] <<" * "<< top_shape[3]<<std::endl
-    <<"new height & width: "<<new_height<<" * "<<new_width<std::endl
+    <<"new height & width: "<<new_height<<" * "<<new_width<<std::endl
     <<"datum_sizeof_element: "<<datum_sizeof_element<<std::endl;
     for(int ind =0;ind<top_shape[1];ind++)
     {
