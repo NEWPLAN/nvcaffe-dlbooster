@@ -150,6 +150,7 @@ void FPGAReader<DatumType>::InternalThreadEntryN(size_t thread_id)
         ctime_.Start();
       }
       auto &current_manfist = FPGAReader::train_manifest[current_shuffle];
+
       for (int s_index = 0; s_index < solver_count_; s_index++)
       {
         DatumType *tmp_datum = nullptr;
@@ -163,6 +164,9 @@ void FPGAReader<DatumType>::InternalThreadEntryN(size_t thread_id)
         index %= item_nums;
         if (must_stop(thread_id))
           break;
+
+        size_t each_one_size = channel_*width_*height_;
+        LOG_EVERY_N(INFO,100)<< each_one_size;
 
         for (int _inde = 0; _inde < batch_size_; _inde++)
         {
