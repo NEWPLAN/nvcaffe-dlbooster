@@ -244,7 +244,7 @@ void FPGADataLayer<Ftype, Btype>::load_batch(Batch *batch, int thread_id, size_t
     {
       LOG(FATAL) << "require enabling transform GPU";
     }
-
+    /*
     LOG_EVERY_N(INFO, 10) << "meta data:" << std::endl
                           << "shape: " << top_shape[0] << " * " << top_shape[1] << " * " << top_shape[2] << " * " << top_shape[3] << std::endl
                           << "new height & width: " << new_height << " * " << new_width << std::endl
@@ -254,6 +254,7 @@ void FPGADataLayer<Ftype, Btype>::load_batch(Batch *batch, int thread_id, size_t
       auto iii = random_vectors_[thread_id]->mutable_cpu_data();
       std::cout << ind << ": " << iii[ind * 3] << " " << iii[ind * 3 + 1] << " " << iii[ind * 3 + 2] << std::endl;
     }
+    */
 
     if (use_gpu_transform)
     {
