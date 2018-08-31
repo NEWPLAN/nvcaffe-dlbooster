@@ -59,7 +59,7 @@ FPGAReader<DatumType>::FPGAReader(const LayerParameter &param,
 
   LOG(INFO) << " A total of " << FPGAReader::train_manifest[0].size() << " images.";
 
-  CHECK_G(FPGAReader::train_manifest[0].size(), 0);
+  CHECK_GT(FPGAReader::train_manifest[0].size(), 0);
 
   cached_all_ = (FPGAReader::train_manifest[0].size() * height_ * width_ * channel_ < 1024 * 1024 * 1024 * 4) ? true : false;
 
