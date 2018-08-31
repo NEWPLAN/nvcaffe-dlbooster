@@ -171,11 +171,13 @@ void FPGAReader<DatumType>::InternalThreadEntryN(size_t thread_id)
         {
           auto &file_item = current_manfist[(_inde + index * batch_size_) % total_size];
           string file_path = file_root + file_item.first;
+          /*
           FILE *fp = fopen(file_path.c_str(), "rb");
           CHECK(fp != nullptr);
           CHECK(28 * 28 * 1 == fread(tmp_datum->data_ + each_one_size * _inde, sizeof(char), each_one_size, fp));
           tmp_datum->label_[_inde] = file_item.second;
           fclose(fp);
+          */
         }
         producer_push(tmp_datum, s_index);
       }
