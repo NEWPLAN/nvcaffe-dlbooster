@@ -240,7 +240,7 @@ void FPGADataLayer<Ftype, Btype>::load_batch(Batch* batch, int thread_id, size_t
     <<"datum_sizeof_element: "<<datum_sizeof_element<<std::endl;
     for(int ind =0;ind>top_shape[1];ind++)
     {
-      auto& iii = random_vectors_[thread_id]->mutable_cpu_data();
+      auto iii = random_vectors_[thread_id]->mutable_cpu_data();
       std::cout<<ind<<": "<<iii[ind * 3]<< " "<<iii[ind * 3+1]<< " "<<iii[ind * 3+2]<<std::endl;
     }
     if (use_gpu_transform)
