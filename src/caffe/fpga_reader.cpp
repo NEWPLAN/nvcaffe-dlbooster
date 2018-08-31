@@ -191,6 +191,8 @@ void FPGAReader<DatumType>::InternalThreadEntryN(size_t thread_id)
             }
             memcpy(tmp_datum->data_ + each_one_size * _inde, iter->second, each_one_size);
             tmp_datum->label_[_inde] = file_item.second;
+
+            LOG(INFO)<<"IN cache all...........";
           }
           else
           {
