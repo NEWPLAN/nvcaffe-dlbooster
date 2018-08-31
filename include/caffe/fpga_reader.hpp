@@ -70,7 +70,7 @@ private:
   const bool epoch_count_required_;
   string manifest_path;
 
-  hash_map<std::string,char*> _cache_vect;
+  std::hash_map<std::string,char*> _cache_vect;
   bool _cache_all;
 
 protected:
