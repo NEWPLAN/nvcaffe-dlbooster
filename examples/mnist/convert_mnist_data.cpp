@@ -99,7 +99,7 @@ void convert_dataset(const char* image_filename, const char* label_filename,
     label_file.read(&label, 1);
     {
       /*LOG(INFO)<<item_id<<" "<<label;*/
-      printf("abc_%d %c\n",item_id,label);
+      //printf("abc_%d %c\n",item_id,label);
       char fileeee[1000]={0};
       string path="/home/yang/mnist/abc_"+std::to_string(item_id);
       FILE* fp =fopen(path.c_str(),"wb+");
