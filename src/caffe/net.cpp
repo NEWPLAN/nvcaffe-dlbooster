@@ -1021,7 +1021,7 @@ void Net::ReduceAndUpdate(int type_id) {
     } else {
       au_ids.emplace(param_id);
     }
-  LOG_EVERY_N(INFO,10)<<"in ReduceAndUpdate";
+  LOG_EVERY_N(INFO,1000)<<"in ReduceAndUpdate";
   }
   DLOG(INFO) << "[" << Caffe::current_device()
              << "] Leaving ReduceAndUpdate thread " << lwp_id();
