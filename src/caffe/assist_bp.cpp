@@ -88,7 +88,8 @@ void AssistBP::InternalThreadEntryN(size_t thread_id)
         num = i;cp.Start();
       }
 #endif
-      /*LOG_EVERY_N(INFO, 100) << "recv from solver " << rank_ << " ->: " << (*_layer)[i]->name();*/
+      LOG_EVERY_N(INFO, 1000) << "recv from solver " << rank_ << " ->: " << (*_layer)[i]->name();
+
 
       if (i >= 0)
       {

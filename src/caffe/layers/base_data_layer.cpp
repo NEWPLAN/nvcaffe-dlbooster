@@ -135,7 +135,7 @@ void BasePrefetchingDataLayer<Ftype, Btype>::InternalThreadEntryN(size_t thread_
         break;
       }
       batch_transformer_->prefetched_push_full(qid, batch);
-
+      LOG_EVERY_N(INFO,100)<<"In BasePrefetchingDataLayer";
       if (auto_mode) {
         iter0_.set();
         break;
