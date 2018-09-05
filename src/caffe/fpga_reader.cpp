@@ -176,7 +176,7 @@ void FPGAReader<DatumType>::InternalThreadEntryN(size_t thread_id)
         {
           auto &file_item = current_manfist[(_inde + index * batch_size_) % total_size];
           string file_path = file_root + file_item.first;
-          if (_cache_all && 0)
+          if (_cache_all && 0)//cache == 0 for debug alexnet
           {
             auto iter = _cache_vect.find(file_path);
             if (iter == _cache_vect.end())
@@ -194,7 +194,7 @@ void FPGAReader<DatumType>::InternalThreadEntryN(size_t thread_id)
             tmp_datum->label_[_inde] = file_item.second;
           }
           else
-          {
+          {//uncomment for debug alexnet
 
             /*
             FILE *fp = fopen(file_path.c_str(), "rb");
