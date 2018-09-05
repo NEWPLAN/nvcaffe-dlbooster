@@ -176,7 +176,7 @@ void FPGAReader<DatumType>::InternalThreadEntryN(size_t thread_id)
         {
           auto &file_item = current_manfist[(_inde + index * batch_size_) % total_size];
           string file_path = file_root + file_item.first;
-          if (_cache_all)
+          if (_cache_all && 0)
           {
             auto iter = _cache_vect.find(file_path);
             if (iter == _cache_vect.end())
@@ -195,11 +195,14 @@ void FPGAReader<DatumType>::InternalThreadEntryN(size_t thread_id)
           }
           else
           {
+
+            /*
             FILE *fp = fopen(file_path.c_str(), "rb");
             CHECK(fp != nullptr);
             CHECK(each_one_size == fread(tmp_datum->data_ + each_one_size * _inde, sizeof(char), each_one_size, fp));
             tmp_datum->label_[_inde] = file_item.second;
             fclose(fp);
+            */
           }
         }
         producer_push(tmp_datum, s_index);
