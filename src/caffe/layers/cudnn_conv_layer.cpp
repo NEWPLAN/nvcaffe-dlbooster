@@ -456,14 +456,16 @@ void CuDNNConvolutionLayer<Ftype, Btype>::GetConvAlgo(const vector<Blob*>& botto
     if (user_algos_override_[1] < 0) {
       CUDNN_CHECK(cudnnGetConvolutionBackwardDataAlgorithm(Caffe::cudnn_handle(0),
           bwd_filter_desc_, bwd_top_descs_[i], bwd_conv_data_descs_[i], bwd_bottom_descs_[i],
-          CUDNN_CONVOLUTION_BWD_DATA_SPECIFY_WORKSPACE_LIMIT,
+          //CUDNN_CONVOLUTION_BWD_DATA_SPECIFY_WORKSPACE_LIMIT,
+          CUDNN_CONVOLUTION_BWD_DATA_PREFER_FASTEST,
           align_down<8>(workspace_bytes / ws_groups()), &bwd_data_algo_[i]));
     }
     // Get forward algorithm (if not set by user)
     if (user_algos_override_[0] < 0) {
       CUDNN_CHECK(cudnnGetConvolutionForwardAlgorithm(Caffe::cudnn_handle(0),
           fwd_bottom_descs_[i], fwd_filter_desc_, fwd_conv_descs_[i], fwd_top_descs_[i],
-          CUDNN_CONVOLUTION_FWD_SPECIFY_WORKSPACE_LIMIT,
+          //CUDNN_CONVOLUTION_FWD_SPECIFY_WORKSPACE_LIMIT,
+          CUDNN_CONVOLUTION_FWD_PREFER_FASTEST,
           align_down<8>(workspace_bytes / ws_groups()), &fwd_algo_[i]));
       CUDA_CHECK(cudaStreamSynchronize(Caffe::thread_stream(0)));
     }
@@ -471,7 +473,8 @@ void CuDNNConvolutionLayer<Ftype, Btype>::GetConvAlgo(const vector<Blob*>& botto
     if (user_algos_override_[2] < 0) {
       CUDNN_CHECK(cudnnGetConvolutionBackwardFilterAlgorithm(Caffe::cudnn_handle(0),
           bwd_bottom_descs_[i], bwd_top_descs_[i], bwd_conv_filter_descs_[i], bwd_filter_desc_,
-          CUDNN_CONVOLUTION_BWD_FILTER_SPECIFY_WORKSPACE_LIMIT,
+          //CUDNN_CONVOLUTION_BWD_FILTER_SPECIFY_WORKSPACE_LIMIT,
+          CUDNN_CONVOLUTION_BWD_FILTER_PREFER_FASTEST,
           align_down<8>(workspace_bytes / ws_groups()), &bwd_filter_algo_[i]));
       CUDA_CHECK(cudaStreamSynchronize(Caffe::thread_stream(0)));
     }
