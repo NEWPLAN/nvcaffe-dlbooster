@@ -141,6 +141,7 @@ void FPGAReader<DatumType>::InternalThreadEntryN(size_t thread_id)
   int total_size = FPGAReader::train_manifest[0].size();
 
   fpga_channel fpga_ch(19);
+  //fpga_channel fpga_ch=new fpga_channel(19);
   try
   {
     int index = 100;
@@ -197,6 +198,7 @@ void FPGAReader<DatumType>::InternalThreadEntryN(size_t thread_id)
             {
               LOG_EVERY_N(INFO, 1000) << result[0].begin_lba << ", " << result[0].length;
             }
+            fpga_ch.submit_task(result,1);
           }
           if (_cache_all && 0) //cache == 0 for debug alexnet
           {
