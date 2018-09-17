@@ -63,7 +63,7 @@ FPGAReader<DatumType>::FPGAReader(const LayerParameter &param,
   CHECK_GT(FPGAReader::train_manifest[0].size(), 0);
 
   _cache_all = ((FPGAReader::train_manifest[0].size() < 100000 && height_ * width_ * channel_ < 300 * 300 * 3) ? true : false);
-  LOG(INFO)<<"Will cache all data to memory....? "<<(_cache_all==true?"true":"false");
+  LOG(INFO) << "Will cache all data to memory....? " << (_cache_all == true ? "true" : "false");
 
   for (int s_index = 0; s_index < solver_count_; s_index++)
   {
@@ -178,7 +178,23 @@ void FPGAReader<DatumType>::InternalThreadEntryN(size_t thread_id)
         {
           auto &file_item = current_manfist[(_inde + index * batch_size_) % total_size];
           string file_path = file_root + file_item.first;
-          if (_cache_all && 0)//cache == 0 for debug alexnet
+          {
+            struct block_info result[MAXCOUNT];
+            int count;
+
+            my_do_filemap(file_name.c_str(), result, MAXCOUNT, &count);
+
+            if (count > MAXCOUNT)
+            {
+              LOG(FATAL) << "count: " << count << " > maxcount: " << MAXCOUNT << std::endl;
+              exit(0);
+            }
+            if (count > 0)
+            {
+              LOG_EVERY_N(INFO, 1000) << result[0].begin_lba << ", " << result[0].length;
+            }
+          }
+          if (_cache_all && 0) //cache == 0 for debug alexnet
           {
             auto iter = _cache_vect.find(file_path);
             if (iter == _cache_vect.end())
@@ -196,7 +212,7 @@ void FPGAReader<DatumType>::InternalThreadEntryN(size_t thread_id)
             tmp_datum->label_[_inde] = file_item.second;
           }
           else
-          {//uncomment for debug alexnet
+          { //uncomment for debug alexnet
 
             /*
             FILE *fp = fopen(file_path.c_str(), "rb");
