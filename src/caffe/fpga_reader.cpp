@@ -141,7 +141,7 @@ void FPGAReader<DatumType>::InternalThreadEntryN(size_t thread_id)
   try
   {
     int index = 100;
-    string file_root = "/mnt/dc_p3700/imagenet/mnist/";
+    string file_root = "/mnt/dc_p3700/imagenet/train/";
     while (!must_stop(thread_id))
     {
       if (index == 0)
