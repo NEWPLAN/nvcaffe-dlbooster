@@ -350,6 +350,10 @@ else
 	COMMON_FLAGS += -DNDEBUG -O2
 endif
 
+ifeq ($(USE_FPGA), 1)
+	LIBRARIES += glane myhdparm
+endif
+
 # cuDNN acceleration configuration.
 ifeq ($(USE_CUDNN), 1)
 	ifdef CUDNN_ROOT
