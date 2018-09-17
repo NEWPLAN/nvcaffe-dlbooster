@@ -7,7 +7,7 @@
 #include <sys/types.h>
 #include <fcntl.h>
 #include <errno.h>
-#include "hugepage.h"
+#include "caffe/fpga/hugepage.h"
 
 static void write_byt(char *addr, char c);
 static void print_byt(char *addr);
