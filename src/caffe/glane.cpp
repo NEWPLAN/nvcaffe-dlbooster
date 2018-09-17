@@ -19,7 +19,7 @@ class fpga_channel
   public:
     explicit fpga_channel(uint32_t _core_id);
     ~fpga_channel();
-    void submit_task(struct block_info blk, uint32_t available_count);
+    void submit_task(struct block_info* blk, uint32_t available_count);
 
   protected:
     void exit_with_status();
