@@ -9,6 +9,7 @@
 #include <future>
 #include "caffe/hugepage.h"
 #include "caffe/hdparm.h"
+#include "caffe/glane_library.h"
 
 namespace caffe
 {
