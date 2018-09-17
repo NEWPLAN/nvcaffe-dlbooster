@@ -14,29 +14,7 @@
 #include "caffe/glane_library.h"
 #include <iostream>
 
-class fpga_channel
-{
-  public:
-    explicit fpga_channel(uint32_t _core_id);
-    ~fpga_channel();
-    void submit_task(struct block_info* blk, uint32_t available_count);
 
-  protected:
-    void exit_with_status();
-
-  private:
-    int fd;
-    int core_id;
-    int core_num;
-#define MAX_CMD_LENGTH 95000
-    struct glane_entry cmds[MAX_CMD_LENGTH];
-    struct glane_entry cpls[MAX_CMD_LENGTH];
-
-    uint32_t submitted_num = 0;
-    uint32_t polled_num = 0;
-
-    bool is_inited = false;
-};
 
 #define PFN_MASK_SIZE 8
 
