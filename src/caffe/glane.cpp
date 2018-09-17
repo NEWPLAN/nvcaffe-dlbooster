@@ -43,8 +43,7 @@ fpga_channel::fpga_channel(uint32_t _core_id)
         this->core_id = 19;
     if (set_cpu_affinity(this->core_id))
     {
-        std::cerr << "set_cpu_affinity(): error\n"
-                  << std::endl;
+        std::cerr << "set_cpu_affinity(): error" << std::endl;
         exit(-1);
     }
 
