@@ -1,6 +1,8 @@
 #ifndef __MYHDPARM_H__
 #define __MYHDPARM_H__
 
+#define MAXCOUNT 1024
+
 #include <linux/types.h>
 
 #if !defined(__GNUC__) && !defined(__attribute__)

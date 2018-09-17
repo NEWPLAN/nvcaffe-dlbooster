@@ -20,7 +20,8 @@ using namespace std;
 #include <sys/types.h>
 #include "caffe/hdparm.h"
 
-#define MAXCOUNT 1024
+
+
 
 
 int main_weibai(string file_name)
