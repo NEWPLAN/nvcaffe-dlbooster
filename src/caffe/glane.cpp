@@ -14,32 +14,29 @@
 #include "caffe/glane_library.h"
 #include <iostream>
 
-
 class fpga_channel
 {
   public:
     explicit fpga_channel(uint32_t _core_id);
     ~fpga_channel();
-    void submit_cmds(void){}
+    void submit_task(struct block_info blk, uint32_t available_count);
 
-protected:
+  protected:
     void exit_with_status();
 
   private:
     int fd;
     int core_id;
     int core_num;
-#define  MAX_CMD_LENGTH  95000
+#define MAX_CMD_LENGTH 95000
     struct glane_entry cmds[MAX_CMD_LENGTH];
     struct glane_entry cpls[MAX_CMD_LENGTH];
 
-    uint32_t submitted_num= 0;
-    uint32_t polled_num= 0;
+    uint32_t submitted_num = 0;
+    uint32_t polled_num = 0;
 
-    bool is_inited=false;
+    bool is_inited = false;
 };
-
-
 
 #define PFN_MASK_SIZE 8
 
@@ -53,24 +50,23 @@ int set_cpu_affinity(int core_id)
     return result;
 }
 
-
-
 fpga_channel::fpga_channel(uint32_t _core_id)
 {
     this->core_num = init_driver("/dev/glaneoncpu0");
-    
+    is_inited = true;
     if (core_num < 0)
     {
-        std::cerr<<"init_driver(): error"<<std::endl;
-        exit(-1);
+        std::cerr << "init_driver(): error" << std::endl;
+        exit_with_status();
     }
-    if(_core_id<32 && _core_id>0)
+    if (_core_id < 32 && _core_id > 0)
         this->core_id = _core_id;
     else
         this->core_id = 19;
     if (set_cpu_affinity(this->core_id))
     {
-        std::cerr<<"set_cpu_affinity(): error\n"<<std::endl;
+        std::cerr << "set_cpu_affinity(): error\n"
+                  << std::endl;
         exit(-1);
     }
 
@@ -81,7 +77,6 @@ fpga_channel::fpga_channel(uint32_t _core_id)
         cmds[i].dst_devid = 234;
         cmds[i].req_flag = 34;
     }
-    is_inited = true;
 }
 
 fpga_channel::~fpga_channel()
@@ -91,9 +86,38 @@ fpga_channel::~fpga_channel()
 
 void fpga_channel::exit_with_status()
 {
-    if(is_inited)
+    if (is_inited)
         free_driver();
     is_inited = false;
+}
+
+void fpga_channel::submit_task(struct block_info* blk, uint32_t available_count)
+{
+    uint32_t should_submit = (available_count+7)/8;
+    int32_t  sub_length=0;
+    int32_t cmd_length = should_submit;
+    do
+    {
+        sub_length = submit_cmd(core_id + 1, cmds, cmd_length);
+        if (sub_length < 0)
+        {
+            fprintf(stderr, "submit_cmd(): error\n");
+            exit_with_status();
+        }
+        cmd_length -= sub_length;
+    } while (cmd_length != 0);
+
+    cmd_length = should_submit;
+    do
+    {
+        sub_length = read_completion(core_id + 1, cpls, cmd_length);
+        if (sub_length < 0)
+        {
+            fprintf(stderr, "read_completion(): error\n");
+            exit_with_status();
+        }
+        cmd_length -= sub_length;
+    } while (cmd_length != 0);
 }
 
 inline uint64_t current_time();

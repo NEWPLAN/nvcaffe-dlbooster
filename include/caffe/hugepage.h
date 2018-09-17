@@ -24,6 +24,8 @@ class _hugepage_
 	explicit _hugepage_(std::string dev_info, uint32_t batch_size, uint32_t M_size);
 	~_hugepage_();
 
+	
+
 	struct _batch_mem_
 	{
 		uint32_t index=0;
