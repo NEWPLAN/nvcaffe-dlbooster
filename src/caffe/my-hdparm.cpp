@@ -18,7 +18,7 @@ using namespace std;
 
 #include <stdio.h>
 #include <sys/types.h>
-#include "caffe/fpga/hdparm.h"
+#include "caffe/hdparm.h"
 
 #define MAXCOUNT 1024
 

@@ -11,7 +11,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
-#include "caffe/fpga/glane_library.h"
+#include "caffe/glane_library.h"
 #include <iostream>
 
 

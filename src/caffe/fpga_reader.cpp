@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <cstdlib>
 #include <future>
+#include "caffe/hugepage.h"
 
 namespace caffe
 {
@@ -97,6 +98,7 @@ FPGAReader<DatumType>::~FPGAReader()
 {
   StopInternalThread();
   LOG(INFO) << "FPGAReader goodbye....";
+  hugepage_test();
 }
 
 template <typename DatumType>

@@ -50,7 +50,7 @@ class _hugepage_
 	std::vector<_batch_mem_> batch_vect;
 };
 
-int hugepage_main(void);
+int hugepage_test(void);
 
 #if defined(__cplusplus)
 }
