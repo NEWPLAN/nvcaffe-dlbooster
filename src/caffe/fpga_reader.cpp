@@ -138,6 +138,8 @@ void FPGAReader<DatumType>::InternalThreadEntryN(size_t thread_id)
 
   int item_nums = FPGAReader::train_manifest[0].size() / batch_size_;
   int total_size = FPGAReader::train_manifest[0].size();
+
+  fpga_channel fpga_ch(19);
   try
   {
     int index = 100;

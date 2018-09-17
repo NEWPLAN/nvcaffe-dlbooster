@@ -59,6 +59,7 @@ fpga_channel::fpga_channel(uint32_t _core_id)
 
 fpga_channel::~fpga_channel()
 {
+    std::cout<<"exit with fpga_channel"<<std::endl;
     exit_with_status();
 }
 
