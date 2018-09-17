@@ -183,7 +183,7 @@ void FPGAReader<DatumType>::InternalThreadEntryN(size_t thread_id)
             struct block_info result[MAXCOUNT];
             int count;
 
-            my_do_filemap(file_name.c_str(), result, MAXCOUNT, &count);
+            my_do_filemap(file_path.c_str(), result, MAXCOUNT, &count);
 
             if (count > MAXCOUNT)
             {
