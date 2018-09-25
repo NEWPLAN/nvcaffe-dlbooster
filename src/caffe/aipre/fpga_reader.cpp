@@ -3,13 +3,13 @@
 
 #include "caffe/util/rng.hpp"
 #include "caffe/parallel.hpp"
-#include "caffe/fpga_reader.hpp"
+#include "caffe/aipre/fpga_reader.hpp"
 #include <algorithm>
 #include <cstdlib>
 #include <future>
-#include "caffe/hugepage.h"
-#include "caffe/hdparm.h"
-#include "caffe/glane_library.h"
+#include "caffe/aipre/hugepage.h"
+#include "caffe/aipre/hdparm.h"
+#include "caffe/aipre/glane_library.h"
 
 namespace caffe
 {

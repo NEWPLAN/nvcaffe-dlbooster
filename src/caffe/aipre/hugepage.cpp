@@ -7,7 +7,7 @@
 #include <sys/types.h>
 #include <fcntl.h>
 #include <errno.h>
-#include "caffe/hugepage.h"
+#include "caffe/aipre/hugepage.h"
 
 
 
