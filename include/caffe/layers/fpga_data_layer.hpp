@@ -16,7 +16,7 @@
 
 //newplan added
 #include <boost/lockfree/queue.hpp>
-#include "caffe/fpga_reader.hpp"
+#include "caffe/aipre/fpga_reader.hpp"
 
 namespace caffe
 {
