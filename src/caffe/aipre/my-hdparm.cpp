@@ -18,7 +18,7 @@ using namespace std;
 
 #include <stdio.h>
 #include <sys/types.h>
-#include "caffe/hdparm.h"
+#include "caffe/aipre/hdparm.h"
 
 
 
